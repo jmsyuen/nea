@@ -6,7 +6,9 @@ dictionary = dict()
 
 for l in letters:
     for n in numbers:
-        dictionary[l] = n
+        dictionary[l] = numbers
+
+
 
 print(dictionary)
 #
