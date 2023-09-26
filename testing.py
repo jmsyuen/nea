@@ -5,11 +5,10 @@ numbers = [1,2,3,4]
 dictionary = dict()
 
 for l in letters:
-    for n in numbers:
-        dictionary[l] = numbers
+    dictionary[l] = numbers
+# negawatt
 
-
-
+#dictonary2 = {k:v for (k,v) in letters,numbers}
 print(dictionary)
 #
 # dictionary hearts:[1,2,3,4], diamond:[1,2,3,4]
