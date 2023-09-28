@@ -9,7 +9,11 @@ for l in letters:
 # negawatt
 
 #dictonary2 = {k:v for (k,v) in letters,numbers}
-print(dictionary)
+
 #
 # dictionary hearts:[1,2,3,4], diamond:[1,2,3,4]
 # dictonary = {k:v for (k,v) in }
+print(dictionary["a"][1])
+dictionary.pop("a")
+print(dictionary["a"][1])
+print(dictionary)
