@@ -13,10 +13,13 @@ for l in letters:
 #
 # dictionary hearts:[1,2,3,4], diamond:[1,2,3,4]
 # dictonary = {k:v for (k,v) in }
-print(dictionary["a"][1])
+print(dictionary["a"].remove(2))
 #dictionary.pop("a")
 print(dictionary["a"])
-dictionary["a"].remove(1)
+
+
+for k in dictionary:
+  dictionary[k] = set(dictionary[k])
 
 
 # for a in d.values()
