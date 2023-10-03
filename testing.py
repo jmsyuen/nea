@@ -6,7 +6,6 @@ dictionary = dict()
 
 for l in letters:
     dictionary[l] = numbers
-# consider possibility of using negawatt
 
 #dictonary2 = {k:v for (k,v) in letters,numbers}
 
