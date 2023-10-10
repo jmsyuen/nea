@@ -25,9 +25,9 @@ class new_round():
   def Deck(self):
     return self.deck
 
-
-print(new_round(5).Pick_card())
-print(new_round(5).Deck()
+round1 = new_round(5)
+print(round1.Pick_card())
+print(round1.Deck())
 # find a way to return the popped value at l23
 # find a way to have a deck that doesn't reset every time function is called
 # find a way to call one instance and refer back to that instance without resetting
