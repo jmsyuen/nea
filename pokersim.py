@@ -13,7 +13,6 @@ class new_round():
     for suit in self.suit:
       self.deck[suit] = [value for value in range(1,14)]
       # 1 - 13
-  # def New_deck(self):
     
   def Pick_card(self):
     randsuit = self.suit[random.randint(0,3)]
@@ -28,6 +27,5 @@ class new_round():
 round1 = new_round(5)
 print(round1.Pick_card())
 print(round1.Deck())
-# find a way to return the popped value at l23
-# find a way to have a deck that doesn't reset every time function is called
-# find a way to call one instance and refer back to that instance without resetting
+# find a way to ensure you know where the value of the suit is in case of a card being picked
+# eg if two cards are picked how would you know which index 5 is
