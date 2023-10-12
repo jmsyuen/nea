@@ -1,7 +1,7 @@
 import random
 
-# ranked
-# testsave
+# cards ranked from Ace 2 3 ... 10 Jack Queen King
+# use special behaviour of number 1 to define the high value of it / use ace as the highest value in the list
 # randint is inclusive of both limits
 # range is inclusive of first value only eg. 1,14 is 1-13
 
