@@ -19,6 +19,8 @@ dictionary["d"].pop(1)
 print(dictionary["d"])
 print(dictionary)
 
+list = [None,None,None]
+print(len(list))
 #for k in dictionary:
 #  dictionary[k] = set(dictionary[k])
 
@@ -28,4 +30,4 @@ print(dictionary)
 #print(dictionary.values())
 #print(dictionary.items())
 
-deck = [[]]
+

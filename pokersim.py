@@ -13,19 +13,49 @@ class new_round():
     for suit in self.suit:
       self.deck[suit] = [value for value in range(1,14)]
       # 1 - 13
+    self._pickHistory = []
     
   def Pick_card(self):
     randsuit = self.suit[random.randint(0,3)]
-    randvalue = random.randint(1,len(self.deck[randsuit]))
-    # remaining cards in suit
+    randvalue = random.choice(self.deck[randsuit])
+    #find random value out of remaining cards
+    self._pickHistory.append(randsuit + str(randvalue))
+    # when returning, use string :-1 to get card value
+    #t
     print(randsuit, randvalue)
-    return self.deck[randsuit].pop(randvalue - 1)
+    print(self.deck)
+    print(self.deck[randsuit].index(randvalue))
+    #/t
+    return self.deck[randsuit].pop(self.deck[randsuit].index(randvalue)) ### sort this out, used to be -1
+    #self.deck.index(randvalue) to fetch actual index of the randvalue
     
   def Deck(self):
     return self.deck
 
+  def PickHistory(self):
+    #test function
+    return self._pickHistory
+
+
+  #move methods into subclass
+  def DrawPublic(self):
+    for i in range(5):
+      global Public
+      Public = []
+      Public.append(self.Pick_card())
+    return Public
+
+
+
+
 round1 = new_round(5)
-print(round1.Pick_card())
+
+
+print(round1.DrawPublic())
 print(round1.Deck())
+print(round1.PickHistory())
+
+# fix card popping with ascending values of the same suit messing with returned value
+# have a list of values containing actual length of list
 # find a way to ensure you know where the value of the suit is in case of a card being picked
 # eg if two cards are picked how would you know which index 5 is
