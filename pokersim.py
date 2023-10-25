@@ -27,7 +27,7 @@ class new_round():
     return self.deck
 
   def PickHistory(self):
-    #test function
+    #test function to be used later
     #when returning, use string :-1 to get card value
     print(self._pickHistory)
     lastcard = self._pickHistory[-1]
