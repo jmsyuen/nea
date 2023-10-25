@@ -18,15 +18,9 @@ class new_round():
   def Pick_card(self):
     randsuit = self.suit[random.randint(0,3)]
     randvalue = random.choice(self.deck[randsuit])
-    #find random value out of remaining cards
+    #finds random value out of remaining cards
     self._pickHistory.append(randsuit + str(randvalue))
-    # when returning, use string :-1 to get card value
-    #t
-    print(randsuit, randvalue)
-    print(self.deck)
-    print(self.deck[randsuit].index(randvalue))
-    #/t
-    return self.deck[randsuit].pop(self.deck[randsuit].index(randvalue)) ### sort this out, used to be -1
+    return self.deck[randsuit].pop(self.deck[randsuit].index(randvalue)) #used to be -1
     #self.deck.index(randvalue) to fetch actual index of the randvalue
     
   def Deck(self):
@@ -34,7 +28,10 @@ class new_round():
 
   def PickHistory(self):
     #test function
-    return self._pickHistory
+    #when returning, use string :-1 to get card value
+    print(self._pickHistory)
+    lastcard = self._pickHistory[-1]
+    #for nice format, have to split into card and number
 
 
   #move methods into subclass
