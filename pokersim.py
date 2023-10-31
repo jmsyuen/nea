@@ -4,43 +4,53 @@ import random
 # use special behaviour of number 1 to define the high value of it / use ace as the highest value in the list
 # randint is inclusive of both limits
 # range is inclusive of first value only eg. 1,14 is 1-13
+# one tag is useful comments
+## two tags for code clips
+### three tags for issues
+
 
 class new_round():
   def __init__(self, players):
-    self._players = players
     self.suit = ("hearts","diamonds","spades","clubs")
-    self.deck = dict()
+    self._deck = dict()
     for suit in self.suit:
-      self.deck[suit] = [value for value in range(1,14)]
+      self._deck[suit] = [value for value in range(1,14)]
       # 1 - 13
     self._pickHistory = []
+    self.players = players
+    self.totalcards = 5 + (players * 2)
     
-  def Pick_card(self):
+  def Pick_card(self): #returns the suit and value of the card
+    
     randsuit = self.suit[random.randint(0,3)]
-    randvalue = random.choice(self.deck[randsuit])
+    randvalue = random.choice(self._deck[randsuit])
     #finds random value out of remaining cards
     self._pickHistory.append(randsuit + str(randvalue))
-    return self.deck[randsuit].pop(self.deck[randsuit].index(randvalue)) #used to be -1
-    #self.deck.index(randvalue) to fetch actual index of the randvalue
+    self._deck[randsuit].pop(self._deck[randsuit].index(randvalue)) ##used to be -1
+    #removes card from deck
+    return randsuit, randvalue 
+    ##self._deck.index(randvalue) to fetch actual index of the randvalue
     
-  def Deck(self):
-    return self.deck
+  def Deck(self): #returns dictionary
+    return self._deck
 
-  def PickHistory(self):
+  def PickHistory(self): # returns in list
     #test function to be used later
     #when returning, use string :-1 to get card value
-    print(self._pickHistory)
     lastcard = self._pickHistory[-1]
+    return self._pickHistory
     #for nice format, have to split into card and number
 
 
-  #move methods into subclass
-  def DrawPublic(self):
-    for i in range(5):
-      global Public
-      Public = []
-      Public.append(self.Pick_card())
-    return Public
+  #action methods to be moved into subclass later
+  def DrawCards(self):
+    for i in range(self.totalcards):
+      
+      
+      #deal hands here, then assign hands according to blind rotation
+      
+      self.Pick_card()
+    return
 
 
 
@@ -48,9 +58,9 @@ class new_round():
 round1 = new_round(5)
 
 
-print(round1.DrawPublic())
+print(round1.DrawCards())
 print(round1.Deck())
-print(round1.PickHistory())
+round1.PickHistory()
 
 # fix card popping with ascending values of the same suit messing with returned value
 # have a list of values containing actual length of list
