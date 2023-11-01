@@ -25,7 +25,7 @@ class new_round():
     randsuit = self.suit[random.randint(0,3)]
     randvalue = random.choice(self._deck[randsuit])
     #finds random value out of remaining cards
-    self._pickHistory.append(randsuit + str(randvalue))
+    self._pickHistory.append(randsuit + ";" + str(randvalue)) 
     self._deck[randsuit].pop(self._deck[randsuit].index(randvalue)) ##used to be -1
     #removes card from deck
     return randsuit, randvalue 
@@ -36,7 +36,7 @@ class new_round():
 
   def PickHistory(self): # returns in list
     #test function to be used later
-    #when returning, use string :-1 to get card value
+    #when returning, use split(";") to separate
     lastcard = self._pickHistory[-1]
     return self._pickHistory
     #for nice format, have to split into card and number
@@ -44,14 +44,19 @@ class new_round():
 
   #action methods to be moved into subclass later
   def DrawCards(self):
-    for i in range(self.totalcards):
-      
-      
+    for i in range(2):
+      for j in range(self.players):
+      #dict with hands, adding new key for every player
+      # from 1- no.players and loop again to no.players*2
+      # add public cards at end dictionary[-5]
       #deal hands here, then assign hands according to blind rotation
       
       self.Pick_card()
     return
 
+  def FindHand(self): #returns hand with 2 cards
+    
+    return
 
 
 
