@@ -23,8 +23,13 @@ list = [None,None,None]
 print(len(list))
 #for k in dictionary:
 #  dictionary[k] = set(dictionary[k])
-
-
+players = 3
+list = {}
+j = 0
+for i in range(0, players*2, players):
+  j += 1
+  list[i] = j
+print(list)
 # for a in d.values()
 # a.remove(4)       except value error
 #print(dictionary.values())

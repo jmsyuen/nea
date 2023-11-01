@@ -13,6 +13,7 @@ class new_round():
   def __init__(self, players):
     self.suit = ("hearts","diamonds","spades","clubs")
     self._deck = dict()
+    self._hands = dict()
     for suit in self.suit:
       self._deck[suit] = [value for value in range(1,14)]
       # 1 - 13
@@ -25,10 +26,11 @@ class new_round():
     randsuit = self.suit[random.randint(0,3)]
     randvalue = random.choice(self._deck[randsuit])
     #finds random value out of remaining cards
-    self._pickHistory.append(randsuit + ";" + str(randvalue)) 
+    card = randsuit + ";" + str(randvalue)
+    self._pickHistory.append(card) 
     self._deck[randsuit].pop(self._deck[randsuit].index(randvalue)) ##used to be -1
     #removes card from deck
-    return randsuit, randvalue 
+    return card
     ##self._deck.index(randvalue) to fetch actual index of the randvalue
     
   def Deck(self): #returns dictionary
@@ -44,8 +46,10 @@ class new_round():
 
   #action methods to be moved into subclass later
   def DrawCards(self):
-    for i in range(2):
-      for j in range(self.players):
+    self._hands["public"] = self.Pick_card()
+    for i in range(0, self.players * 2, self.players):
+    
+      
       #dict with hands, adding new key for every player
       # from 1- no.players and loop again to no.players*2
       # add public cards at end dictionary[-5]
