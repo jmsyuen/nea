@@ -41,7 +41,6 @@ class new_round():
         return card
       cards.append(card)
     return cards
-    ##self._deck.index(randvalue) to fetch actual index of the randvalue
     
   def Deck(self): #returns dictionary
     return self._deck
@@ -51,39 +50,23 @@ class new_round():
     #when returning, use split(";") to separate
     lastcard = self._pickHistory[-1]
     return self._pickHistory
-    #for nice format, have to split into card and number
-
 
   #action methods to be moved into subclass later
-  def DrawCards(self):
+  def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
     self._hands["public"] = self.Pick_card(5)
     for i in range(1, self.players + 1): #adjusted
-      #dealt same way as in real life without burning cards
       self._hands[i] = self.Pick_card(2)
-      
-      #dict with hands, adding new key for every player
-      # from 1- no.players and loop again to no.players*2
-      # add public cards at end dictionary[-5]
-      #deal hands here, then assign hands according to blind rotation
-      
-    
-    print(self._hands)
 
-  def FindHand(self, player): #returns hand with 2 cards
-    
+
+  def GetHand(self, player): #returns hand with 2 cards
     return self._hands[player]
 
 
 
 round1 = new_round(5)
 
-
-print(round1.DrawCards())
+round1.DrawCards()
 print(round1.Deck())
-round1.PickHistory()
-print(round1.FindHand(2))
+print(round1.PickHistory())
+print(round1.GetHand("public"))
 
-# fix card popping with ascending values of the same suit messing with returned value
-# have a list of values containing actual length of list
-# find a way to ensure you know where the value of the suit is in case of a card being picked
-# eg if two cards are picked how would you know which index 5 is
