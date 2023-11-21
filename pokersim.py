@@ -11,7 +11,7 @@ import random
 
 
 class new_round():
-  def __init__(self, players):
+  def __init__(self, *args): # players, buyIn
     self.suit = ("hearts","diamonds","spades","clubs")
     self._deck = dict()
     self._hands = dict()
@@ -19,8 +19,12 @@ class new_round():
       self._deck[suit] = [value for value in range(1,14)]
       # 1 - 13
     self._pickHistory = []
-    self.players = players
-    self.totalcards = 5 + (players * 2)
+    self.players = args[0]
+    self.totalcards = 5 + (args[0] * 2)
+    if len(args) == 1:  # default setup
+      self.buyIn = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
+    else:               # custom setup
+      self.buyIn = args[1]
     
   def Pick_card(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
@@ -58,15 +62,21 @@ class new_round():
       self._hands[i] = self.Pick_card(2)
 
 
-  def GetHand(self, player): #returns hand with 2 cards
+  def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self._hands[player]
 
+  def GetPublic(self): # returns public cards
+    return self._hands["public"]
 
+
+
+class templatePlayer(): # inherit from here
+  
 
 round1 = new_round(5)
 
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
-print(round1.GetHand("public"))
+print(round1.GetHand(1))
 
