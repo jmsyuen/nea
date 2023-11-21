@@ -70,7 +70,7 @@ class new_round():
 
 
 
-class templatePlayer(): # inherit from here
+class templatePlayer(self, playernumber): # inherit from here # might need to make a database
   
 
 round1 = new_round(5)
