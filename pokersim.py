@@ -62,21 +62,25 @@ class new_round():
       self._hands[i] = self.Pick_card(2)
 
 
+
+
+#def __init__(self):
+  #  new_round.__init__():
+
+
+
+class templatePlayer(new_round): # inherit new_round init # might need to make a database
+
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self._hands[player]
 
   def GetPublic(self): # returns public cards
-    return self._hands["public"]
-
-
-
-class templatePlayer(self, playernumber): # inherit from here # might need to make a database
+    return self._hands["public"]  
   
-
 round1 = new_round(5)
 
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
-print(round1.GetHand(1))
+print(templatePlayer.GetHand(1))
 
