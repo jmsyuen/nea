@@ -1,4 +1,8 @@
 import random
+import os
+import sqlite3
+from sqlite3 import Error
+
 
 # one tag is useful comments
 ## two tags for code clips
@@ -24,6 +28,7 @@ class new_round():
     self.totalcards = 5 + (args[0] * 2)
     if len(args) == 1:  # default setup variables
       self.buyIn = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
+
     else:               # custom setup variables
       self.buyIn = args[1]
     
@@ -79,20 +84,70 @@ class new_round():
       print("stage invalid")
       raise Exception
 
+# database connection
+
+class database():
+  def __init__(self, *args):
+    if len(args) == 0:
+      self.filename = "data.db"
+      self.needsSetup = True
+    else:
+      self.filename = args[0] + ".db"
+      self.needsSetup = False
+  
 
 
-#def __init__(self):
-  #  new_round.__init__():
+    
+
+  def con_up(self): # takes filename, performs first-time setup if necessary
+    con = sqlite3.connect(self.filename)
+    
+    # can take datetime as filename, but long and may be inconsistent
+    ##from datetime import datetime, date, time
+    ##filename = "" 
+    ##
+    ##for value in datetime.now():
+    ##  filename += value
+    if self.needsSetup:
+      cursor = con.cursor()
+      cursor.execute("CREATE TABLE main (tables TEXT, players TEXT)") # set types and relational database structure
+
+    else: #parse load functions
+      pass
+
+    
+
+  #try:
+  #  sqlite3.function
+  #except Error as error:
+  #  print(f"The error '{error}' occurred")
+
+  def con_close(self):
+    if os.path.exists(self.filename):
+      os.remove(self.filename)
+    else:
+      print("The file does not exist")
+  
+  # add database modify functions
+  
 
 
 
 # make a system for money: pot, blind_value, each player's _chips_, 3 actions fold raise call
 
 
+#def __init__(self):
+  #  new_round.__init__():
+
+
 class templatePlayer(new_round): # inherit new_round init # might need to make a database sqlite3
   pass
   
-  
+db = database()
+db.con_up()
+db.con_close()
+
+
 round1 = new_round(5)
 
 round1.DrawCards()

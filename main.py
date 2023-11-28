@@ -12,7 +12,7 @@ def initiate_connection(path):
   except Error as error:
     print(f"The error '{error}' occurred")
 
-    return con
+  return con
 '''
 
 
