@@ -1,3 +1,5 @@
+import pokersim
+
 # nea
 def NewGame(players, buyIn, startingblinds):
   valid = False
@@ -9,3 +11,5 @@ def NewGame(players, buyIn, startingblinds):
       valid = True
     except:
       pass 
+
+print(pokersim.round1.Deck())

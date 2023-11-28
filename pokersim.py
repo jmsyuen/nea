@@ -61,6 +61,13 @@ class new_round():
     for i in range(1, self.players + 1): #adjusted
       self._hands[i] = self.Pick_card(2)
 
+  
+  def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
+    return self._hands[player]
+
+  def GetPublic(self): # returns public cards
+    return self._hands["public"]  
+
 
 
 
@@ -70,17 +77,13 @@ class new_round():
 
 
 class templatePlayer(new_round): # inherit new_round init # might need to make a database
-
-  def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
-    return self._hands[player]
-
-  def GetPublic(self): # returns public cards
-    return self._hands["public"]  
+  pass
+  
   
 round1 = new_round(5)
 
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
-print(templatePlayer.GetHand(1))
+print(round1.GetHand(1))
 
