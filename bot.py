@@ -2,4 +2,5 @@ import random
 
 
 class bot():
-  def __init__(self, risk,)
+  def __init__(self, risk,):
+    pass

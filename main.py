@@ -1,5 +1,23 @@
 import pokersim
 
+''' maybe move into pokersim.py, and create new sqlite file
+import sqlite3
+from sqlite3 import Error
+
+def initiate_connection(path):
+  con = None
+  try:
+    con = sqlite3.connect(path)
+    print("connected")
+  except Error as error:
+    print(f"The error '{error}' occurred")
+
+    return con
+'''
+
+
+
+
 # nea
 def NewGame(players, buyIn, startingblinds):
   valid = False

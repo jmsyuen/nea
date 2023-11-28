@@ -3,6 +3,7 @@ import random
 # one tag is useful comments
 ## two tags for code clips
 ### three tags for issues
+# 3 tags at the end for testing, remove later ###
 # cards ranked from Ace 2 3 ... 10 Jack Queen King
 # use special behaviour of number 1 to define the high value of it / use ace as the highest value in the list
 # randint is inclusive of both limits
@@ -21,9 +22,9 @@ class new_round():
     self._pickHistory = []
     self.players = args[0]
     self.totalcards = 5 + (args[0] * 2)
-    if len(args) == 1:  # default setup
+    if len(args) == 1:  # default setup variables
       self.buyIn = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
-    else:               # custom setup
+    else:               # custom setup variables
       self.buyIn = args[1]
     
   def Pick_card(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
@@ -65,9 +66,18 @@ class new_round():
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self._hands[player]
 
-  def GetPublic(self): # returns public cards
-    return self._hands["public"]  
+  def GetPublicStage(self, stage): # returns public cards, takes stage 1-3 but stage 1 returns list
+    public = self._hands["public"]  
 
+    if stage == 1:
+      return public[:3] 
+    elif stage == 2:
+      return public[3]
+    elif stage == 3:
+      return public[4]
+    else:                   #error checking, remove later ###
+      print("stage invalid")
+      raise Exception
 
 
 
@@ -76,7 +86,10 @@ class new_round():
 
 
 
-class templatePlayer(new_round): # inherit new_round init # might need to make a database
+# make a system for money: pot, blind_value, each player's _chips_, 3 actions fold raise call
+
+
+class templatePlayer(new_round): # inherit new_round init # might need to make a database sqlite3
   pass
   
   
@@ -86,4 +99,4 @@ round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
 print(round1.GetHand(1))
-
+print(round1.GetPublicStage(1))
