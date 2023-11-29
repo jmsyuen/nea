@@ -129,11 +129,9 @@ class database():
       print("The file does not exist")
   
   # add database modify functions
-  # 
+  # SELECT chips FROM table WHERE player1h
 
-
-
-# make a system for money: pot, blind_value, each player's _chips_, 3 actions fold raise call
+# make a system for money: pot, blind_value, isBig isSmall, each player's _chips_, 3 playerAction fold raise call
 
 
 #def __init__(self):
