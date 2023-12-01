@@ -2,7 +2,16 @@
 
 # td
 make design diagram outlining databases
-
+implement database and calling functions
+implement money system
+implement round systems
+implement bot strategies
+including risk, difficulty etc
+calculation of who wins and splitting pot in draw
+implement predictive calculations of next cards, and chances of success multiplied by the payout and already invested amount and remaining chips and risk level and difficulty
+difficulty is Hope smart they actually are
+risk is the probability of overriding that value for a high pot
+implement pygame interface with buttons
 
 # other
 many maths functions like binomial will be used
