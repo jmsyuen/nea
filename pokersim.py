@@ -17,7 +17,7 @@ from sqlite3 import Error
 
 class new_round():
   def __init__(self, *args): # players, starting_chips
-    self.suit = ("hearts","diamonds","spades","clubs")
+    self.suits = ("hearts", "diamonds", "spades", "clubs")
     self.players = args[0]
     if len(args) == 1:  # default setup variables
       self.starting_chips = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
@@ -28,13 +28,13 @@ class new_round():
   def ResetDeck(self):
     self._deck = dict()
     self._hands = dict()
-    for suit in self.suit:
+    for suit in self.suits:
       self._deck[suit] = [value for value in range(1,14)]
       # 1 - 13
     self._pickHistory = []
     self.totalcards = 5 + (self.players * 2)
 
-  def PickCard(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
+  def PickCard(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
       repeats = 1
     else:
@@ -42,7 +42,7 @@ class new_round():
     
     cards = []
     for i in range(repeats):
-      randsuit = self.suit[random.randint(0,3)]
+      randsuit = self.suits[random.randint(0,3)]
       randvalue = random.choice(self._deck[randsuit])   #finds random value out of remaining cards
       card = randsuit + "." + str(randvalue)
       self._pickHistory.append(card) 
@@ -95,8 +95,10 @@ class new_round():
 #database table bot_settings risk, difficulty, strategy
 
 #class 
-
-
+  #def FinalStageWinner(combinations):
+  
+def FindCombination(): #cards, public
+  pass
 # database connection
 
 class database():
@@ -172,3 +174,5 @@ print(round1.Deck())
 print(round1.PickHistory())
 print(round1.GetHand(1))
 print(round1.GetPublicStage(1))
+
+#FindCombination()
