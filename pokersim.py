@@ -32,7 +32,7 @@ class new_round():
     else:               # custom setup variables
       self.buyIn = args[1]
     
-    
+
   def Pick_card(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
       repeats = 1
@@ -93,6 +93,8 @@ class new_round():
 #winner, list for remaining players that decreases down to winner(s) to split with
 # chips_left, isDealer, cards, hasFolded, isAllIn, combination_rank, combination_high, high_card(if applicable) 
 #database table bot_settings risk, difficulty, strategy
+
+#class 
 
 
 # database connection
