@@ -16,24 +16,25 @@ from sqlite3 import Error
 
 
 class new_round():
-  def __init__(self, *args): # players, buyIn
+  def __init__(self, *args): # players, starting_chips
     self.suit = ("hearts","diamonds","spades","clubs")
+    self.players = args[0]
+    if len(args) == 1:  # default setup variables
+      self.starting_chips = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
+
+    else:               # custom setup variables
+      self.starting_chips = args[1]
+    
+  def ResetDeck(self):
     self._deck = dict()
     self._hands = dict()
     for suit in self.suit:
       self._deck[suit] = [value for value in range(1,14)]
       # 1 - 13
     self._pickHistory = []
-    self.players = args[0]
-    self.totalcards = 5 + (args[0] * 2)
-    if len(args) == 1:  # default setup variables
-      self.buyIn = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
+    self.totalcards = 5 + (self.players * 2)
 
-    else:               # custom setup variables
-      self.buyIn = args[1]
-    
-
-  def Pick_card(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
+  def PickCard(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
       repeats = 1
     else:
@@ -42,9 +43,8 @@ class new_round():
     cards = []
     for i in range(repeats):
       randsuit = self.suit[random.randint(0,3)]
-      randvalue = random.choice(self._deck[randsuit])
-      #finds random value out of remaining cards
-      card = randsuit + ";" + str(randvalue)
+      randvalue = random.choice(self._deck[randsuit])   #finds random value out of remaining cards
+      card = randsuit + "." + str(randvalue)
       self._pickHistory.append(card) 
       self._deck[randsuit].pop(self._deck[randsuit].index(randvalue)) ##used to be -1
       #removes card from deck
@@ -60,15 +60,15 @@ class new_round():
 
   def PickHistory(self): # returns in list
     #test function to be used later
-    #when returning, use split(";") to separate
+    #when returning, use split(".") to separate
     lastcard = self._pickHistory[-1]
     return self._pickHistory
 
   #action methods to be moved into subclass later
   def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
-    self._hands["public"] = self.Pick_card(5)
+    self._hands["public"] = self.PickCard(5)
     for i in range(1, self.players + 1): #adjusted
-      self._hands[i] = self.Pick_card(2)
+      self._hands[i] = self.PickCard(2)
 
   
 
@@ -111,7 +111,7 @@ class database():
     if os.path.exists(self.filename):
       self.needsSetup = False
 
-      if input("Save file found! Restore it? y/n") == "n": ###replace pygame
+      if input("Save file found! Restore it? y/n: ") == "n": ###replace pygame
         os.remove(self.filename) # deletes file for new creation
         self.needsSetup = True
     else:
@@ -164,8 +164,9 @@ db.con_up()
 
 
 
-round1 = new_round(5)
+round1 = new_round(3)
 
+round1.ResetDeck()
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
