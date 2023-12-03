@@ -35,9 +35,13 @@ print(list)
 #print(dictionary.values())
 #print(dictionary.items())
 
+a = [1,2,3,4]
+p = 2
+print(a[:-1])
+
 
 def FindCombination():
-  public = ['diamonds.2', 'spades.1', 'clubs.1', 'hearts.1', 'spades.11']
+  public = ['diamonds.1', 'spades.3', 'clubs.4', 'hearts.2', 'spades.2']
   hand = ['diamonds.11', 'clubs.11']
   combined = public + hand
   suits, values = [], []
@@ -62,25 +66,23 @@ def FindCombination():
     return False
 
 
-  def same_values(num):
+  def same_values(count):
     for value in values:
-      if values.count(value) == num:
-          return True
+      if values.count(value) == count:
+        return True
     return False
 
-  '''def same_values(num):
-    if num < 4:
-      combination_highs = []
-      #return sorted(combination_highs)[-2:]
+  def same_num(count): # 2 3 of a kinds is automatically a full house
+    combination_highs = []
     for value in values:
-      if values.count(value) == num:
+      if values.count(value) == count: # IS PRECISE
+        combination_highs.append(value)
         
-        if num < 4:
-          combination_highs.append(value)
-        else:
-          return True
-    return False
-'''
+    if len(combination_highs) != 0:
+      return sorted(set(combination_highs), key=int)
+    else:
+      return False
+
 
   def straight():
     count = 0
@@ -94,12 +96,21 @@ def FindCombination():
     return False 
   
 
-#  def full_house():
-
+  def full_house():
+    try:
+      # should be sorted already low-high
+      if len(same_num(3)) == 2:
+        print("fh")
+      elif len(same_num(3)) == 1 and len(same_num(2)) > 0:
+        return True
+      else:
+        return False
+    except:
+      return False
   
   # CH straight flush C royal flush
   if flush() and straight():
-    print("straight flush")
+    print("straight flush") # add royal flush and return combination high
 
   # CH H 4 of a kind
   elif same_values(4):
@@ -107,12 +118,11 @@ def FindCombination():
 
 
   # CH CH full house
-  #elif full_house():
-  #  print("full house")
+  elif full_house():
+    print("full house")
 
   # CH flush
 
-  print(same_values(3))
   # CH straight
 
 
