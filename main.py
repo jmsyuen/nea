@@ -15,7 +15,9 @@ def initiate_connection(path):
   return con
 '''
 
-
+#save file if found on first startup message
+# print("Save file found! Restore it?")
+# else reset 
 
 
 # nea

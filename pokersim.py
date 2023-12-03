@@ -89,9 +89,9 @@ class new_round():
 class database():
   def __init__(self, *args):
     if len(args) == 0:
-      self.filename = "data.db"
+      self.filename = "save.db"
       self.needsSetup = True
-    else:
+    else: # might be redundant
       self.filename = args[0] + ".db"
       self.needsSetup = False
   
@@ -100,14 +100,26 @@ class database():
     
 
   def con_up(self): # takes filename, performs first-time setup if necessary
-    con = sqlite3.connect(self.filename)
+
+    if os.path.exists("save.db"):
+      if input("Save file found! Restore it? y/n") == "n": ###replace pygame
+        os.remove(self.filename)
+    else:
+      print("Creating new save file")
+  
+    con = sqlite3.connect(self.filename) # creates file if not found
+
     
+
+
+
+
     # can take datetime as filename, but long and may be inconsistent
     ##from datetime import datetime, date, time
     ##filename = "" 
     ##
     ##for value in datetime.now():
-    ##  filename += value
+    ##  filename += value 
     if self.needsSetup:
       cursor = con.cursor()
       cursor.execute("CREATE TABLE main (tables TEXT, players TEXT)") # set types and relational database structure
@@ -122,14 +134,10 @@ class database():
   #except Error as error:
   #  print(f"The error '{error}' occurred")
 
-  def con_close(self):
-    if os.path.exists(self.filename):
-      os.remove(self.filename)
-    else:
-      print("The file does not exist")
+
   
   # add database modify functions
-  # SELECT chips FROM table WHERE player1h
+  # SELECT chips FROM table WHERE player
 
 # make a system for money: pot, blind_value, isBig isSmall, each player's _chips_, 3 playerAction fold raise call
 
@@ -143,7 +151,7 @@ class templatePlayer(new_round): # inherit new_round init # might need to make a
   
 db = database()
 db.con_up()
-db.con_close()
+
 
 
 round1 = new_round(5)
