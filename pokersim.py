@@ -32,6 +32,7 @@ class new_round():
     else:               # custom setup variables
       self.buyIn = args[1]
     
+    
   def Pick_card(self, *quantity): #returns the suit;value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
       repeats = 1
@@ -52,8 +53,10 @@ class new_round():
       cards.append(card)
     return cards
     
+
   def Deck(self): #returns dictionary
     return self._deck
+
 
   def PickHistory(self): # returns in list
     #test function to be used later
@@ -68,8 +71,10 @@ class new_round():
       self._hands[i] = self.Pick_card(2)
 
   
+
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self._hands[player]
+
 
   def GetPublicStage(self, stage): # returns public cards, takes stage 1-3 but stage 1 returns list
     public = self._hands["public"]  
@@ -84,35 +89,34 @@ class new_round():
       print("stage invalid")
       raise Exception
 
+# make a system for money: pot, big_blind_value, isDealer, each player's _chips_, 3 playerAction fold raise call
+#winner, list for remaining players that decreases down to winner(s) to split with
+# chips_left, isDealer, cards, hasFolded, isAllIn, combination_rank, combination_high, high_card(if applicable) 
+#database table bot_settings risk, difficulty, strategy
+
+
 # database connection
 
 class database():
   def __init__(self, *args):
     if len(args) == 0:
       self.filename = "save.db"
-      self.needsSetup = True
     else: # might be redundant
       self.filename = args[0] + ".db"
-      self.needsSetup = False
   
-
-
-    
 
   def con_up(self): # takes filename, performs first-time setup if necessary
+    if os.path.exists(self.filename):
+      self.needsSetup = False
 
-    if os.path.exists("save.db"):
       if input("Save file found! Restore it? y/n") == "n": ###replace pygame
-        os.remove(self.filename)
+        os.remove(self.filename) # deletes file for new creation
+        self.needsSetup = True
     else:
       print("Creating new save file")
+      self.needsSetup = True
   
     con = sqlite3.connect(self.filename) # creates file if not found
-
-    
-
-
-
 
     # can take datetime as filename, but long and may be inconsistent
     ##from datetime import datetime, date, time
@@ -120,26 +124,30 @@ class database():
     ##
     ##for value in datetime.now():
     ##  filename += value 
-    if self.needsSetup:
+    if self.needsSetup: # sqlite has no bool data type, only integer 0,1 but recognises True and False
       cursor = con.cursor()
-      cursor.execute("CREATE TABLE main (tables TEXT, players TEXT)") # set types and relational database structure
+      cursor.execute('''
+    CREATE TABLE Tbl_round (
+      player_id TEXT PRIMARY KEY,
+      chips_left INTEGER NOT NULL,
+      dealer INTEGER NOT NULL, --bool
+      cards TEXT 
+    )
+''') # set types and relational database structure
+    
 
     else: #parse load functions
       pass
+    con.commit()
+    con.close()
 
-    
-
-  #try:
-  #  sqlite3.function
-  #except Error as error:
-  #  print(f"The error '{error}' occurred")
-
-
-  
   # add database modify functions
+  #def RaiseBet(self, player_id, bet_amount):
+  #def 
+
   # SELECT chips FROM table WHERE player
 
-# make a system for money: pot, blind_value, isBig isSmall, each player's _chips_, 3 playerAction fold raise call
+
 
 
 #def __init__(self):

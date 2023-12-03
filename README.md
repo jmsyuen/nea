@@ -2,7 +2,7 @@
 
 # td
 make design diagram outlining databases
-implement database and calling functions
+implement database # and calling functions
 implement money system
 implement round systems
 implement bot strategies
