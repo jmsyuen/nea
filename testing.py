@@ -72,7 +72,7 @@ def FindCombination():
         return True
     return False
 
-  def same_num(count): # 2 3 of a kinds is automatically a full house
+  def same_num(count): 
     combination_highs = []
     for value in values:
       if values.count(value) == count: # IS PRECISE
@@ -99,10 +99,15 @@ def FindCombination():
   def full_house():
     try:
       # should be sorted already low-high
-      if len(same_num(3)) == 2:
+      same3num = same_num(3)
+      same2num = same_num(2)
+
+      if len(same3num) == 2:  # 2 3 of a kinds is automatically a full house
         print("fh")
-      elif len(same_num(3)) == 1 and len(same_num(2)) > 0:
-        return True
+        return same3num[-1], same3num[0]
+      
+      elif len(same3num) == 1 and len(same2num) > 0:
+        return same3num, same2num[-1]
       else:
         return False
     except:
@@ -118,26 +123,35 @@ def FindCombination():
 
 
   # CH CH full house
-  elif full_house():
-    print("full house")
+  CH = full_house()
+  elif CH != False:
+    print(CH)
 
   # CH flush
-
+  elif flush():
+    print("floosh")
   # CH straight
-
+  elif straight():
+    print("straight")
 
   # CH H 3 of a kind
-
+  elif same_num(3):
+    print("3ofkind")
 
   # CH H 2 pair
-
-
+  CH = same_num(2)
+  elif len(CH) >= 2:
+    print(f"{CH[-2:]} two pair")
   # CH H pair
-
+  elif len(CH) == 1:
+    print(f"{CH} pair high")
 
   # H high card
+  elif len(CH) == 0:
+    print(f"{values[-1]}High card")
 
-
+  else:
+    print("random errorr")
 
 
 FindCombination()
