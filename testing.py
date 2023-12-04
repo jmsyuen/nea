@@ -40,9 +40,9 @@ p = 2
 print(a[:-1])
 
 
-def FindCombination():
-  public = ['diamonds.1', 'spades.3', 'clubs.4', 'hearts.2', 'spades.2']
-  hand = ['diamonds.11', 'clubs.11']
+def FindCombination(): # return list [rank, ch, ch, h] if applicable
+  public = ['spades.1', 'spades.13', 'spades.12', 'spades.11', 'spades.10']
+  hand = ['diamonds.4', 'clubs.4']
   combined = public + hand
   suits, values = [], []
   allsuits = ("hearts", "diamonds", "spades", "clubs")
@@ -57,19 +57,18 @@ def FindCombination():
     values.append(split[-1]) 
     print(suits, values)
   values = sorted(values, key=int)
+  high_cards = values.reverse()
 
   def flush():
     for suit in allsuits:
       if suits.count(suit) >= 5:
         #print(f"{suit} floosh") # suit type doesn't matter
-        return True
-    return False
-
-
-  def same_values(count):
-    for value in values:
-      if values.count(value) == count:
-        return True
+        flush_values = []
+        for card in combined:
+          if suit[0] == card[0]: # match first letter
+            flush_values.append(card.split(".")[-1]) # append value of card
+        return [sorted(flush_values, key=int)[-1]]
+        
     return False
 
   def same_num(count): 
@@ -86,11 +85,12 @@ def FindCombination():
 
   def straight():
     count = 0
-    for i in range(len(values) - 1):
-      if int(values[i]) + 1 == int(values[i + 1]):
+    unique_values = sorted(set(values), key=int)
+    for i in range(len(unique_values) - 1): 
+      if int(unique_values[i]) + 1 == int(unique_values[i + 1]): # account for loopback K-A 13-1
         count += 1
         if count >= 4:
-          return values[i + 1]
+          return [unique_values[i + 1]]
       else:
         count = 0
     return False 
@@ -99,38 +99,54 @@ def FindCombination():
   def full_house():
     try:
       # should be sorted already low-high
-      same3num = same_num(3)
-      same2num = same_num(2)
+      same_num3 = same_num(3)
+      same_num2 = same_num(2)
 
-      if len(same3num) == 2:  # 2 3 of a kinds is automatically a full house
-        print("fh")
-        return same3num[-1], same3num[0]
+      if len(same_num3) == 2:  # 2 3 of a kinds is automatically a full house
+        return same_num3.reverse()
       
-      elif len(same3num) == 1 and len(same2num) > 0:
-        return same3num, same2num[-1]
+      elif len(same_num3) == 1 and len(same_num2) > 0:
+        return same_num3 + [same_num2[-1]]
       else:
         return False
     except:
       return False
   
+
+  def high_card(quantity, CH): # takes how many high cards, existing CH in list form
+    remaining = []
+    for card in combined:
+      if card.split(".")[-1] not in CH:
+        remaining.append(card.split(".")[-1])
+    return sorted(set(remaining), key=int)[-quantity:]
+
+
+  #ensure every returned value is a list
   # CH straight flush C royal flush
-  CH = flush()  
-  if CH != False and straight():
-    print("straight flush") # add royal flush and return combination high
-    print(CH)
+  CH = straight()
+  flush_temp = flush()  
+  if CH != False and flush_temp != False:
+    if CH == 13: # royal flush
+      return [10]
+    return [9] + CH   # add royal flush and return combination high
+
   # CH H 4 of a kind
-  if same_values(4):
-    print("4 of kind")
+  CH = same_num(4)
+  H = high_card(1, CH)
+  if CH != False:
+    return [8] + CH + H
 
 
   # CH CH full house
   CH = full_house() # elif outside of statement
   if CH != False:
-    print(CH)
+    return [7] + CH
 
   # CH flush
-  if flush():
-    print("floosh")
+  CH = flush()
+  if CH != False:
+    return [6] + CH
+  
   # CH straight
   if straight():
     print("straight")
@@ -139,7 +155,7 @@ def FindCombination():
   if same_num(3):
     print("3ofkind")
 
-  # CH H 2 pair
+  # CH CH H 2 pair
   CH = same_num(2)
   if len(CH) >= 2:
     print(f"{CH[-2:]} two pair") # reverse this list
@@ -149,12 +165,12 @@ def FindCombination():
 
   # H high card
   if len(CH) == 0:
-    print(f"{values[-1]}High card")
+    print(f"{high_cards[0]}High card")
 
   else:
     print("random error")
 
 
-FindCombination()
+print([int(x) for x in FindCombination()]) # force int
 
 
