@@ -151,7 +151,7 @@ def FindCombination():
     print(f"{values[-1]}High card")
 
   else:
-    print("random errorr")
+    print("random error")
 
 
 FindCombination()
