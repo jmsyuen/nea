@@ -90,7 +90,7 @@ def FindCombination():
       if int(values[i]) + 1 == int(values[i + 1]):
         count += 1
         if count >= 4:
-          return True
+          return values[i + 1]
       else:
         count = 0
     return False 
@@ -114,40 +114,41 @@ def FindCombination():
       return False
   
   # CH straight flush C royal flush
-  if flush() and straight():
+  CH = flush()  
+  if CH != False and straight():
     print("straight flush") # add royal flush and return combination high
-
+    print(CH)
   # CH H 4 of a kind
-  elif same_values(4):
+  if same_values(4):
     print("4 of kind")
 
 
   # CH CH full house
-  CH = full_house()
-  elif CH != False:
+  CH = full_house() # elif outside of statement
+  if CH != False:
     print(CH)
 
   # CH flush
-  elif flush():
+  if flush():
     print("floosh")
   # CH straight
-  elif straight():
+  if straight():
     print("straight")
 
   # CH H 3 of a kind
-  elif same_num(3):
+  if same_num(3):
     print("3ofkind")
 
   # CH H 2 pair
   CH = same_num(2)
-  elif len(CH) >= 2:
-    print(f"{CH[-2:]} two pair")
+  if len(CH) >= 2:
+    print(f"{CH[-2:]} two pair") # reverse this list
   # CH H pair
-  elif len(CH) == 1:
+  if len(CH) == 1:
     print(f"{CH} pair high")
 
   # H high card
-  elif len(CH) == 0:
+  if len(CH) == 0:
     print(f"{values[-1]}High card")
 
   else:
