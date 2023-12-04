@@ -1,5 +1,5 @@
 
-
+'''
 letters = ["s", "d" , "c", "h"]
 numbers = [2,3,5,7]
 dictionary = dict()
@@ -38,10 +38,10 @@ print(list)
 a = [1,2,3,4]
 p = 2
 print(a[:-1])
-
+'''
 
 def FindCombination(): # return list [rank, ch, ch, h] if applicable
-  public = ['spades.1', 'spades.13', 'spades.12', 'spades.11', 'spades.10']
+  public = ['spades.1', 'spades.13', 'spades.12', 'spades.11', 'spades.2']
   hand = ['diamonds.4', 'clubs.4']
   combined = public + hand
   suits, values = [], []
@@ -83,14 +83,55 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
       return False
 
 
+#if current == 14:
+        #current = 0
+'''
+def straight():
+  # Duplicate the list to consider the possibility of wrapping around
+  numbers = [8, 7, 11, 12, 13, 1, 2]
+  extended_numbers = numbers + numbers
+  max_value = -1  #ensure any value in the list is greater
+
+  for i in range(len(extended_numbers) - 4):
+    consecutive_values = extended_numbers[i:i+5]
+    # Check if the sequence contains both 1 and 13
+    
+    if 1 in consecutive_values and 13 in consecutive_values:
+      max_value = max(max_value, max(consecutive_values))
+    # Check if the sequence is consecutive without wrapping
+
+    elif max(consecutive_values) - min(consecutive_values) == 4:
+      max_value = max(max_value, max(consecutive_values))
+  print(max_value)
+
+straight()
+'''
+
   def straight():
     count = 0
+    looped = False
     unique_values = sorted(set(values), key=int)
-    for i in range(len(unique_values) - 1): 
-      if int(unique_values[i]) + 1 == int(unique_values[i + 1]): # account for loopback K-A 13-1
+    for i in range(len(unique_values)): 
+      current = int(unique_values[i]) + 1
+      
+
+      if i == len(unique_values) - 1: # reached end of list
+        next = int(unique_values[0])
+        current = 0
+        if current == 0 and next == 1:
+          looped = True
+          
+       # account for loopback K-A 13-1
+      else:
+        next = int(unique_values[i + 1])
+      
+      if current == next or looped: #elif
         count += 1
+        looped = False
         if count >= 4:
-          return [unique_values[i + 1]]
+          if looped == True:
+            return [1]
+          return [next]
       else:
         count = 0
     return False 
