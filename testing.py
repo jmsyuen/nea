@@ -85,33 +85,14 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
 
 #if current == 14:
         #current = 0
-'''
-def straight():
-  # Duplicate the list to consider the possibility of wrapping around
-  numbers = [8, 7, 11, 12, 13, 1, 2]
-  extended_numbers = numbers + numbers
-  max_value = -1  #ensure any value in the list is greater
 
-  for i in range(len(extended_numbers) - 4):
-    consecutive_values = extended_numbers[i:i+5]
-    # Check if the sequence contains both 1 and 13
-    
-    if 1 in consecutive_values and 13 in consecutive_values:
-      max_value = max(max_value, max(consecutive_values))
-    # Check if the sequence is consecutive without wrapping
-
-    elif max(consecutive_values) - min(consecutive_values) == 4:
-      max_value = max(max_value, max(consecutive_values))
-  print(max_value)
-
-straight()
-'''
 
   def straight():
     count = 0
     looped = False
     unique_values = sorted(set(values), key=int)
-    for i in range(len(unique_values)): 
+
+    for i in range(len(unique_values)): # 0-len
       current = int(unique_values[i]) + 1
       
 
@@ -120,18 +101,20 @@ straight()
         current = 0
         if current == 0 and next == 1:
           looped = True
-          
        # account for loopback K-A 13-1
+
       else:
         next = int(unique_values[i + 1])
       
       if current == next or looped: #elif
         count += 1
         looped = False
+
         if count >= 4:
           if looped == True:
-            return [1]
+            return [1] # replace with front of consecutive list of values
           return [next]
+        
       else:
         count = 0
     return False 
@@ -215,3 +198,25 @@ straight()
 print([int(x) for x in FindCombination()]) # force int
 
 
+'''
+def straight():
+  # Duplicate the list to consider the possibility of wrapping around
+  numbers = [8, 7, 11, 12, 13, 1, 2]
+  extended_numbers = numbers + numbers
+  max_value = -1  #ensure any value in the list is greater
+
+  for i in range(len(extended_numbers) - 4):
+    consecutive_values = extended_numbers[i:i+5]
+    # Check if the sequence contains both 1 and 13
+
+    if 1 in consecutive_values and 13 in consecutive_values:
+      #max_value = max(max_value, max(consecutive_values))
+      max_value = consecutive_values[-1]
+    # Check if the sequence is consecutive without wrapping
+
+    elif max(consecutive_values) - min(consecutive_values) == 4:
+      max_value = max(max_value, max(consecutive_values))
+  print(max_value)
+
+straight()
+'''
