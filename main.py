@@ -33,3 +33,9 @@ def NewGame(players, buyIn, startingblinds):
       pass 
 
 print(pokersim.round1.Deck())
+
+if __name__ == "__main__": # runs if file is being executed rather than imported
+    poker_game = PokerGame()
+    poker_game.play()
+
+
