@@ -157,6 +157,9 @@ class database():
 #def __init__(self):
   #  new_round.__init__():
 
+# for stage in range(4): # stage 0 nothing is shown
+#   new turn   and limit options after first bet
+
 
 class templatePlayer(new_round): # inherit new_round init # might need to make a database sqlite3
   pass
