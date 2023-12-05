@@ -41,8 +41,8 @@ print(a[:-1])
 '''
 
 def FindCombination(): # return list [rank, ch, ch, h] if applicable
-  public = ['spades.1', 'spades.13', 'spades.12', 'spades.11', 'spades.2']
-  hand = ['diamonds.4', 'clubs.4']
+  public = ['spades.3', 'hearts.1', 'diamonds.8', 'hearts.4', 'spades.10']
+  hand = ['spades.7', 'spades.6']
   combined = public + hand
   suits, values = [], []
   allsuits = ("hearts", "diamonds", "spades", "clubs")
@@ -86,39 +86,27 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
 #if current == 14:
         #current = 0
 
-
   def straight():
     count = 0
-    looped = False
     unique_values = sorted(set(values), key=int)
+    loopedlist = unique_values + unique_values
+    CH = []
 
-    for i in range(len(unique_values)): # 0-len
-      current = int(unique_values[i]) + 1
+    for i in range(len(unique_values) + 4):
+      current = int(loopedlist[i]) + 1
+      next = int(loopedlist[i + 1])
       
-
-      if i == len(unique_values) - 1: # reached end of list
-        next = int(unique_values[0])
-        current = 0
-        if current == 0 and next == 1:
-          looped = True
-       # account for loopback K-A 13-1
-
-      else:
-        next = int(unique_values[i + 1])
-      
-      if current == next or looped: #elif
+      if current == next or (current == 14 and next == 1): # king is 13, so + 1 would be 14 to account for loopback K-A 13-1
         count += 1
-        looped = False
-
-        if count >= 4:
-          if looped == True:
-            return [1] # replace with front of consecutive list of values
-          return [next]
-        
       else:
         count = 0
+      if count >= 4:
+        CH.append(next)
+
+    if len(CH) != 0: # return the highest straight if multiple
+      return [max(CH)]
     return False 
-  
+
 
   def full_house():
     try:
@@ -142,22 +130,23 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
     for card in combined:
       if card.split(".")[-1] not in CH:
         remaining.append(card.split(".")[-1])
-    return sorted(set(remaining), key=int)[-quantity:]
-
+    result = sorted(set(remaining), key=int)[::-1] # sorted from high-low for later comparison
+    return result[:quantity]
 
   #ensure every returned value is a list
   # CH straight flush C royal flush
   CH = straight()
   flush_temp = flush()  
   if CH != False and flush_temp != False:
-    if CH == 13: # royal flush
+    if CH[0] == 1: # royal flush
       return [10]
-    return [9] + CH   # add royal flush and return combination high
+    else:
+      return [9] + CH   # add royal flush and return combination high
 
   # CH H 4 of a kind
   CH = same_num(4)
-  H = high_card(1, CH)
   if CH != False:
+    H = high_card(1, CH)
     return [8] + CH + H
 
 
@@ -172,27 +161,35 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
     return [6] + CH
   
   # CH straight
-  if straight():
-    print("straight")
+  CH = straight()
+  if CH != False:
+    return [5] + CH
 
   # CH H 3 of a kind
-  if same_num(3):
-    print("3ofkind")
+  CH = same_num(3)
+  if CH != False:
+    return [4] + CH
+
+  
+  CH = same_num(2)
+  # H high card
+  if CH == False: 
+    H = high_card(5, [])
+    return [1] + H
 
   # CH CH H 2 pair
-  CH = same_num(2)
   if len(CH) >= 2:
-    print(f"{CH[-2:]} two pair") # reverse this list
+    H = high_card(1, CH)
+    return [3] + CH + H 
+
   # CH H pair
   if len(CH) == 1:
-    print(f"{CH} pair high")
+    H = high_card(3, CH)
+    return [2] + CH + H
 
-  # H high card
-  if len(CH) == 0:
-    print(f"{high_cards[0]}High card")
-
+  
   else:
-    print("random error")
+    return [0]
 
 
 print([int(x) for x in FindCombination()]) # force int
