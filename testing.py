@@ -40,36 +40,27 @@ p = 2
 print(a[:-1])
 '''
 
-def FindCombination(): # return list [rank, ch, ch, h] if applicable
-  public = ['spades.3', 'hearts.1', 'diamonds.8', 'hearts.4', 'spades.10']
-  hand = ['spades.7', 'spades.6']
+def FindCombination(public, hand): # return list [rank, ch, ch, h] for value comparison
   combined = public + hand
   suits, values = [], []
   allsuits = ("hearts", "diamonds", "spades", "clubs")
-  
-  #def sort_values():
-
 
   for card in combined:
-    #card.split(".")[-1] retrieves value of card
     split = card.split(".")
     suits.append(split[0])
     values.append(split[-1]) 
-    print(suits, values)
   values = sorted(values, key=int)
-  high_cards = values.reverse()
 
   def flush():
     for suit in allsuits:
-      if suits.count(suit) >= 5:
-        #print(f"{suit} floosh") # suit type doesn't matter
+      if suits.count(suit) >= 5: # suit type doesn't matter
         flush_values = []
         for card in combined:
           if suit[0] == card[0]: # match first letter
             flush_values.append(card.split(".")[-1]) # append value of card
         return [sorted(flush_values, key=int)[-1]]
-        
     return False
+
 
   def same_num(count): 
     combination_highs = []
@@ -82,9 +73,6 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
     else:
       return False
 
-
-#if current == 14:
-        #current = 0
 
   def straight():
     count = 0
@@ -117,10 +105,9 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
       if len(same_num3) == 2:  # 2 3 of a kinds is automatically a full house
         return same_num3.reverse()
       
-      elif len(same_num3) == 1 and len(same_num2) > 0:
+      if len(same_num3) == 1 and len(same_num2) > 0:
         return same_num3 + [same_num2[-1]]
-      else:
-        return False
+      return False
     except:
       return False
   
@@ -134,14 +121,14 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
     return result[:quantity]
 
   #ensure every returned value is a list
-  # CH straight flush C royal flush
+  # CH straight flush
   CH = straight()
-  flush_temp = flush()  
-  if CH != False and flush_temp != False:
+  isflush = flush()  
+  if CH != False and isflush != False:
     if CH[0] == 1: # royal flush
       return [10]
     else:
-      return [9] + CH   # add royal flush and return combination high
+      return [9] + CH   # return combination high
 
   # CH H 4 of a kind
   CH = same_num(4)
@@ -149,9 +136,8 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
     H = high_card(1, CH)
     return [8] + CH + H
 
-
   # CH CH full house
-  CH = full_house() # elif outside of statement
+  CH = full_house() 
   if CH != False:
     return [7] + CH
 
@@ -169,7 +155,6 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
   CH = same_num(3)
   if CH != False:
     return [4] + CH
-
   
   CH = same_num(2)
   # H high card
@@ -186,13 +171,15 @@ def FindCombination(): # return list [rank, ch, ch, h] if applicable
   if len(CH) == 1:
     H = high_card(3, CH)
     return [2] + CH + H
-
   
   else:
     return [0]
 
+public = ['spades.3', 'hearts.1', 'diamonds.8', 'hearts.4', 'spades.10']
+hand = ['spades.7', 'spades.6']
+print([int(x) for x in FindCombination(public, hand)]) # force int
 
-print([int(x) for x in FindCombination()]) # force int
+
 
 
 '''

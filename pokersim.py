@@ -14,12 +14,15 @@ from sqlite3 import Error
 # range is inclusive of first value only eg. 1,14 is 1-13
 # to unpack a list use asterisk before variable print(*list)
 
+class new_game(): # new round, get chip carry over return # in main.py
+  pass
 
-class new_round():
+
+class new_round(): # money system, carry over chips,  beginning of round, sub class
   def __init__(self, *args): # players, starting_chips
     self.suits = ("hearts", "diamonds", "spades", "clubs")
     self.players = args[0]
-    if len(args) == 1:  # default setup variables
+    if len(args) == 1:  # default setup variables ## move to new_game
       self.starting_chips = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
 
     else:               # custom setup variables
@@ -61,7 +64,7 @@ class new_round():
   def PickHistory(self): # returns in list
     #test function to be used later
     #when returning, use split(".") to separate
-    lastcard = self._pickHistory[-1]
+    # lastcard = self._pickHistory[-1] 
     return self._pickHistory
 
   #action methods to be moved into subclass later
@@ -97,10 +100,11 @@ class new_round():
 #class 
   #def FinalStageWinner(combinations):
   
-def FindCombination(): #cards, public
-  pass
-# database connection
+  def FindCombination(): #cards, public
+    pass
 
+
+# database connection
 class database():
   def __init__(self, *args):
     if len(args) == 0:
