@@ -43,7 +43,7 @@ print(a[:-1])
 def FindCombination(public, hand): # return list [rank, ch, ch, h] for value comparison
   combined = public + hand
   suits, values = [], []
-  allsuits = ("hearts", "diamonds", "spades", "clubs")
+  allsuits = ("hearts", "diamonds", "spades", "clubs") # possibly replace
 
   for card in combined:
     split = card.split(".")
