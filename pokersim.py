@@ -13,7 +13,7 @@ from sqlite3 import Error #
 # randint is inclusive of both limits
 # range is inclusive of first value only eg. 1,14 is 1-13
 # to unpack a list use asterisk before variable print(*list)
-
+# change to 2-14 for ace high
 
 
 
@@ -31,8 +31,8 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     self._deck = dict()
     self._hands = dict()
     for suit in self.suits:
-      self._deck[suit] = [value for value in range(1,14)]
-      # 1 - 13
+      self._deck[suit] = [value for value in range(2,15)]
+      # 2 - 14
     self._pickHistory = []
     self.totalcards = 5 + (self.players * 2)
 
@@ -136,7 +136,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
         current = int(loopedlist[i]) + 1
         next = int(loopedlist[i + 1])
         
-        if current == next or (current == 14 and next == 1): # king is 13, so + 1 would be 14 to account for loopback K-A 13-1
+        if current == next or (current == 15 and next == 2): # ace is 14, so + 1 would be 15 to account for loopback A-2 14-2
           count += 1
         else:
           count = 0
@@ -238,9 +238,10 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       locations = [index for index, value in enumerate(values) if value == max(values)] #finds highest value in all lists and returns all occurences
       print(locations, remainingPlayers)
       
-      if len(locations) == 1: # second term of the winning list
+      if len(locations) == 1 or i == len(remainingPlayers[0]) - 1: # second term of the winning list
         break        
-
+      
+      #if reached end of list
       else:
         temp = []
         for num in locations:
