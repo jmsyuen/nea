@@ -236,22 +236,18 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
         values.append(player[i])
 
       locations = [index for index, value in enumerate(values) if value == max(values)] #finds highest value in all lists and returns all occurences
-      print(locations, remainingPlayers)
-      
       if len(locations) == 1 or i == len(remainingPlayers[0]) - 1: # second term of the winning list
-        break        
-      
-      #if reached end of list
-      else:
-        temp = []
-        for num in locations:
-          temp.append(remainingPlayers[num])
-        remainingPlayers = temp
+        break
+              
+      temp = []
+      for num in locations:
+        temp.append(remainingPlayers[num])
+      remainingPlayers = temp
     
     winners = []
     for num in locations:
       winners.append(remainingPlayers[num][0])
-    print(winners)
+    return winners
 
     
 # make a system for money: pot, big_blind_value, isDealer, each player's _chips_, 3 playerAction fold raise call
