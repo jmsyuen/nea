@@ -7,7 +7,7 @@ implement money system
 implement round systems
 implement bot strategies
 including risk, difficulty etc
-calculation of who wins and splitting pot in draw
+calculation of who wins # and splitting pot in draw
 implement predictive calculations of next cards, and chances of success multiplied by the payout and already invested amount and remaining chips and risk level and difficulty
 difficulty is how smart they actually are
 Different strategies for different bots chosen at random maybe 2-3 maybe for different difficulty to represent beginner to advanced knowledge of the game
