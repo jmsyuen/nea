@@ -19,6 +19,12 @@ def initiate_connection(path):
 # print("Save file found! Restore it?")
 # else reset 
 
+#class new_game(): # new round, get chip carry over return # in main.py
+  #bot difficulty select
+  #round settings
+  
+  #pass
+
 
 # nea
 def NewGame(players, buyIn, startingblinds):
@@ -31,11 +37,20 @@ def NewGame(players, buyIn, startingblinds):
       valid = True
     except:
       pass 
+  #game
+  round = pokersim.new_round(players)
+
+  round.ResetDeck()
+  round.DrawCards()
+  print(round.Deck())
+  print(round.PickHistory())
+  #round methods
 
 print(pokersim.round1.Deck())
 
-if __name__ == "__main__": # runs if file is being executed rather than imported
-    poker_game = PokerGame()
-    poker_game.play()
+if __name__ == "__main__": # runs if file is being executed rather than imported #run pygame
+  #poker_game = PokerGame()
+  #poker_game.play()
+  pass
 
 

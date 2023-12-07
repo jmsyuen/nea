@@ -39,7 +39,7 @@ a = [1,2,3,4]
 p = 2
 print(a[:-1])
 '''
-
+'''
 def FindCombination(public, hand): # return list [rank, ch, ch, h] for value comparison
   combined = public + hand
   suits, values = [], []
@@ -173,12 +173,12 @@ def FindCombination(public, hand): # return list [rank, ch, ch, h] for value com
     return [2] + CH + H
   
   else:
-    return [0]
+    return False
 
 public = ['spades.3', 'hearts.1', 'diamonds.8', 'hearts.4', 'spades.10']
 hand = ['spades.7', 'spades.6']
 print([int(x) for x in FindCombination(public, hand)]) # force int
-
+'''
 
 
 
@@ -204,3 +204,6 @@ def straight():
 
 straight()
 '''
+list = []
+if not list:
+	print("a")

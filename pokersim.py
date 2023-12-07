@@ -1,7 +1,7 @@
 import random
 import os
 import sqlite3
-from sqlite3 import Error
+from sqlite3 import Error #
 
 
 # one tag is useful comments
@@ -14,8 +14,7 @@ from sqlite3 import Error
 # range is inclusive of first value only eg. 1,14 is 1-13
 # to unpack a list use asterisk before variable print(*list)
 
-class new_game(): # new round, get chip carry over return # in main.py
-  pass
+
 
 
 class new_round(): # money system, carry over chips,  beginning of round, sub class
@@ -36,6 +35,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       # 1 - 13
     self._pickHistory = []
     self.totalcards = 5 + (self.players * 2)
+
 
   def PickCard(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
@@ -73,7 +73,6 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     for i in range(1, self.players + 1): #adjusted
       self._hands[i] = self.PickCard(2)
 
-  
 
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self._hands[player]
@@ -91,7 +90,169 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     else:                   #error checking, remove later ###
       print("stage invalid")
       raise Exception
+  
 
+  def FindCombination(self, hand): # return list [rank, ch, ch, h] for value comparison
+    combined = self._hands["public"] + hand
+    suits, values = [], []
+    allsuits = ("hearts", "diamonds", "spades", "clubs") # possibly replace
+
+    for card in combined:
+      split = card.split(".")
+      suits.append(split[0])
+      values.append(split[-1]) 
+    values = sorted(values, key=int)
+
+    def flush():
+      for suit in allsuits:
+        if suits.count(suit) >= 5: # suit type doesn't matter
+          flush_values = []
+          for card in combined:
+            if suit[0] == card[0]: # match first letter
+              flush_values.append(card.split(".")[-1]) # append value of card
+          return [sorted(flush_values, key=int)[-1]]
+      return False
+
+
+    def same_num(count): 
+      combination_highs = []
+      for value in values:
+        if values.count(value) == count: # IS PRECISE
+          combination_highs.append(value)
+          
+      if len(combination_highs) != 0:
+        return sorted(set(combination_highs), key=int)
+      else:
+        return False
+
+
+    def straight():
+      count = 0
+      unique_values = sorted(set(values), key=int)
+      loopedlist = unique_values + unique_values
+      CH = []
+
+      for i in range(len(unique_values) * 2 - 4):
+        current = int(loopedlist[i]) + 1
+        next = int(loopedlist[i + 1])
+        
+        if current == next or (current == 14 and next == 1): # king is 13, so + 1 would be 14 to account for loopback K-A 13-1
+          count += 1
+        else:
+          count = 0
+        if count >= 4:
+          CH.append(next)
+
+      if len(CH) != 0: # return the highest straight if multiple
+        return [max(CH)]
+      return False 
+
+
+    def full_house():
+      try:
+        # should be sorted already low-high
+        same_num3 = same_num(3)
+        same_num2 = same_num(2)
+
+        if len(same_num3) == 2:  # 2 3 of a kinds is automatically a full house
+          return same_num3.reverse()
+        
+        if len(same_num3) == 1 and len(same_num2) > 0:
+          return same_num3 + [same_num2[-1]]
+        return False
+      except:
+        return False
+    
+
+    def high_card(quantity, CH): # takes how many high cards, existing CH in list form
+      remaining = []
+      for card in combined:
+        if card.split(".")[-1] not in CH:
+          remaining.append(card.split(".")[-1])
+      result = sorted(set(remaining), key=int)[::-1] # sorted from high-low for later comparison
+      return result[:quantity]
+
+    #ensure every returned value is a list
+    # CH straight flush
+    CH = straight()
+    isflush = flush()  
+    if CH != False and isflush != False:
+      if CH[0] == 1: # royal flush
+        return [10]
+      else:
+        return [9] + CH   # return combination high
+
+    # CH H 4 of a kind
+    CH = same_num(4)
+    if CH != False:
+      H = high_card(1, CH)
+      return [8] + CH + H
+
+    # CH CH full house
+    CH = full_house() 
+    if CH != False:
+      return [7] + CH
+
+    # CH flush
+    CH = flush()
+    if CH != False:
+      return [6] + CH
+    
+    # CH straight
+    CH = straight()
+    if CH != False:
+      return [5] + CH
+
+    # CH H 3 of a kind
+    CH = same_num(3)
+    if CH != False:
+      return [4] + CH
+    
+    CH = same_num(2)
+    # H high card
+    if CH == False: 
+      H = high_card(5, [])
+      return [1] + H
+
+    # CH CH H 2 pair
+    if len(CH) >= 2:
+      H = high_card(1, CH)
+      return [3] + CH + H 
+
+    # CH H pair
+    if len(CH) == 1:
+      H = high_card(3, CH)
+      return [2] + CH + H
+    
+    else:
+      return False
+
+
+  def FindWinner(self, playerCombinations): # iterate through lists, comparing largest value
+    remainingPlayers = playerCombinations
+    for i in range(1,len(max(playerCombinations))): #length of longest list
+      values = []
+      for player in remainingPlayers:
+        values.append(player[i])
+
+      locations = [index for index, value in enumerate(values) if value == max(values)] #finds highest value in all lists and returns all occurences
+      print(locations, remainingPlayers)
+      
+      if len(locations) == 1: # second term of the winning list
+        break        
+
+      else:
+        temp = []
+        for num in locations:
+          temp.append(remainingPlayers[num])
+        remainingPlayers = temp
+    
+    winners = []
+    for num in locations:
+      winners.append(remainingPlayers[num][0])
+    print(winners)
+
+    
 # make a system for money: pot, big_blind_value, isDealer, each player's _chips_, 3 playerAction fold raise call
 #winner, list for remaining players that decreases down to winner(s) to split with
 # chips_left, isDealer, cards, hasFolded, isAllIn, combination_rank, combination_high, high_card(if applicable) 
@@ -100,8 +261,6 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 #class 
   #def FinalStageWinner(combinations):
   
-  def FindCombination(): #cards, public
-    pass
 
 
 # database connection
@@ -156,8 +315,6 @@ class database():
   # SELECT chips FROM table WHERE player
 
 
-
-
 #def __init__(self):
   #  new_round.__init__():
 
@@ -166,7 +323,7 @@ class database():
 
 
 class templatePlayer(new_round): # inherit new_round init # might need to make a database sqlite3
-  pass
+  pass #bot
   
 db = database()
 db.con_up()
@@ -179,7 +336,11 @@ round1.ResetDeck()
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())
-print(round1.GetHand(1))
-print(round1.GetPublicStage(1))
 
-#FindCombination()
+showdownPlayers = [1,2,3]
+playerCombinations = []
+for player in showdownPlayers:    #draw winners from database
+  playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
+
+round1.FindWinner(playerCombinations)
+
