@@ -172,60 +172,63 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       result = sorted(set(remaining), key=int)[::-1] # sorted from high-low for later comparison
       return result[:quantity]
 
-    #ensure every returned value is a list
-    # CH straight flush
-    CH = straight()
-    isflush = flush()  
-    if CH != False and isflush != False:
-      if CH[0] == 1: # royal flush
-        return [10]
+    
+    def output(): 
+      CH = straight()
+      isflush = flush()  
+      #ensure every returned value is a list
+      #CH straight flush
+      if CH != False and isflush != False:
+        if CH[0] == 1: # royal flush
+          return [10]
+        else:
+          return [9] + CH   # return combination high
+
+      # CH H 4 of a kind
+      CH = same_num(4)
+      if CH != False:
+        H = high_card(1, CH)
+        return [8] + CH + H
+
+      # CH CH full house
+      CH = full_house() 
+      if CH != False:
+        return [7] + CH
+
+      # CH flush
+      CH = flush()
+      if CH != False:
+        return [6] + CH
+      
+      # CH straight
+      CH = straight()
+      if CH != False:
+        return [5] + CH
+
+      # CH H 3 of a kind
+      CH = same_num(3)
+      if CH != False:
+        return [4] + CH
+      
+      CH = same_num(2)
+      # H high card
+      if CH == False: 
+        H = high_card(5, [])
+        return [1] + H
+
+      # CH CH H 2 pair
+      if len(CH) >= 2:
+        H = high_card(1, CH)
+        return [3] + CH + H 
+
+      # CH H pair
+      if len(CH) == 1:
+        H = high_card(3, CH)
+        return [2] + CH + H
+      
       else:
-        return [9] + CH   # return combination high
-
-    # CH H 4 of a kind
-    CH = same_num(4)
-    if CH != False:
-      H = high_card(1, CH)
-      return [8] + CH + H
-
-    # CH CH full house
-    CH = full_house() 
-    if CH != False:
-      return [7] + CH
-
-    # CH flush
-    CH = flush()
-    if CH != False:
-      return [6] + CH
-    
-    # CH straight
-    CH = straight()
-    if CH != False:
-      return [5] + CH
-
-    # CH H 3 of a kind
-    CH = same_num(3)
-    if CH != False:
-      return [4] + CH
-    
-    CH = same_num(2)
-    # H high card
-    if CH == False: 
-      H = high_card(5, [])
-      return [1] + H
-
-    # CH CH H 2 pair
-    if len(CH) >= 2:
-      H = high_card(1, CH)
-      return [3] + CH + H 
-
-    # CH H pair
-    if len(CH) == 1:
-      H = high_card(3, CH)
-      return [2] + CH + H
-    
-    else:
-      return False
+        return False
+    return output()
 
 
   def FindWinner(self, playerCombinations): # iterate through lists, comparing largest value
@@ -238,7 +241,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       locations = [index for index, value in enumerate(values) if value == max(values)] #finds highest value in all lists and returns all occurences
       if len(locations) == 1 or i == len(remainingPlayers[0]) - 1: # second term of the winning list
         break
-              
+
       temp = []
       for num in locations:
         temp.append(remainingPlayers[num])
@@ -339,5 +342,5 @@ playerCombinations = []
 for player in showdownPlayers:    #draw winners from database
   playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
 
-round1.FindWinner(playerCombinations)
+print(round1.FindWinner(playerCombinations))
 
