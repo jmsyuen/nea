@@ -3,7 +3,6 @@ import os
 import sqlite3
 from sqlite3 import Error #
 
-
 # one tag is useful comments
 ## two tags for code clips
 ### three tags for issues
@@ -13,27 +12,30 @@ from sqlite3 import Error #
 # randint is inclusive of both limits
 # range is inclusive of first value only eg. 1,14 is 1-13
 # to unpack a list use asterisk before variable print(*list)
-# change to 2-14 for ace high
+# changed to 2-14 for ace high
+# * to unpack lists
 
 
 
 class new_round(): # money system, carry over chips,  beginning of round, sub class
-  def __init__(self, *args): # players, starting_chips
+  def __init__(self, args): # players, starting_chips
     self.suits = ("hearts", "diamonds", "spades", "clubs")
-    self.players = args[0]
-    if len(args) == 1:  # default setup variables ## move to new_game
-      self.starting_chips = 1000 # £20 chips 2 1 75 25, 5 of each but not mainstream values
-
+    if type(args) != list:  # default setup variables 
+      self.players = 3 # includes human
+      self.starting_chips = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
+      self.big_blind = 50 #small blind is always half of big
+      #startingblinds 
     else:               # custom setup variables
-      self.starting_chips = args[1]
+      self.players, self.starting_chips, self.big_blind = args
+      
     
   def ResetDeck(self):
-    self._deck = dict()
-    self._hands = dict()
+    self.__deck = dict()
+    self.__hands = dict()
     for suit in self.suits:
-      self._deck[suit] = [value for value in range(2,15)]
+      self.__deck[suit] = [value for value in range(2,15)]
       # 2 - 14
-    self._pickHistory = []
+    self.__pickHistory = []
     self.totalcards = 5 + (self.players * 2)
 
 
@@ -46,10 +48,10 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     cards = []
     for i in range(repeats):
       randsuit = self.suits[random.randint(0,3)]
-      randvalue = random.choice(self._deck[randsuit])   #finds random value out of remaining cards
+      randvalue = random.choice(self.__deck[randsuit])   #finds random value out of remaining cards
       card = randsuit + "." + str(randvalue)
-      self._pickHistory.append(card) 
-      self._deck[randsuit].pop(self._deck[randsuit].index(randvalue)) ##used to be -1
+      self.__pickHistory.append(card) 
+      self.__deck[randsuit].pop(self.__deck[randsuit].index(randvalue)) ##used to be -1
       #removes card from deck
       if repeats == 1:
         return card
@@ -58,28 +60,28 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     
 
   def Deck(self): #returns dictionary
-    return self._deck
+    return self.__deck #testing function
 
 
   def PickHistory(self): # returns in list
     #test function to be used later
     #when returning, use split(".") to separate
-    # lastcard = self._pickHistory[-1] 
-    return self._pickHistory
+    # lastcard = self.__pickHistory[-1] 
+    return self.__pickHistory
 
   #action methods to be moved into subclass later
   def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
-    self._hands["public"] = self.PickCard(5)
+    self.__hands["public"] = self.PickCard(5)
     for i in range(1, self.players + 1): #adjusted
-      self._hands[i] = self.PickCard(2)
+      self.__hands[i] = self.PickCard(2)
 
 
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
-    return self._hands[player]
+    return self.__hands[player]
 
 
   def GetPublicStage(self, stage): # returns public cards, takes stage 1-3 but stage 1 returns list
-    public = self._hands["public"]  
+    public = self.__hands["public"]  
 
     if stage == 1:
       return public[:3] 
@@ -93,7 +95,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
   
 
   def FindCombination(self, hand): # return list [rank, ch, ch, h] for value comparison
-    combined = self._hands["public"] + hand
+    combined = self.__hands["public"] + hand
     suits, values = [], []
     allsuits = ("hearts", "diamonds", "spades", "clubs") # possibly replace
 
@@ -263,8 +265,8 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
   
 
 
-# database connection
-class database():
+# database connection should go in main.py
+class database(): #takes save file name -redundant
   def __init__(self, *args):
     if len(args) == 0:
       self.filename = "save.db"
@@ -276,8 +278,8 @@ class database():
     if os.path.exists(self.filename):
       self.needsSetup = False
 
-      if input("Save file found! Restore it? y/n: ") == "n": ###replace pygame
-        os.remove(self.filename) # deletes file for new creation
+      if input("Save file found! Restore it? y/n: ") != "y": ###replace pygame
+        os.remove(self.filename) # deletes file for new creation, need to restart sqlite explorer to view
         self.needsSetup = True
     else:
       print("Creating new save file")
@@ -285,23 +287,26 @@ class database():
   
     con = sqlite3.connect(self.filename) # creates file if not found
 
-    # can take datetime as filename, but long and may be inconsistent
-    ##from datetime import datetime, date, time
-    ##filename = "" 
-    ##
-    ##for value in datetime.now():
-    ##  filename += value 
+
     if self.needsSetup: # sqlite has no bool data type, only integer 0,1 but recognises True and False
-      cursor = con.cursor()
+      cursor = con.cursor() # save data and fetch between new rounds
       cursor.execute('''
-    CREATE TABLE Tbl_round (
+    CREATE TABLE Tbl_players (
       player_id TEXT PRIMARY KEY,
       chips_left INTEGER NOT NULL,
-      dealer INTEGER NOT NULL, --bool
-      cards TEXT 
+      dealer INTEGER NOT NULL --bool
     )
 ''') # set types and relational database structure
-    
+      
+      #can add more
+      cursor.execute('''
+    CREATE TABLE Tbl_bot_settings (
+      bot_id TEXT PRIMARY KEY,
+      risk INTEGER NOT NULL,
+      difficulty INTEGER NOT NULL,
+      strategies TEXT                   
+    )
+''') # strategies may be list
 
     else: #parse load functions
       pass
@@ -330,7 +335,7 @@ db.con_up()
 
 
 
-round1 = new_round(3)
+round1 = new_round(False)
 
 round1.ResetDeck()
 round1.DrawCards()

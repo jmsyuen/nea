@@ -11,6 +11,12 @@ print(dictionary)
 
 dictionary["d"].pop(1)
 
+    # can take datetime as filename, but long and may be inconsistent
+    ##from datetime import datetime, date, time
+    ##filename = "" 
+    ##
+    ##for value in datetime.now():
+    ##  filename += value 
 
 # dictionary hearts:[1,2,3,4], diamond:[1,2,3,4]
 # dictonary = {k:v for (k,v) in }
@@ -204,6 +210,22 @@ def straight():
 
 straight()
 '''
-list = []
-if not list:
-	print("a")
+
+
+list1 = [1,3,4,5]
+def abc(args):
+
+  first,second,third,fourth = args
+  print(first,second,third,fourth)
+
+abc(list1)
+
+b = False
+not b
+print(b)
+'''
+list1 = False
+print(type(list1))
+if type(list1) == list:
+	print("list")
+'''

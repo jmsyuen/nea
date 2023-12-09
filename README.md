@@ -1,21 +1,24 @@
 # nea notes 
 
 # td
-make design diagram outlining databases
+make design diagram outlining databases # design stage
 implement database # and calling functions
-implement money system
+implement money system £50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds last two
 implement round systems
-implement bot strategies
-including risk, difficulty etc
+
 calculation of who wins # and splitting pot in draw
-implement predictive calculations of next cards, and chances of success multiplied by the payout and already invested amount and remaining chips and risk level and difficulty
+
 def StartingCombination
  offsuit, pair etc
-difficulty is how smart they actually are
-Different strategies for different bots chosen at random maybe 2-3 maybe for different difficulty to represent beginner to advanced knowledge of the game
-difficulty may be discrete levels in a scale of 1-10
+
+implement bot strategies
+    implement predictive calculations of next cards, and chances of success multiplied by the payout and already invested amount and remaining chips and risk level and difficulty
+including risk, difficulty, how smart they actually are, etc
+    risk is the probability of overriding that value for a high pot
+Different strategies for different bots chosen at random maybe 2-3 for different difficulty to represent beginner to advanced knowledge of the game
+difficulty may be discrete levels in a scale of 1-10, ranges from easiest to hardest inclusive all including the previous difficulties
 starting hands probabilities
-risk is the probability of overriding that value for a high pot
+
 implement pygame interface with buttons
 
 # other
