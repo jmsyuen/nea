@@ -337,6 +337,11 @@ class Player():
     return amount
     
 
+  def Collect(self, amount):
+    self.chips_left += amount
+    return amount
+
+
   def ResetBet(self):
     self.total_round_bet = 0
     self.AllIn = False
@@ -347,7 +352,7 @@ class Player():
       return self.total_round_bet
     return False
 
-
+  
   def GetChoice(self, bet): #current bet to call #check if returned amount matches bet to determine a reraise
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
     if self.AllIn: #persistent

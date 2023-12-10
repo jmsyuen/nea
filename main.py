@@ -87,7 +87,8 @@ def NewGame():
     
     current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
     current_round_player_index = 0 ###for testing ease REMOVE LATER
-    
+    pot = 0
+
     def round_stage(stage):
       round_player_index = current_round_player_index
       bet_matched = False
@@ -105,6 +106,7 @@ def NewGame():
 
         elif action == False: #fold
           round_players.remove(current_player_id) #removes based on value not index
+          round_player_index -= 1
 
         else:
           if action > highest_bet:
@@ -119,15 +121,25 @@ def NewGame():
         #function to return if previously bet
         #pot += currentbet + newbet
         #scenario if bet raised twice before reaching you
-
-        if round_player_index > len(round_players): #iterate next player in stage
+        if len(round_players) == 1: #one player left
+          return round_players
+        elif round_player_index > len(round_players): #iterate next player in stage
           round_player_index = 0  #accounts for index out of range
         else:
           round_player_index = (round_player_index + 1) % len(round_players)  #cycle 
-    #####
 
+
+    #iterate stages and return list of winners
     for stage in range(4):
-      round_stage(stage)
+      winners = round_stage(stage)
+      if type(winners) == list:
+        print(winners)
+        break
+
+    #split pot  
+    winnings = pot // len(winners)
+    for winner in winners:
+      print(player_dict[winner].Collect(winnings))
 
     #end game if one player left or human out (optional)
     #player_dict - bustPlayers
