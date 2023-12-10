@@ -31,6 +31,11 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     self.__pickHistory = []
     self.totalcards = 5 + (self.players * 2)
 
+  #def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
+    self.__hands["public"] = self.PickCard(5)
+    for i in range(1, self.players + 1): #adjusted
+      self.__hands[i] = self.PickCard(2)
+
 
   def PickCard(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
@@ -63,10 +68,8 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     return self.__pickHistory
 
   #action methods to be moved into subclass later
-  def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
-    self.__hands["public"] = self.PickCard(5)
-    for i in range(1, self.players + 1): #adjusted
-      self.__hands[i] = self.PickCard(2)
+  
+    
 
 
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
@@ -320,16 +323,9 @@ class database(): #takes save file name
 
 
 class Player(): 
-  def __init__(self, hand, args): # takes hands, player_id/arguments including player_id
-    self.__cards = hand
-    if type(args) != list:  # default setup variables 
-      self.player_id_value = args
-      self.chips_left = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
-      self.big_blind = 100 #small blind is always half of big
-      
-    else:               # custom setup variables
-      self.player_id_value, self.chips_left, self.big_blind = args    
-    
+  def __init__(self, args): # takes hands, player_id/arguments including player_id
+    self.__cards, self.player_id_value, self.chips_left, self.big_blind = args    
+
 
   def GetCards(self):
     return self.__cards
@@ -349,22 +345,23 @@ class Player():
   def Check(self):
     return
 
-  
-db = database()
-db.con_up()
+
+
+if __name__ == "__main__":
+  db = database()
+  db.con_up()
 
 
 
-round1 = new_round(3)
+  round1 = new_round(3)
 
-round1.DrawCards()
-print(round1.Deck())
-print(round1.PickHistory())
+  print(round1.Deck())
+  print(round1.PickHistory())
 
-showdownPlayers = [1,2,3]
-playerCombinations = []
-for player in showdownPlayers:    #draw winners from database
-  playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
+  showdownPlayers = [1,2,3]
+  playerCombinations = []
+  for player in showdownPlayers:    #draw winners from database
+    playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
 
-print(round1.FindWinner(playerCombinations))
+  print(round1.FindWinner(playerCombinations))
 

@@ -213,16 +213,16 @@ straight()
 
 hand = ["sadc", "asdf"]
 list1 = [1,3,4,5]
-def abc(hand, args):
+var = 3
+var2 = 4
+var3 = 45
 
-  print(hand)
-  if args == False:
-    print("break")
-    return
+def abc(args):
+
   first,second,third,fourth = args
   print(first,second,third,fourth)
 
-abc(hand, False)
+abc([hand, var, var2, var3])
 
 '''
 list1 = False
