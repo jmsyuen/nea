@@ -339,6 +339,7 @@ class Player():
 
   def ResetBet(self):
     self.total_round_bet = 0
+    self.AllIn = False
 
 
   def PreviousCharge(self):
@@ -349,11 +350,14 @@ class Player():
 
   def GetChoice(self, bet): #current bet to call #check if returned amount matches bet to determine a reraise
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
-    if bet == False:
+    if self.AllIn: #persistent
+      return "AllIn"
+    
+    if bet == 0:
       choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
       if choice.isnumeric():
-        result = self.Charge(choice) ### testing remove 4 lines later
-        if result == False:
+        result = self.Charge(int(choice)) 
+        if result == False: ### testing remove 4 lines later
           print("not enough chips(test)")
         return result
       if choice == "y":
@@ -366,6 +370,7 @@ class Player():
         choice = input("All in? y/N:")
         if choice == "y":
           self.Charge(self.chips_left)
+          self.AllIn = True
           return "AllIn"
         else:
           return False

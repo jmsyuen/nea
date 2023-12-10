@@ -1,5 +1,5 @@
 import pokersim, bot
-
+import random
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
 from sqlite3 import Error
@@ -71,36 +71,63 @@ def NewGame():
         player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
     
     #deal cards for remaining players
+    round_players = []
     for player_id in player_dict:
+      round_players.append(player_id)
       player_dict[player_id].NewCards(round.GetHand(int(player_id.split("_")[-1]) ))
       player_dict[player_id].ResetBet()
-
     
     #charge blinds later
 
 
-    #cycle through players in order circular queue?
-    current_player = "player_1" #start on random player every new game
-    print(player_dict[current_player].GetChoice())
-    #if "AllIn" or True:
-    #if returnedbet > currentbet:
-    #   singlebet = currentbet + returnedbet
-    #    reraised = True
-    #scenario if raised after you to call again
-    #function to return if previously bet
-    #pot += currentbet + newbet
-    #scenario if bet raised twice before reaching you
-
-
+    
     for i in range(1, round.players + 1):# testing function
       print(round.GetHand(i)) 
+    
+    
+    current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
+    current_round_player_index = 0 ###for testing ease REMOVE LATER
+    
+    def round_stage(stage):
+      round_player_index = current_round_player_index
+      bet_matched = False
+      highest_bet = 0
+      if stage > 0:
+        print(round.GetPublicStage(stage))
+      
+      while len(round_players) > 1 or bet_matched == False: #iterate players in round_stage
+        current_player_id = round_players[round_player_index]
+        action = player_dict[current_player_id].GetChoice(highest_bet)
+        print(action)
+      
+        if action or action == "AllIn": #check
+          pass
 
+        elif action == False: #fold
+          round_players.remove(current_player_id) #removes based on value not index
 
-    #money system
+        else:
+          if action > highest_bet:
+            highest_bet = action
+        #if "AllIn" or True: in case of bet already made GetChoice(True)
+        #if returnedbet > currentbet:
+        #   singlebet = currentbet + returnedbet
+        #    reraised = True
+        #if PreviousCharge() != False:
+        #   charge currentbet - previouscharge
+        #scenario if raised after you to call again
+        #function to return if previously bet
+        #pot += currentbet + newbet
+        #scenario if bet raised twice before reaching you
 
-    #actions check raise fold
-    for j in range(round.players - 1): #for all the bots
-      pass #assign player class
+        if round_player_index > len(round_players): #iterate next player in stage
+          round_player_index = 0  #accounts for index out of range
+        else:
+          round_player_index = (round_player_index + 1) % len(round_players)  #cycle 
+    #####
+
+    for stage in range(4):
+      round_stage(stage)
 
     #end game if one player left or human out (optional)
     #player_dict - bustPlayers
@@ -108,6 +135,7 @@ def NewGame():
     play_game = False #temp
     if round.players < 2:
       play_game = False
+    
     
     
 

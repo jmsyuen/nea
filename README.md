@@ -3,15 +3,15 @@
 # td
 make design diagram outlining databases # design stage
 implement database # and calling functions
-implement money system £50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds last two
+implement money system # £50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds last two 
 implement round systems
 
 calculation of who wins # and splitting pot in draw
 
-def StartingCombination
- offsuit, pair etc
-
 implement bot strategies
+    def StartingCombination
+        offsuit, pair etc
+
     implement predictive calculations of next cards, and chances of success multiplied by the payout and already invested amount and remaining chips and risk level and difficulty
 including risk, difficulty, how smart they actually are, etc
     risk is the probability of overriding that value for a high pot
