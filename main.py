@@ -1,4 +1,4 @@
-import pokersim
+import pokersim, bot
 
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
@@ -43,36 +43,53 @@ def NewGame():
       starting_chips = int(input("Enter starting chips:")) # default £50
       big_blind = int(input("Enter starting big blind:"))
       #difficulty ranges from easiest to hardest inclusive all including the previous difficulties
+      #remember to add to Player() call below
       valid = True
     except:
       pass 
   
   #game
   play_game = True
-  while play_game:
+  while play_game: #quit if one player left/saving/human out
     #save button available at start of every round
 
-
-    if default:
-      round = pokersim.new_round(default)
+    if default: #first time setup
+      round = pokersim.new_round(3)
+      #starting_chips assign players
     else:
-      round = pokersim.new_round(opponents + 1, starting_chips) #includes human
-      
+      round = pokersim.new_round(opponents + 1) #includes human  
+      starting_chips = 5000
+      big_blind = 100
       
 
-    round.ResetDeck()
+    
+    player_dict = dict() #contains cards
+    for player_id_value in range(1, round.players + 1):
+      player_dict["player_" + str(player_id_value)] = pokersim.Player(round.GetHand(player_id_value), player_id_value, starting_chips, big_blind) #add 
+    print(player_dict)
+    #start on random player every new game
+    
     round.DrawCards()
-    print(round.Deck())
-    print(round.PickHistory())
+    current_player = "player_1"
+    
+    for i in range(1, round.players + 1):
+      print(round.GetHand(i)) #hide player hands later
+
+    #assign blinds later
+    #money system
+
+    #actions check raise fold
+    for j in range(round.players - 1): #for all the bots
+      pass #assign player class
 
     #end game if one player left or human out (optional)
     save = False
-    print(round.players)
+    play_game = False #temp
     if round.players < 2:
       play_game = False
   #round methods
 
-print(pokersim.round1.Deck())
+
 
 if __name__ == "__main__": # runs if file is being executed rather than imported #run pygame
   NewGame()

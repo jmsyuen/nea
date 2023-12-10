@@ -18,18 +18,11 @@ from sqlite3 import Error #
 
 
 class new_round(): # money system, carry over chips,  beginning of round, sub class
-  def __init__(self, args): # players, starting_chips
+  def __init__(self, players): # players, starting_chips
     self.suits = ("hearts", "diamonds", "spades", "clubs")
-    if type(args) != list:  # default setup variables 
-      self.players = 3 # includes human
-      self.starting_chips = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
-      self.big_blind = 50 #small blind is always half of big
-      #startingblinds 
-    else:               # custom setup variables
-      self.players, self.starting_chips, self.big_blind = args
+    self.players = players
       
-    
-  def ResetDeck(self):
+  #def ResetDeck(self):
     self.__deck = dict()
     self.__hands = dict()
     for suit in self.suits:
@@ -260,15 +253,14 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 # chips_left, isDealer, cards, hasFolded, isAllIn, combination_rank, combination_high, high_card(if applicable) 
 #database table bot_settings risk, difficulty, strategy
 
-#class 
-  #def FinalStageWinner(combinations):
+
   
 
 
 # database connection should go in main.py
-class database(): #takes save file name -redundant
+class database(): #takes save file name 
   def __init__(self, *args):
-    if len(args) == 0:
+    if len(args) == 0: 
       self.filename = "save.db"
     else: # might be redundant
       self.filename = args[0] + ".db"
@@ -327,17 +319,44 @@ class database(): #takes save file name -redundant
 #   new turn   and limit options after first bet
 
 
-class templatePlayer(new_round): # inherit new_round init # might need to make a database sqlite3
-  pass #bot
+class Player(): 
+  def __init__(self, hand, args): # takes hands, player_id/arguments including player_id
+    self.__cards = hand
+    if type(args) != list:  # default setup variables 
+      self.player_id_value = args
+      self.chips_left = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
+      self.big_blind = 100 #small blind is always half of big
+      
+    else:               # custom setup variables
+      self.player_id_value, self.chips_left, self.big_blind = args    
+    
+
+  def GetCards(self):
+    return self.__cards
+
+  def GetPlayerId(self):
+    return self.player_id_value
+
+
+  def Raise(self):
+    pass
+
+
+  def Fold(self):
+    return
+  
+
+  def Check(self):
+    return
+
   
 db = database()
 db.con_up()
 
 
 
-round1 = new_round(False)
+round1 = new_round(3)
 
-round1.ResetDeck()
 round1.DrawCards()
 print(round1.Deck())
 print(round1.PickHistory())

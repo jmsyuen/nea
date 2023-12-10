@@ -211,21 +211,32 @@ def straight():
 straight()
 '''
 
-
+hand = ["sadc", "asdf"]
 list1 = [1,3,4,5]
-def abc(args):
+def abc(hand, args):
 
+  print(hand)
+  if args == False:
+    print("break")
+    return
   first,second,third,fourth = args
   print(first,second,third,fourth)
 
-abc(list1)
+abc(hand, False)
 
-b = False
-not b
-print(b)
 '''
 list1 = False
 print(type(list1))
 if type(list1) == list:
 	print("list")
+'''
+
+'''
+    if type(args) != list:  # default setup variables 
+      self.players = 3 # includes human
+      self.starting_chips = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
+      self.big_blind = 50 #small blind is always half of big
+      #startingblinds 
+    else:               # custom setup variables
+      self.players, self.starting_chips, self.big_blind = args
 '''
