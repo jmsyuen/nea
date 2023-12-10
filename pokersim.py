@@ -69,9 +69,6 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
   #action methods to be moved into subclass later
   
-    
-
-
   def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
     return self.__hands[player]
 
@@ -257,8 +254,6 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 #database table bot_settings risk, difficulty, strategy
 
 
-  
-
 
 # database connection should go in main.py
 class database(): #takes save file name 
@@ -273,7 +268,7 @@ class database(): #takes save file name
     if os.path.exists(self.filename):
       self.needsSetup = False
 
-      if input("Save file found! Restore it? y/n: ") != "y": ###replace pygame
+      if input("Save file found! Restore it? y/N: ") != "y": ###replace pygame
         os.remove(self.filename) # deletes file for new creation, need to restart sqlite explorer to view
         self.needsSetup = True
     else:
@@ -324,26 +319,69 @@ class database(): #takes save file name
 
 class Player(): 
   def __init__(self, args): # takes hands, player_id/arguments including player_id
-    self.__cards, self.player_id_value, self.chips_left, self.big_blind = args    
+    self.player_id_value, self.chips_left, self.big_blind = args    
 
 
-  def GetCards(self):
-    return self.__cards
+  def NewCards(self, new_hand):
+    self.__hand = new_hand
 
-  def GetPlayerId(self):
-    return self.player_id_value
+  def GetHand(self):
+    return self.__hand
 
-
-  def Raise(self):
-    pass
-
-
-  def Fold(self):
-    return
   
+  def Charge(self, amount): #returns amount taken
+    if amount > self.chips_left:
+      return False
+    self.total_round_bet += amount
+    self.chips_left -= amount
+    return amount
+    
 
-  def Check(self):
-    return
+  def ResetBet(self):
+    self.total_round_bet = 0
+
+
+  def PreviousCharge(self):
+    if self.total_round_bet > 0:
+      return self.total_round_bet
+    return False
+
+
+  def GetChoice(self, bet): #current bet to call #check if returned amount matches bet to determine a reraise
+    #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
+    if bet == False:
+      choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
+      if choice.isnumeric():
+        result = self.Charge(choice) ### testing remove 4 lines later
+        if result == False:
+          print("not enough chips(test)")
+        return result
+      if choice == "y":
+        return True
+      if choice == "n":
+        return False
+
+    else: #bet has been made
+      if bet >= self.chips_left:
+        choice = input("All in? y/N:")
+        if choice == "y":
+          self.Charge(self.chips_left)
+          return "AllIn"
+        else:
+          return False
+      
+      elif bet > 0:
+        choice = input("Fold(n), Call(y) or raise extra:")
+        if choice == "y":
+          self.Charge(bet)
+          return True
+        elif choice == "n":
+          return False
+        else:
+          choice = int(choice)
+          self.Charge(bet + choice)
+          return bet + choice #new extra bet
+
 
 
 

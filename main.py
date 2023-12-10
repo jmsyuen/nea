@@ -40,7 +40,7 @@ def NewGame():
         default = True
         break
       total_players_left = int(input("Enter number of computer opponents:")) + 1 #includes human, replace with pygame and specific buttons
-      starting_chips = int(input("Enter starting chips:")) # default £50
+      chips_left = int(input("Enter starting chips:")) # default £50
       big_blind = int(input("Enter starting big blind:"))
       #difficulty ranges from easiest to hardest inclusive all including the previous difficulties
       #remember to add to Player() call below
@@ -50,33 +50,52 @@ def NewGame():
   
   if default:
     total_players_left = 3
-    starting_chips = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
+    chips_left = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
     big_blind = 100 #small blind is always half of big
-  
-  #create player object dictionary
-  player_dict = dict() #contains cards
-  for player_id_value in range(1, total_players_left + 1):
-    player_dict["player_" + str(player_id_value)] = pokersim.Player([round.GetHand(player_id_value), player_id_value, starting_chips, big_blind]) #add 
   
   
   #game
+  first_time = True
+
   play_game = True # new round
   while play_game: #quit if one player left/saving/human out
     #read to and write out every iteration 
     #save button available at start of every round
     #first time setup variable default checked
     round = pokersim.new_round(total_players_left)
+    #create player object dictionary
+    if first_time:
+      first_time = False
+      player_dict = dict()
+      for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
+        player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
     
-    #start on random player every new game
-    current_player = "player_1"
-    print(player_dict[current_player].GetPlayerId())
+    #deal cards for remaining players
+    for player_id in player_dict:
+      player_dict[player_id].NewCards(round.GetHand(int(player_id.split("_")[-1]) ))
+      player_dict[player_id].ResetBet()
+
+    
+    #charge blinds later
+
+
     #cycle through players in order circular queue?
+    current_player = "player_1" #start on random player every new game
+    print(player_dict[current_player].GetChoice())
+    #if "AllIn" or True:
+    #if returnedbet > currentbet:
+    #   singlebet = currentbet + returnedbet
+    #    reraised = True
+    #scenario if raised after you to call again
+    #function to return if previously bet
+    #pot += currentbet + newbet
+    #scenario if bet raised twice before reaching you
 
 
     for i in range(1, round.players + 1):# testing function
       print(round.GetHand(i)) 
 
-    #assign blinds later
+
     #money system
 
     #actions check raise fold
