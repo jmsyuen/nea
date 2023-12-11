@@ -100,7 +100,7 @@ def NewGame():
         
         
         current_player_id = round_players[round_player_index]
-        action = player_dict[current_player_id].GetChoice(highest_bet)
+        action = player_dict[current_player_id].GetChoice(highest_bet) #returns necessary actions if bet
         print(action)
       
         if action or action == "AllIn": #check
@@ -110,10 +110,10 @@ def NewGame():
           round_players.remove(current_player_id) #removes based on value not index
           round_player_index -= 1
 
-        else:
+        else: #bet
           if action > highest_bet:
             highest_bet = action
-        #if "AllIn" or True: in case of bet already made GetChoice(True)
+            
         #if returnedbet > currentbet:
         #   singlebet = currentbet + returnedbet
         #    reraised = True
@@ -131,7 +131,7 @@ def NewGame():
           round_player_index = (round_player_index + 1) % len(round_players)  #cycle 
           if round_player_index == current_round_player_index: # break to continue to next stage for full cycle
             break
-          #add another loop for highest_bet
+          #add another loop for highest_bet ###
       ##
     #####
 

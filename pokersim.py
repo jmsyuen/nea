@@ -361,18 +361,25 @@ class Player():
     if bet == 0:
       choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
       if choice.isnumeric():
+        if choice == self.chips_left:
+          result = self.Charge(self.chips_left)
+          self.AllIn = True
+          return result
+        ###TESTING
         result = self.Charge(int(choice)) 
         if result == False: ### testing remove 4 lines later
           print("not enough chips(test)")
+        ###TESTING
         return result
-      if choice == "y":
+      
+      if choice == "y": #check
         return True
-      if choice == "n":
+      if choice == "n": #fold
         return False
 
     else: #bet has been made
       if bet >= self.chips_left:
-        choice = input("All in? y/N:")
+        choice = input("All in (y) or fold(n)?:")
         if choice == "y":
           self.Charge(self.chips_left)
           self.AllIn = True
