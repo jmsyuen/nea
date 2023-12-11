@@ -110,13 +110,14 @@ def NewGame():
           round_players.remove(current_player_id) #removes based on value not index
           round_player_index -= 1
 
-        else: #bet
+        else: #value has been returned  
+          
+          if highest_bet == 0: #first bet
+            highest_bettor_index = round_player_index #to loop back to 
+          highest_bet = action
+          reraised = True
+          
           if action > highest_bet:
-            highest_bet = action
-            
-        #if returnedbet > currentbet:
-        #   singlebet = currentbet + returnedbet
-        #    reraised = True
         #if PreviousCharge() != False:
         #   charge currentbet - previouscharge
         #scenario if raised after you to call again
@@ -127,9 +128,12 @@ def NewGame():
           return round_players
         elif round_player_index > len(round_players): #iterate next player in stage
           round_player_index = 0  #accounts for index out of range
-        else:
-          round_player_index = (round_player_index + 1) % len(round_players)  #cycle 
-          if round_player_index == current_round_player_index: # break to continue to next stage for full cycle
+        
+        else: #cycle if bet has been made
+          round_player_index = (round_player_index + 1) % len(round_players)  
+          if highest_bet != 0 and round_player_index == highest_bettor_index: #for new bettor
+            break
+          elif round_player_index == current_round_player_index: # break to continue to next stage for full cycle
             break
           #add another loop for highest_bet ###
       ##
