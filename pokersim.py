@@ -398,9 +398,6 @@ class Player():
 if __name__ == "__main__":
   db = database()
   db.con_up()
-
-
-
   round1 = new_round(3)
 
   print(round1.Deck())

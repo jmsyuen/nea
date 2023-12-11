@@ -89,14 +89,16 @@ def NewGame():
     current_round_player_index = 0 ###for testing ease REMOVE LATER
     pot = 0
 
-    def round_stage(stage):
+    def round_stage(stage): #returns nothing to continue
       round_player_index = current_round_player_index
-      bet_matched = False
+      bet_matched = False #changes to true if all checked with no bet
       highest_bet = 0
       if stage > 0:
         print(round.GetPublicStage(stage))
       
-      while len(round_players) > 1 or bet_matched == False: #iterate players in round_stage
+      while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
+        
+        
         current_player_id = round_players[round_player_index]
         action = player_dict[current_player_id].GetChoice(highest_bet)
         print(action)
@@ -127,19 +129,35 @@ def NewGame():
           round_player_index = 0  #accounts for index out of range
         else:
           round_player_index = (round_player_index + 1) % len(round_players)  #cycle 
+          if round_player_index == current_round_player_index: # break to continue to next stage for full cycle
+            break
+          #add another loop for highest_bet
+      ##
+    #####
 
-
-    #iterate stages and return list of winners
+    #iterate stages and return list of finalists
     for stage in range(4):
-      winners = round_stage(stage)
-      if type(winners) == list:
-        print(winners)
+      finalists = round_stage(stage)
+      if type(finalists) == list:
+        print(finalists)
         break
 
+    #calculate winners from finalists
+    if len(finalists) == 1:
+      pass
+    else: 
+      playerCombinations = []
+      for finalist in finalists:    #draw winners from database
+        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist)) ] ) # add finalist number
+      winners = round.FindWinner(playerCombinations)
+      print(f"winner: {winners}")
+    
     #split pot  
     winnings = pot // len(winners)
     for winner in winners:
       print(player_dict[winner].Collect(winnings))
+
+
 
     #end game if one player left or human out (optional)
     #player_dict - bustPlayers
