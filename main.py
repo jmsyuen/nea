@@ -103,7 +103,7 @@ def NewGame():
         action = player_dict[current_player_id].GetChoice(highest_bet) #returns necessary actions if bet
         print(action)
       
-        if action or action == "AllIn": #check
+        if action == True or action == "AllIn": #check
           pass
 
         elif action == False: #fold
@@ -111,15 +111,18 @@ def NewGame():
           round_player_index -= 1
 
         else: #value has been returned  
-          
-          if highest_bet == 0: #first bet
+          if action == highest_bet: # called
+            pass
+          elif highest_bet == 0: #first bet
             highest_bettor_index = round_player_index #to loop back to 
-          highest_bet = action
-          reraised = True
+            highest_bet = action
+            raised = True
           
-          if action > highest_bet:
-        #if PreviousCharge() != False:
-        #   charge currentbet - previouscharge
+          elif action > highest_bet: #raised
+            highest_bettor_index = round_player_index
+            highest_bet = action
+            raised = True
+          pot += action
         #scenario if raised after you to call again
         #function to return if previously bet
         #pot += currentbet + newbet
@@ -132,10 +135,10 @@ def NewGame():
         else: #cycle if bet has been made
           round_player_index = (round_player_index + 1) % len(round_players)  
           if highest_bet != 0 and round_player_index == highest_bettor_index: #for new bettor
-            break
+            bet_matched = True
           elif round_player_index == current_round_player_index: # break to continue to next stage for full cycle
             break
-          #add another loop for highest_bet ###
+          #add another loop for highest_bet, might break if highest bettor folds after raising###
       ##
     #####
 
@@ -148,13 +151,13 @@ def NewGame():
 
     #calculate winners from finalists
     if len(finalists) == 1:
-      pass
+      winners = finalists
     else: 
       playerCombinations = []
       for finalist in finalists:    #draw winners from database
         playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist)) ] ) # add finalist number
       winners = round.FindWinner(playerCombinations)
-      print(f"winner: {winners}")
+    print(f"winner: {winners}")
     
     #split pot  
     winnings = pot // len(winners)

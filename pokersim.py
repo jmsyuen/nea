@@ -365,8 +365,9 @@ class Player():
           result = self.Charge(self.chips_left)
           self.AllIn = True
           return result
-        ###TESTING
+        
         result = self.Charge(int(choice)) 
+        ###TESTING
         if result == False: ### testing remove 4 lines later
           print("not enough chips(test)")
         ###TESTING
@@ -389,6 +390,11 @@ class Player():
       
       elif bet > 0:
         choice = input("Fold(n), Call(y) or raise extra:")
+
+        previouscharge = self.PreviousCharge()
+        if previouscharge != False:
+          bet -= previouscharge #deduct already input chips
+        
         if choice == "y":
           self.Charge(bet)
           return True
@@ -396,8 +402,7 @@ class Player():
           return False
         else:
           choice = int(choice)
-          self.Charge(bet + choice)
-          return bet + choice #new extra bet
+          return self.Charge(bet + choice)  #new extra bet
 
 
 
