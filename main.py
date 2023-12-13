@@ -87,11 +87,13 @@ def NewGame():
     
     current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
     current_round_player_index = 0 ###for testing ease REMOVE LATER
+    
     pot = 0
 
     def round_stage(stage): #returns nothing to continue
       round_player_index = current_round_player_index
       bet_matched = False #changes to true if all checked with no bet
+      raised = False
       highest_bet = 0
       if stage > 0:
         print(round.GetPublicStage(stage))
@@ -100,7 +102,7 @@ def NewGame():
         
         
         current_player_id = round_players[round_player_index]
-        action = player_dict[current_player_id].GetChoice(highest_bet) #returns necessary actions if bet
+        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
         print(action)
       
         if action == True or action == "AllIn": #check
@@ -113,15 +115,12 @@ def NewGame():
         else: #value has been returned  
           if action == highest_bet: # called
             pass
-          elif highest_bet == 0: #first bet
+         
+          elif action > highest_bet: #raised
             highest_bettor_index = round_player_index #to loop back to 
             highest_bet = action
             raised = True
-          
-          elif action > highest_bet: #raised
-            highest_bettor_index = round_player_index
-            highest_bet = action
-            raised = True
+          nonlocal pot
           pot += action
         #scenario if raised after you to call again
         #function to return if previously bet
@@ -134,10 +133,13 @@ def NewGame():
         
         else: #cycle if bet has been made
           round_player_index = (round_player_index + 1) % len(round_players)  
-          if highest_bet != 0 and round_player_index == highest_bettor_index: #for new bettor
-            bet_matched = True
-          elif round_player_index == current_round_player_index: # break to continue to next stage for full cycle
-            break
+          if raised == True: #if a higher bettor exists
+            if highest_bet != 0 and round_player_index == highest_bettor_index: #for new bettor
+              bet_matched = True
+              raised = False
+          else:
+            if round_player_index == current_round_player_index: # break to continue to next stage for full cycle
+              break
           #add another loop for highest_bet, might break if highest bettor folds after raising###
       ##
     #####

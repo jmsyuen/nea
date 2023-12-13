@@ -397,7 +397,7 @@ class Player():
         
         if choice == "y":
           self.Charge(bet)
-          return True
+          return bet
         elif choice == "n":
           return False
         else:
