@@ -80,9 +80,9 @@ def NewGame():
     #charge blinds later
 
 
-    
+    #print(round.GetHand(1)) #get human uncomment when remove testing function
     for i in range(1, round.players + 1):# testing function
-      print(round.GetHand(i)) 
+      print(f"player_{i} cards: {round.GetHand(i)}") 
     
     
     current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
@@ -95,15 +95,14 @@ def NewGame():
       bet_matched = False #changes to true if all checked with no bet
       raised = False
       highest_bet = 0
-      if stage > 0:
-        print(round.GetPublicStage(stage))
-        
       for player_id in player_dict:
         player_dict[player_id].ResetStageBet()
       
+      if stage > 0: #show stage cards
+        print(round.GetPublicStage(stage))
+
+      
       while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
-        
-        
         current_player_id = round_players[round_player_index]
         action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
         print(action)
@@ -120,32 +119,30 @@ def NewGame():
             pass
          
           elif action > highest_bet: #raised
-            highest_bettor_index = round_player_index #to loop back to 
+            highest_bettor_index = round_player_index # loop back to highest_bettor
             highest_bet = action
             raised = True
           nonlocal pot
-          pot += action
-        #scenario if raised after you to call again
-        #function to return if previously bet
-        #pot += currentbet + newbet
-        #scenario if bet raised twice before reaching you
+          pot += action #add to pot
+
+
         if len(round_players) == 1: #one player left
           return round_players
-        elif round_player_index > len(round_players): #iterate next player in stage
-          round_player_index = 0  #accounts for index out of range
+        elif round_player_index > len(round_players): #loop back in a circle
+          round_player_index = 0  
         
         else: #cycle if bet has been made
           round_player_index = (round_player_index + 1) % len(round_players)  
           if raised == True: #if a higher bettor exists
-            if highest_bet != 0 and round_player_index == highest_bettor_index: #for new bettor
+            if highest_bet != 0 and round_player_index == highest_bettor_index: #if looped back to new bettor
               bet_matched = True
               raised = False
-          else:
-            if round_player_index == current_round_player_index: # break to continue to next stage for full cycle
+          
+          else: 
+            if round_player_index == current_round_player_index: # continue after full circle made
               break
           #add another loop for highest_bet, might break if highest bettor folds after raising###
-      ##
-    #####
+      
 
     #iterate stages and return list of finalists
     for stage in range(4):
@@ -154,23 +151,25 @@ def NewGame():
         print(finalists)
         break
     
+    #calculate winners from finalists
     if finalists is None:
       finalists = round_players
-    #calculate winners from finalists
+    
     if len(finalists) == 1:
       winners = finalists
     else: 
       playerCombinations = []
       for finalist in finalists:    #draw winners from database
-        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(int(finalist.split("_")[-1]))) ] ) # add finalist number
-      winners = round.FindWinner(playerCombinations)
+        finalist_value = int(finalist.split("_")[-1])
+        print(f"{finalist}:{round.GetHand(finalist_value)}")
+        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
+      winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
     print(f"winner: {winners}")
     
     #split pot  
     winnings = pot // len(winners)
     for winner in winners:
       print(player_dict[winner].Collect(winnings))
-
 
 
     #end game if one player left or human out (optional)

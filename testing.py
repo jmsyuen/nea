@@ -211,6 +211,7 @@ def straight():
 straight()
 '''
 
+'''
 hand = ["sadc", "asdf"]
 list1 = [1,3,4,5]
 var = 3
@@ -223,7 +224,7 @@ def abc(args):
   print(first,second,third,fourth)
 
 abc([hand, var, var2, var3])
-
+'''
 '''
 list1 = False
 print(type(list1))
@@ -240,3 +241,6 @@ if type(list1) == list:
     else:               # custom setup variables
       self.players, self.starting_chips, self.big_blind = args
 '''
+
+list = ["player_1"]
+print(list)
