@@ -95,6 +95,7 @@ def NewGame():
       bet_matched = False #changes to true if all checked with no bet
       raised = False
       highest_bet = 0
+      first_loop = True
       for player_id in player_dict:
         player_dict[player_id].ResetStageBet()
       
@@ -107,14 +108,7 @@ def NewGame():
         action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
         print(action)
       
-        if action == True or action == "AllIn": #check
-          pass
-
-        elif action == False: #fold
-          round_players.remove(current_player_id) #removes based on value not index
-          round_player_index -= 1
-
-        else: #value has been returned  
+        if type(action) == int: #value has been returned  
           if action == highest_bet: # called
             pass
          
@@ -125,6 +119,16 @@ def NewGame():
           nonlocal pot
           pot += action #add to pot
 
+          
+        else: 
+          if action == True or action == "AllIn": #check
+            first_loop = False
+            pass
+
+          elif action == False: #fold
+            round_players.remove(current_player_id) #removes based on value not index
+            round_player_index -= 1
+
 
         if len(round_players) == 1: #one player left
           return round_players
@@ -133,14 +137,17 @@ def NewGame():
         
         else: #cycle if bet has been made
           round_player_index = (round_player_index + 1) % len(round_players)  
-          if raised == True: #if a higher bettor exists
+          if raised == True: #if a higher bettor exists 
             if highest_bet != 0 and round_player_index == highest_bettor_index: #if looped back to new bettor
               bet_matched = True
               raised = False
           
           else: 
             if round_player_index == current_round_player_index: # continue after full circle made
-              break
+              if first_loop == True:
+                first_loop = False
+              elif first_loop == False:
+                break
           #add another loop for highest_bet, might break if highest bettor folds after raising###
       
 
