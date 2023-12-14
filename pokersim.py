@@ -332,7 +332,7 @@ class Player():
   def Charge(self, amount): #returns amount taken
     if amount > self.chips_left:
       return False
-    self.total_round_bet += amount
+    self.total_stage_bet += amount
     self.chips_left -= amount
     return amount
     
@@ -342,14 +342,17 @@ class Player():
     return amount
 
 
-  def ResetBet(self):
-    self.total_round_bet = 0
+  def ResetAllIn(self):
     self.AllIn = False
 
 
+  def ResetStageBet(self):
+    self.total_stage_bet = 0
+
+
   def PreviousCharge(self):
-    if self.total_round_bet > 0:
-      return self.total_round_bet
+    if self.total_stage_bet > 0:
+      return self.total_stage_bet
     return False
 
   

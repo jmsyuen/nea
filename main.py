@@ -75,7 +75,7 @@ def NewGame():
     for player_id in player_dict:
       round_players.append(player_id)
       player_dict[player_id].NewCards(round.GetHand(int(player_id.split("_")[-1]) ))
-      player_dict[player_id].ResetBet()
+      player_dict[player_id].ResetAllIn()
     
     #charge blinds later
 
@@ -97,6 +97,9 @@ def NewGame():
       highest_bet = 0
       if stage > 0:
         print(round.GetPublicStage(stage))
+        
+      for player_id in player_dict:
+        player_dict[player_id].ResetStageBet()
       
       while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
         
@@ -150,14 +153,16 @@ def NewGame():
       if type(finalists) == list:
         print(finalists)
         break
-
+    
+    if finalists is None:
+      finalists = round_players
     #calculate winners from finalists
     if len(finalists) == 1:
       winners = finalists
     else: 
       playerCombinations = []
       for finalist in finalists:    #draw winners from database
-        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist)) ] ) # add finalist number
+        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(int(finalist.split("_")[-1]))) ] ) # add finalist number
       winners = round.FindWinner(playerCombinations)
     print(f"winner: {winners}")
     
