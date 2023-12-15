@@ -107,7 +107,7 @@ def NewGame():
         current_player_id = round_players[round_player_index]
         action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
         print(action)
-        remaining_counter = 0
+        remaining_counter = len(round_players)
       
         if type(action) == int: #value has been returned  
           if action == highest_bet: # called
@@ -144,13 +144,15 @@ def NewGame():
           elif remaining_counter == 0: #if a higher bettor exists 
             if highest_bet != 0 and round_player_index == highest_bettor_index: #if looped back to new bettor
               bet_matched = True
-          
-          else: 
-            if round_player_index == current_round_player_index: # continue after full circle made
+              break
+            elif round_player_index == current_round_player_index: # continue after full circle made
               if first_loop == True:
                 first_loop = False
               elif first_loop == False:
                 break
+            
+           
+          
           #add another loop for highest_bet, might break if highest bettor folds after raising###
       
 
