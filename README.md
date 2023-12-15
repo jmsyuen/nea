@@ -1,5 +1,10 @@
 # nea notes 
 
+debug notes
+action > highest_bet needs to be cumulative action not extra value
+stack loopback
+
+
 # td
 make design diagram outlining databases # design stage
 implement database # and calling functions
