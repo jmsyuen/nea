@@ -242,6 +242,7 @@ if type(list1) == list:
       self.players, self.starting_chips, self.big_blind = args
 '''
 
+'''
 def func(var):
 	if var == 1:
 		return 4,6
@@ -259,3 +260,7 @@ if type(result) == tuple:
   a = result[1]
   result = result[0]
 print(a, result)
+'''
+
+diction = {"asdf":[1,2,3,] , "asd":[1,2,3,] , "as":[1,2,3,]}
+print(len(diction))

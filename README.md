@@ -2,6 +2,8 @@
 
 
 # general td
+add blinds
+fix folded players being removed
 enable chip carry over between rounds (database r/w)
 bot strategies, ai
 pygame interface

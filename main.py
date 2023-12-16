@@ -247,13 +247,15 @@ def NewGame():
 
     
     #player_dict - bustPlayers
-    for player in player_dict:
+    for player in list(player_dict):
       if player_dict[player].ChipsLeft() == 0:
         total_players_left -= 1
         players_to_remove = []
+        round_players.remove(player)
+        player_dict.pop(player)
     
-    for player in players_to_remove:
-      player_dict.pop(player)
+#    for player in players_to_remove:
+      
 
     ##replace with if save button is pressed
     save = input("Save? y/N:")
@@ -261,6 +263,7 @@ def NewGame():
     if len(round_players) < 2: #or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
+
     elif len(save) != 0:
       play_game = False
       #write out
