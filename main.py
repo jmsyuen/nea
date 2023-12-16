@@ -250,11 +250,8 @@ def NewGame():
     for player in list(player_dict):
       if player_dict[player].ChipsLeft() == 0:
         total_players_left -= 1
-        players_to_remove = []
         round_players.remove(player)
         player_dict.pop(player)
-    
-#    for player in players_to_remove:
       
 
     ##replace with if save button is pressed
