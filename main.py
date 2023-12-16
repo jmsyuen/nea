@@ -50,9 +50,10 @@ def NewGame():
       nonlocal pot
 
       if type(action) == tuple: #allin
-        pot += action[1]
+        first_loop = False
+        action = action[1]
 
-      elif type(action) == int: #value has been returned  
+      if type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
           pass  #works as 0 also counted as False
         
@@ -62,9 +63,12 @@ def NewGame():
           raised = True
         pot += action #add to pot
 
+
+          
+
       elif action == True or action == "AllIn": #check
         first_loop = False
-        pass
+        
 
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index

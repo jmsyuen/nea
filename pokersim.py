@@ -365,12 +365,13 @@ class Player():
     if highest_bet == 0:
       choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
       if choice.isnumeric():
+        choice = int(choice)
         if choice == self.chips_left:
           result = self.Charge(self.chips_left)
           self.AllIn = True
           return "AllIn", result
         
-        result = self.Charge(int(choice)) 
+        result = self.Charge(choice) 
         ###TESTING
         if result == False: ### testing remove 4 lines later
           print("not enough chips(test)")
