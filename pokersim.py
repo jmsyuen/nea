@@ -356,6 +356,10 @@ class Player():
       return self.total_stage_bet
     return 0
 
+
+  def ChipsLeft(self):
+    return self.chips_left
+
   
   def GetChoice(self, highest_bet): #current bet to call #check if returned amount matches bet to determine a reraise
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
@@ -375,6 +379,7 @@ class Player():
         ###TESTING
         if result == False: ### testing remove 4 lines later
           print("not enough chips(test)")
+          return True
         ###TESTING
         return result
       

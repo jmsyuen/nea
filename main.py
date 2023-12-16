@@ -139,9 +139,11 @@ def NewGame():
     big_blind = 100 #small blind is always half of big
   
   
+
+
+
   #game
   first_time = True
-
   play_game = True # new round
   while play_game: #quit if one player left/saving/human out
     #read to and write out every iteration 
@@ -172,6 +174,8 @@ def NewGame():
     
     current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
     current_round_player_index = 0 ###for testing ease REMOVE LATER
+    #human always player_1
+
     
     pot = 0
 
@@ -241,18 +245,25 @@ def NewGame():
       print(player_dict[winner].Collect(winnings))
 
 
-    #end game if one player left or human out (optional)
+    
     #player_dict - bustPlayers
-    save = False
-    play_game = False #temp
+    for player in player_dict:
+      if player_dict[player].ChipsLeft() == 0:
+        total_players_left -= 1
+        players_to_remove = []
+    
+    for player in players_to_remove:
+      player_dict.pop(player)
+
     ##replace with if save button is pressed
     save = input("Save? y/N:")
-    
-    if round.players < 2:
+    #end game if one player left or human out (optional)
+    if len(round_players) < 2: #or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
     elif len(save) != 0:
       play_game = False
+      #write out
     
     
 
