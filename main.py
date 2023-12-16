@@ -28,6 +28,87 @@ def initiate_connection(path):
 
 # nea
 def NewGame():
+  #functions
+  def round_stage(stage): #returns nothing to continue
+    round_player_index = current_round_player_index
+    bet_matched = False #changes to true if all checked with no bet
+    raised = False
+    highest_bet = 0
+    first_loop = True
+    for player_id in player_dict:
+      player_dict[player_id].ResetStageBet()
+    
+    if stage > 0: #show stage cards
+      print(round.GetPublicStage(stage))
+
+    
+    while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
+      current_player_id = round_players[round_player_index]
+      previous_charge = player_dict[current_player_id].PreviousCharge()
+      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+      print(action)
+      nonlocal pot
+
+      if type(action) == tuple: #allin
+        pot += action[1]
+
+      elif type(action) == int: #value has been returned  
+        if action + previous_charge == highest_bet: # called
+          pass  #works as 0 also counted as False
+        
+        elif action + previous_charge > highest_bet: #raised
+          highest_bettor_index = round_player_index # loop back to highest_bettor
+          highest_bet = action + previous_charge
+          raised = True
+        pot += action #add to pot
+
+      elif action == True or action == "AllIn": #check
+        first_loop = False
+        pass
+
+      elif action == False: #fold
+        round_players.remove(current_player_id) #removes based on value not index
+        round_player_index -= 1
+
+
+      #iterate players
+      if len(round_players) == 1: #one player left
+        return round_players
+      elif round_player_index > len(round_players): #loop back in a circle
+        round_player_index = 0  
+      
+      else: #cycle if bet has been made
+        round_player_index = (round_player_index + 1) % len(round_players)  
+        if raised == True: #if a higher bettor exists 
+          if highest_bet != 0 and round_player_index == highest_bettor_index: #if looped back to new bettor
+            bet_matched = True
+            raised = False
+        
+        else: 
+          if round_player_index == current_round_player_index: # continue after full circle made
+            if first_loop == True:
+              first_loop = False
+            elif first_loop == False:
+              break
+        #add another loop for highest_bet, might break if highest bettor folds after raising###
+    
+
+  def value_to_name(value): # convert card values to their name
+    #convert face values to names
+    if value == 14:
+      return "Ace"
+    elif value == 13:
+      return "King"
+    elif value == 12:
+      return "Queen"
+    elif value == 11:
+      return "Jack"
+    else:
+      return value
+
+
+
+
   valid = False
   while not valid: #replace with pygame and buttons instead of inputs
     try:
@@ -90,68 +171,7 @@ def NewGame():
     
     pot = 0
 
-    def round_stage(stage): #returns nothing to continue
-      round_player_index = current_round_player_index
-      bet_matched = False #changes to true if all checked with no bet
-      raised = False
-      highest_bet = 0
-      first_loop = True
-      for player_id in player_dict:
-        player_dict[player_id].ResetStageBet()
-      
-      if stage > 0: #show stage cards
-        print(round.GetPublicStage(stage))
 
-      
-      while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
-        current_player_id = round_players[round_player_index]
-        previous_charge = player_dict[current_player_id].PreviousCharge()
-        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
-        print(action)
-        
-      
-        if type(action) == int: #value has been returned  
-          if action + previous_charge == highest_bet: # called
-            pass  #works as 0 also counted as False
-         
-          elif action + previous_charge > highest_bet: #raised
-            highest_bettor_index = round_player_index # loop back to highest_bettor
-            highest_bet = action + previous_charge
-            raised = True
-          nonlocal pot
-          pot += action #add to pot
-
-          
-        else: 
-          if action == True or action == "AllIn": #check
-            first_loop = False
-            pass
-
-          elif action == False: #fold
-            round_players.remove(current_player_id) #removes based on value not index
-            round_player_index -= 1
-
-
-        if len(round_players) == 1: #one player left
-          return round_players
-        elif round_player_index > len(round_players): #loop back in a circle
-          round_player_index = 0  
-        
-        else: #cycle if bet has been made
-          round_player_index = (round_player_index + 1) % len(round_players)  
-          if raised == True: #if a higher bettor exists 
-            if highest_bet != 0 and round_player_index == highest_bettor_index: #if looped back to new bettor
-              bet_matched = True
-              raised = False
-          
-          else: 
-            if round_player_index == current_round_player_index: # continue after full circle made
-              if first_loop == True:
-                first_loop = False
-              elif first_loop == False:
-                break
-          #add another loop for highest_bet, might break if highest bettor folds after raising###
-      
 
     #iterate stages and return list of finalists
     for stage in range(4):
@@ -174,46 +194,41 @@ def NewGame():
         playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
       winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
     
-    # get the combination name
+    
+
+    #output combinations with their values
     for winner in winners:
       for player in playerCombinations:
         if player[0] == winner:
           combination = player[1]
-          combination_high = player[2]
-
+          combination_high = str(value_to_name(player[2]))
+          
           #convert to combination names
           if combination == 1:
             combination = "High Card"
           elif combination == 2:
             combination = "Pair"
-          elif combination == 3:
+          elif combination == 3:#
             combination = "Two Pair"
+            combination_high += ", " + str(value_to_name(player[3]))
           elif combination == 4:
-            combination = "3 of a kind"
+            combination = "Three of a kind"
           elif combination == 5:
-            combination = "Straight"
+            combination = "high Straight"
           elif combination == 6:
-            combination = "Flush"
-          elif combination == 7:
+            combination = "high Flush"
+          elif combination == 7:#
             combination = "Full house"
+            combination_high += ", " + str(value_to_name(player[3]))
           elif combination == 8:
-            combination = "4 of a kind"
+            combination = "Four of a kind"
           elif combination == 9:
-            combination = "Straight Flush"
+            combination = "high Straight Flush"
           elif combination == 10:
             combination = "Royal Flush"
           
-          #convert face values to names
-          if combination_high == 14:
-            combination_high = "Ace"
-          elif combination_high == 13:
-            combination_high = "King"
-          elif combination_high == 12:
-            combination_high = "Queen"
-          elif combination_high == 11:
-            combination_high = "Jack"
           
-          print(f"winner: {winners} with a {combination_high} high {combination}")
+    print(f"winner: {winners} with a {combination_high} {combination}")
               
     
     #split pot  

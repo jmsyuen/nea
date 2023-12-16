@@ -242,9 +242,20 @@ if type(list1) == list:
       self.players, self.starting_chips, self.big_blind = args
 '''
 
-list = ["player_1"]
-print(list)
-def value():
-	return 0
-if value() == False:
-	print("false")
+def func(var):
+	if var == 1:
+		return 4,6
+	else:
+		return 4
+
+
+result = func(1)
+
+print(result)
+if result[0] == 4:
+	print("A")
+
+if type(result) == tuple:
+  a = result[1]
+  result = result[0]
+print(a, result)

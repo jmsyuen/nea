@@ -367,7 +367,7 @@ class Player():
         if choice == self.chips_left:
           result = self.Charge(self.chips_left)
           self.AllIn = True
-          return result
+          return "AllIn", result
         
         result = self.Charge(int(choice)) 
         ###TESTING
@@ -385,9 +385,9 @@ class Player():
       if highest_bet >= self.chips_left:
         choice = input("All in (y) or fold(n)?:")
         if choice == "y":
-          self.Charge(self.chips_left)
+          result = self.Charge(self.chips_left)
           self.AllIn = True
-          return "AllIn"
+          return "AllIn", result
         else:
           return False
       
