@@ -116,7 +116,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
           combination_highs.append(value)
           
       if len(combination_highs) != 0:
-        return sorted(set(combination_highs), key=int)
+        return sorted(set(combination_highs), key=int, reverse=True)
       else:
         return False
 
@@ -270,6 +270,7 @@ class database(): #takes save file name
 
       if input("Save file found! Restore it? y/N: ") != "y": ###replace pygame
         os.remove(self.filename) # deletes file for new creation, need to restart sqlite explorer to view
+        print("Creating new save file")
         self.needsSetup = True
     else:
       print("Creating new save file")

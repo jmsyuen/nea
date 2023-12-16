@@ -208,7 +208,7 @@ def NewGame():
             combination = "High Card"
           elif combination == 2:
             combination = "Pair"
-          elif combination == 3:#
+          elif combination == 3:
             combination = "Two Pair"
             combination_high += ", " + str(value_to_name(player[3]))
           elif combination == 4:
@@ -217,7 +217,7 @@ def NewGame():
             combination = "high Straight"
           elif combination == 6:
             combination = "high Flush"
-          elif combination == 7:#
+          elif combination == 7:
             combination = "Full house"
             combination_high += ", " + str(value_to_name(player[3]))
           elif combination == 8:
@@ -241,9 +241,14 @@ def NewGame():
     #player_dict - bustPlayers
     save = False
     play_game = False #temp
+    ##replace with if save button is pressed
+    save = input("Save? y/N:")
+    
     if round.players < 2:
       play_game = False
-    
+      print(f"{round_players[0]} remains.")
+    elif len(save) != 0:
+      play_game = False
     
     
 
