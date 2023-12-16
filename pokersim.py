@@ -175,7 +175,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       #CH straight flush
       if CH != False and isflush != False:
         if CH[0] == 1: # royal flush
-          return [10]
+          return [10, 14]
         else:
           return [9] + CH   # return combination high
 

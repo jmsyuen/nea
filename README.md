@@ -1,8 +1,10 @@
 # nea notes 
 
-debug notes
-action > highest_bet needs to be cumulative action not extra value
-stack loopback
+
+# general td
+enable chip carry over between rounds (database r/w)
+bot strategies, ai
+pygame interface
 
 
 # td

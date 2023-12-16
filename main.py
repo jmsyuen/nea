@@ -173,7 +173,48 @@ def NewGame():
         print(f"{finalist}:{round.GetHand(finalist_value)}")
         playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
       winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
-    print(f"winner: {winners}")
+    
+    # get the combination name
+    for winner in winners:
+      for player in playerCombinations:
+        if player[0] == winner:
+          combination = player[1]
+          combination_high = player[2]
+
+          #convert to combination names
+          if combination == 1:
+            combination = "High Card"
+          elif combination == 2:
+            combination = "Pair"
+          elif combination == 3:
+            combination = "Two Pair"
+          elif combination == 4:
+            combination = "3 of a kind"
+          elif combination == 5:
+            combination = "Straight"
+          elif combination == 6:
+            combination = "Flush"
+          elif combination == 7:
+            combination = "Full house"
+          elif combination == 8:
+            combination = "4 of a kind"
+          elif combination == 9:
+            combination = "Straight Flush"
+          elif combination == 10:
+            combination = "Royal Flush"
+          
+          #convert face values to names
+          if combination_high == 14:
+            combination_high = "Ace"
+          elif combination_high == 13:
+            combination_high = "King"
+          elif combination_high == 12:
+            combination_high = "Queen"
+          elif combination_high == 11:
+            combination_high = "Jack"
+          
+          print(f"winner: {winners} with a {combination_high} high {combination}")
+              
     
     #split pot  
     winnings = pot // len(winners)
