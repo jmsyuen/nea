@@ -159,9 +159,11 @@ def NewGame():
     
     #deal cards for remaining players
     round_players = []
+    counter = 0
     for player_id in player_dict:
+      counter += 1
       round_players.append(player_id)
-      player_dict[player_id].NewCards(round.GetHand(int(player_id.split("_")[-1]) ))
+      player_dict[player_id].NewCards(round.GetHand(counter))
       player_dict[player_id].ResetAllIn()
     
     #charge blinds later
@@ -194,14 +196,14 @@ def NewGame():
     
     if len(finalists) == 1:
       winners = finalists
-    else: 
-      playerCombinations = []
-      for finalist in finalists:    #draw winners from database
-        finalist_value = int(finalist.split("_")[-1])
-        print(f"{finalist}:{round.GetHand(finalist_value)}")
-        playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
-      winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
     
+    playerCombinations = []
+    for finalist in finalists:    #draw winners from database
+      finalist_value = int(finalist.split("_")[-1])
+      print(f"{finalist}:{round.GetHand(finalist_value)}")
+      playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
+    winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
+  
     
 
     #output combinations with their values
@@ -257,7 +259,7 @@ def NewGame():
     ##replace with if save button is pressed
     save = input("Save? y/N:")
     #end game if one player left or human out (optional)
-    if len(round_players) < 2: #or "player_1" not in round.players
+    if len(player_dict) < 2: #or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
 
