@@ -353,15 +353,15 @@ class Player():
   def PreviousCharge(self):
     if self.total_stage_bet > 0:
       return self.total_stage_bet
-    return False
+    return 0
 
   
-  def GetChoice(self, bet): #current bet to call #check if returned amount matches bet to determine a reraise
+  def GetChoice(self, highest_bet): #current bet to call #check if returned amount matches bet to determine a reraise
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
     if self.AllIn: #persistent
       return "AllIn"
     
-    if bet == 0:
+    if highest_bet == 0:
       choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
       if choice.isnumeric():
         if choice == self.chips_left:
@@ -382,7 +382,7 @@ class Player():
         return False
 
     else: #bet has been made
-      if bet >= self.chips_left:
+      if highest_bet >= self.chips_left:
         choice = input("All in (y) or fold(n)?:")
         if choice == "y":
           self.Charge(self.chips_left)
@@ -391,21 +391,21 @@ class Player():
         else:
           return False
       
-      elif bet > 0:
+      elif highest_bet > 0:
         choice = input("Fold(n), Call(y) or raise extra:")
 
         previouscharge = self.PreviousCharge()
         if previouscharge != False:
-          bet -= previouscharge #deduct already input chips
+          highest_bet -= previouscharge #deduct already input chips
         
         if choice == "y":
-          self.Charge(bet)
-          return bet
+          self.Charge(highest_bet)
+          return highest_bet
         elif choice == "n":
           return False
         else:
-          choice = int(choice)
-          return self.Charge(bet + choice)  #new extra bet
+          extra_raise = int(choice)
+          return self.Charge(highest_bet + extra_raise)  #new extra bet
 
 
 

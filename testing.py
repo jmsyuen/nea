@@ -244,5 +244,7 @@ if type(list1) == list:
 
 list = ["player_1"]
 print(list)
-value = 0
-print(type(value))
+def value():
+	return 0
+if value() == False:
+	print("false")

@@ -105,16 +105,18 @@ def NewGame():
       
       while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
         current_player_id = round_players[round_player_index]
+        previous_charge = player_dict[current_player_id].PreviousCharge()
         action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
         print(action)
+        
       
         if type(action) == int: #value has been returned  
-          if action == highest_bet: # called
-            pass
+          if action + previous_charge == highest_bet: # called
+            pass  #works as 0 also counted as False
          
-          elif action > highest_bet: #raised
+          elif action + previous_charge > highest_bet: #raised
             highest_bettor_index = round_player_index # loop back to highest_bettor
-            highest_bet = action
+            highest_bet = action + previous_charge
             raised = True
           nonlocal pot
           pot += action #add to pot
