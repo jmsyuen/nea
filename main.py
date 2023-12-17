@@ -38,18 +38,46 @@ def NewGame():
     for player_id in player_dict:
       player_dict[player_id].ResetStageBet()
     
-    if stage > 0: #show stage cards
+    
+    def all_other_players_all_in():
+      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id) #checks if all other players are AllIn, skips further prompts
+
+    big_blind_amount, small_blind_amount = 0, 0  # Declare outside the if block
+    # Charge blinds for the first round
+    if stage == 0:
+      big_blind_player_id = round_players[current_round_player_index]
+      small_blind_player_index = (current_round_player_index + 1) % len(player_dict)
+      small_blind_player_id = round_players[small_blind_player_index]
+
+      # Charge big blind
+      big_blind_amount = player_dict[big_blind_player_id].Charge(big_blind)
+
+      # Charge small blind
+      small_blind_amount = player_dict[small_blind_player_id].Charge(small_blind)
+
+      # Update highest bet to be the big blind amount
+      highest_bet = big_blind_amount
+      
+      # Check if all players have matched the big blind
+      if all(player_dict[player_id].PreviousCharge() >= big_blind_amount for player_id in round_players):
+        bet_matched = True
+
+    elif stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
 
-    def all_other_players_all_in():
-      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id)
 
-    
+
+
     while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
-      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+      # If the player has not matched the big blind, prompt for action
+      if previous_charge < big_blind_amount:
+        action = player_dict[current_player_id].GetChoice(big_blind_amount)
+      else:
+        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+
       print(action)
       nonlocal pot
 
@@ -79,6 +107,16 @@ def NewGame():
 
 
 
+      if stage == 0 and current_player_id == round_players[-1] and bet_matched is False:
+        # If it's the last player in the first stage and the bet is unmatched, reset the index for the second stage
+        round_player_index = 0
+        # Check if all players have matched the big blind
+        if all(player_dict[player_id].PreviousCharge() >= big_blind_amount for player_id in round_players):
+          bet_matched = True
+
+
+
+
       #iterate players
       if len(round_players) == 1: #one player left
         return round_players
@@ -98,6 +136,8 @@ def NewGame():
               first_loop = False
             elif first_loop == False:
               break
+      
+      
         #add another loop for highest_bet, might break if highest bettor folds after raising###
     
 
@@ -175,18 +215,18 @@ def NewGame():
       print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
       #print(round.GetHand("player_1")) #get human uncomment when remove testing function
 
+    pot = 0
 
     #charge blinds later
     small_blind = big_blind // 2
     #assign blinds to 2 people left of dealer - big small dealer
-
-    
+    current_game_player_index
       
     
     
     
     
-    pot = 0
+    
 
     #iterate stages and return list of finalists
     for stage in range(4):
@@ -262,7 +302,7 @@ def NewGame():
     ##replace with if save button is pressed in pygame
     save = input("Save? y/N:")
     #end game if one player left or human out (optional)
-    if len(player_dict) < 2: #or "player_1" not in round.players
+    if len(player_dict) < 2: #or "player_1" not in round.players ADD LATER
       play_game = False
       print(f"{round_players[0]} remains.")
 
@@ -277,6 +317,7 @@ def NewGame():
     if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
       big_blind *= 2
     
+
     
 
 
