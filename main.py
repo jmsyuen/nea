@@ -59,15 +59,11 @@ def NewGame():
     elif stage == 0:
       big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
       small_blind_player_id = round_players[loop(player_dict, loop(player_dict, round_player_index, False), False)]
-      print(big_blind_player_id, small_blind_player_id)
+      print(f"big blind: {big_blind_player_id}, small blind: {small_blind_player_id}")
       # charge blinds, and add to pot and highest_bet
       highest_bet = player_dict[big_blind_player_id].Charge(big_blind)
       player_dict[small_blind_player_id].Charge(small_blind)
-      pot += big_blind + small_blind
-      #first_loop = False
-      
-
-
+      pot += big_blind + small_blind    
 
 
     def all_other_players_all_in():
@@ -108,7 +104,7 @@ def NewGame():
         return round_players
 
 
-      #if highest_bet == big_blind:
+
       #iterate players
       if len(round_players) == 1: #one player left
         return round_players
@@ -177,6 +173,7 @@ def NewGame():
   while play_game: # iterate rounds
     #read to and write out every iteration 
     pot = 0
+    small_blind = big_blind // 2
     #create player object dictionary
     if first_time:
       first_time = False
@@ -200,21 +197,11 @@ def NewGame():
       print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
       #print(round.GetHand("player_1")) #get human uncomment when remove testing function
 
-
-    #charge blinds later
-    small_blind = big_blind // 2
-    #assign blinds to 2 people left of dealer - big small dealer
-
     
-      
-    
-    
-
     #iterate stages and return list of finalists
     for stage in range(4):
       finalists = round_stage(stage)
       if type(finalists) == list:
-        print(finalists)
         break
     
     #calculate winners from finalists
@@ -296,6 +283,7 @@ def NewGame():
     #current_round_player_index = (current_round_player_index + 1) % len(player_dict)  , possibly broken for multiple players out
     if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
       big_blind *= 2
+      print("Blinds doubled")
     
     
 
