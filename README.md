@@ -2,12 +2,14 @@
 
 
 # general td
-add blinds
-can remove blind doubling like a cash game as only in tournaments
+can remove blind doubling like a cash game as only in tournaments #
 enable chip carry over between rounds (database r/w)
 bot strategies, ai
 pygame interface
 
+# when testing done
+remove current_round_player_index = 0
+stop play when human ("player_1") out
 
 # td
 make design diagram outlining databases # design stage

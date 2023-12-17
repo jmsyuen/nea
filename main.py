@@ -280,7 +280,6 @@ def NewGame():
     current_round_player_index += 1 #iterate blinds
     if current_round_player_index > len(player_dict) - 1: 
       current_round_player_index = 0
-    #current_round_player_index = (current_round_player_index + 1) % len(player_dict)  , possibly broken for multiple players out
     if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
       big_blind *= 2
       print("Blinds doubled")
@@ -290,6 +289,5 @@ def NewGame():
 
 if __name__ == "__main__": # runs if file is being executed rather than imported #run pygame
   NewGame()
-  #poker_game = PokerGame()
-  #poker_game.play()
+
   
