@@ -262,5 +262,6 @@ if type(result) == tuple:
 print(a, result)
 '''
 
-diction = {"asdf":[1,2,3,] , "asd":[1,2,3,] , "as":[1,2,3,]}
-print(len(diction))
+a = 2
+a *= 3
+print(a)

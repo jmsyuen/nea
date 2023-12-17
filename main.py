@@ -141,17 +141,20 @@ def NewGame():
   #game
   first_time = True
   play_game = True # new round
-  while play_game: #quit if one player left/saving/human out
+  while play_game: # iterate rounds
     #read to and write out every iteration 
-    #save button available at start of every round
-    #first time setup variable default checked
     
     #create player object dictionary
     if first_time:
       first_time = False
+      current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
+      current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
+      #human always player_1
+      current_round_player_index = 0 ###for testing ease REMOVE LATER
       player_dict = dict()
       for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
         player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
+      
     
     round = pokersim.new_round(total_players_left, player_dict)
 
@@ -166,18 +169,16 @@ def NewGame():
 
 
     #charge blinds later
-
+    small_blind = big_blind // 2
+    #assign blinds to 2 people left of dealer - big small dealer
 
     
       
     
     
-    current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
-    current_round_player_index = 0 ###for testing ease REMOVE LATER
-    #human always player_1
+    
+    
     pot = 0
-
-
 
     #iterate stages and return list of finalists
     for stage in range(4):
@@ -233,7 +234,6 @@ def NewGame():
           elif combination == 10:
             combination = "Royal Flush"
           
-          
     print(f"winner: {winners} with a {combination_high} {combination}")
               
     
@@ -242,9 +242,8 @@ def NewGame():
     for winner in winners:
       print(player_dict[winner].Collect(winnings))
 
-
     
-    #player_dict - bustPlayers
+    #remove bust players
     for player in list(player_dict):
       if player_dict[player].ChipsLeft() == 0:
         total_players_left -= 1
@@ -252,7 +251,7 @@ def NewGame():
         player_dict.pop(player)
       
 
-    ##replace with if save button is pressed
+    ##replace with if save button is pressed in pygame
     save = input("Save? y/N:")
     #end game if one player left or human out (optional)
     if len(player_dict) < 2: #or "player_1" not in round.players
@@ -262,6 +261,10 @@ def NewGame():
     elif len(save) != 0:
       play_game = False
       #write out
+    
+    current_round_player_index = (current_round_player_index + 1) % len(player_dict)  #iterate for blinds, possibly broken for multiple players out
+    if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
+      big_blind *= 2
     
     
 
