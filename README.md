@@ -3,7 +3,7 @@
 
 # general td
 can remove blind doubling like a cash game as only in tournaments #
-enable chip carry over between rounds (database r/w)
+enable chip carry over between rounds (database r/w) ##database unnecessary
 bot strategies, ai
 pygame interface
 
