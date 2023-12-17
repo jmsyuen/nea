@@ -18,9 +18,10 @@ from sqlite3 import Error #
 
 
 class new_round(): # money system, carry over chips,  beginning of round, sub class
-  def __init__(self, players): # players, starting_chips
+  def __init__(self, players, player_dict): # players, starting_chips
     self.suits = ("hearts", "diamonds", "spades", "clubs")
     self.players = players
+    self.player_dict = player_dict
       
   #def ResetDeck(self):
     self.__deck = dict()
@@ -33,8 +34,8 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
   #def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
     self.__hands["public"] = self.PickCard(5)
-    for i in range(1, self.players + 1): #adjusted
-      self.__hands[i] = self.PickCard(2)
+    for player_id in player_dict: #adjusted
+      self.__hands[player_id] = self.PickCard(2)
 
 
   def PickCard(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
@@ -69,8 +70,8 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
   #action methods to be moved into subclass later
   
-  def GetHand(self, player): #returns hand of player in list form (public is the first, player keys start at 1)
-    return self.__hands[player]
+  def GetHand(self, player_id): #returns hand of player in list form (public is the first, player keys start at 1)
+    return self.__hands[player_id]
 
 
   def GetPublicStage(self, stage): # returns public cards, takes stage 1-3 but stage 1 returns list

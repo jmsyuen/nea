@@ -63,13 +63,9 @@ def NewGame():
           raised = True
         pot += action #add to pot
 
-
-          
-
       elif action == True or action == "AllIn": #check
         first_loop = False
         
-
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index
         round_player_index -= 1
@@ -149,7 +145,7 @@ def NewGame():
     #read to and write out every iteration 
     #save button available at start of every round
     #first time setup variable default checked
-    round = pokersim.new_round(total_players_left)
+    
     #create player object dictionary
     if first_time:
       first_time = False
@@ -157,28 +153,28 @@ def NewGame():
       for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
         player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
     
+    round = pokersim.new_round(total_players_left, player_dict)
+
     #deal cards for remaining players
     round_players = []
-    counter = 0
     for player_id in player_dict:
-      counter += 1
       round_players.append(player_id)
-      player_dict[player_id].NewCards(round.GetHand(counter))
+      player_dict[player_id].NewCards(round.GetHand(player_id)) #int(player_id.split("_")[-1]) 
       player_dict[player_id].ResetAllIn()
-    
+      print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
+      #print(round.GetHand("player_1")) #get human uncomment when remove testing function
+
+
     #charge blinds later
 
 
-    #print(round.GetHand(1)) #get human uncomment when remove testing function
-    for i in range(1, round.players + 1):# testing function
-      print(f"player_{i} cards: {round.GetHand(i)}") 
+    
+      
     
     
     current_round_player_index = random.randrange(0,len(round_players)) #start on random player every new game
     current_round_player_index = 0 ###for testing ease REMOVE LATER
     #human always player_1
-
-    
     pot = 0
 
 
@@ -199,9 +195,9 @@ def NewGame():
     
     playerCombinations = []
     for finalist in finalists:    #draw winners from database
-      finalist_value = int(finalist.split("_")[-1])
-      print(f"{finalist}:{round.GetHand(finalist_value)}")
-      playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist_value)) ] ) # get combination highs and append to list
+      #finalist_value = int(finalist.split("_")[-1])
+      print(f"{finalist}:{round.GetHand(finalist)}")
+      playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist)) ] ) # get combination highs and append to list
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
   
     
