@@ -41,10 +41,14 @@ def NewGame():
     if stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
 
+    def all_other_players_all_in():
+      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id)
+
     
     while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].PreviousCharge()
+      print(f"{current_player_id} move")
       action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action)
       nonlocal pot
@@ -69,6 +73,10 @@ def NewGame():
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index
         round_player_index -= 1
+
+      if all_other_players_all_in():
+        return round_players
+
 
 
       #iterate players
@@ -147,13 +155,13 @@ def NewGame():
     #create player object dictionary
     if first_time:
       first_time = False
+      player_dict = dict()
+      for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
+        player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
       current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
       current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
       #human always player_1
       current_round_player_index = 0 ###for testing ease REMOVE LATER
-      player_dict = dict()
-      for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
-        player_dict["player_" + str(player_id_value)] = pokersim.Player([player_id_value, chips_left, big_blind]) #add 
       
     
     round = pokersim.new_round(total_players_left, player_dict)
@@ -262,7 +270,10 @@ def NewGame():
       play_game = False
       #write out
     
-    current_round_player_index = (current_round_player_index + 1) % len(player_dict)  #iterate for blinds, possibly broken for multiple players out
+    current_round_player_index += 1 #iterate blinds
+    if current_round_player_index > len(player_dict) - 1: 
+      current_round_player_index = 0
+    #current_round_player_index = (current_round_player_index + 1) % len(player_dict)  , possibly broken for multiple players out
     if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
       big_blind *= 2
     

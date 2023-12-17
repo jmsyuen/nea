@@ -3,6 +3,7 @@
 
 # general td
 add blinds
+can remove blind doubling like a cash game as only in tournaments
 enable chip carry over between rounds (database r/w)
 bot strategies, ai
 pygame interface
