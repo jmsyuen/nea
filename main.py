@@ -29,7 +29,23 @@ def initiate_connection(path):
 # nea
 def NewGame():
   #functions
+  def loop(iterator, current_index, forward): # turns list into circular list, looping back and can reverse, returns new index
+    if forward == False: #reverse
+      if current_index <= 0:
+        current_index = len(iterator) - 1
+      else:
+        current_index -= 1
+      
+    else:
+      if current_index >= len(iterator) - 1:
+        current_index = 0
+      else:
+        current_index += 1
+    return current_index
+
+
   def round_stage(stage): #returns nothing to continue
+    nonlocal pot
     round_player_index = current_round_player_index
     bet_matched = False #changes to true if all checked with no bet
     raised = False
@@ -38,48 +54,33 @@ def NewGame():
     for player_id in player_dict:
       player_dict[player_id].ResetStageBet()
     
-    
-    def all_other_players_all_in():
-      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id) #checks if all other players are AllIn, skips further prompts
-
-    big_blind_amount, small_blind_amount = 0, 0  # Declare outside the if block
-    # Charge blinds for the first round
-    if stage == 0:
-      big_blind_player_id = round_players[current_round_player_index]
-      small_blind_player_index = (current_round_player_index + 1) % len(player_dict)
-      small_blind_player_id = round_players[small_blind_player_index]
-
-      # Charge big blind
-      big_blind_amount = player_dict[big_blind_player_id].Charge(big_blind)
-
-      # Charge small blind
-      small_blind_amount = player_dict[small_blind_player_id].Charge(small_blind)
-
-      # Update highest bet to be the big blind amount
-      highest_bet = big_blind_amount
-      
-      # Check if all players have matched the big blind
-      if all(player_dict[player_id].PreviousCharge() >= big_blind_amount for player_id in round_players):
-        bet_matched = True
-
-    elif stage > 0: #show stage cards
+    if stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
+    elif stage == 0:
+      big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
+      small_blind_player_id = round_players[loop(player_dict, loop(player_dict, round_player_index, False), False)]
+      print(big_blind_player_id, small_blind_player_id)
+      # charge blinds, and add to pot and highest_bet
+      highest_bet = player_dict[big_blind_player_id].Charge(big_blind)
+      player_dict[small_blind_player_id].Charge(small_blind)
+      pot += big_blind + small_blind
+      #first_loop = False
+      
 
 
 
 
+    def all_other_players_all_in():
+      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id)
+
+    
     while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
-      # If the player has not matched the big blind, prompt for action
-      if previous_charge < big_blind_amount:
-        action = player_dict[current_player_id].GetChoice(big_blind_amount)
-      else:
-        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
-
+      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action)
-      nonlocal pot
+      
 
       if type(action) == tuple: #allin
         first_loop = False
@@ -87,6 +88,7 @@ def NewGame():
 
       if type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
+          first_loop = False
           pass  #works as 0 also counted as False
         
         elif action + previous_charge > highest_bet: #raised
@@ -106,17 +108,7 @@ def NewGame():
         return round_players
 
 
-
-      if stage == 0 and current_player_id == round_players[-1] and bet_matched is False:
-        # If it's the last player in the first stage and the bet is unmatched, reset the index for the second stage
-        round_player_index = 0
-        # Check if all players have matched the big blind
-        if all(player_dict[player_id].PreviousCharge() >= big_blind_amount for player_id in round_players):
-          bet_matched = True
-
-
-
-
+      #if highest_bet == big_blind:
       #iterate players
       if len(round_players) == 1: #one player left
         return round_players
@@ -136,8 +128,6 @@ def NewGame():
               first_loop = False
             elif first_loop == False:
               break
-      
-      
         #add another loop for highest_bet, might break if highest bettor folds after raising###
     
 
@@ -153,8 +143,6 @@ def NewGame():
       return "Jack"
     else:
       return value
-
-
 
 
   valid = False
@@ -183,15 +171,12 @@ def NewGame():
     big_blind = 100 #small blind is always half of big
   
   
-
-
-
   #game
   first_time = True
   play_game = True # new round
   while play_game: # iterate rounds
     #read to and write out every iteration 
-    
+    pot = 0
     #create player object dictionary
     if first_time:
       first_time = False
@@ -215,16 +200,13 @@ def NewGame():
       print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
       #print(round.GetHand("player_1")) #get human uncomment when remove testing function
 
-    pot = 0
 
     #charge blinds later
     small_blind = big_blind // 2
     #assign blinds to 2 people left of dealer - big small dealer
-    current_game_player_index
+
+    
       
-    
-    
-    
     
     
 
@@ -249,8 +231,6 @@ def NewGame():
       playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist)) ] ) # get combination highs and append to list
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
   
-    
-
     #output combinations with their values
     for winner in winners:
       for player in playerCombinations:
@@ -302,7 +282,7 @@ def NewGame():
     ##replace with if save button is pressed in pygame
     save = input("Save? y/N:")
     #end game if one player left or human out (optional)
-    if len(player_dict) < 2: #or "player_1" not in round.players ADD LATER
+    if len(player_dict) < 2: #or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
 
@@ -317,7 +297,6 @@ def NewGame():
     if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
       big_blind *= 2
     
-
     
 
 

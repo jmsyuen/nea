@@ -262,6 +262,34 @@ if type(result) == tuple:
 print(a, result)
 '''
 
-a = 2
-a *= 3
-print(a)
+
+#from itertools import cycle
+
+'''
+def circular():
+  while True:
+    for connection in round_players:
+      yield connection
+
+cycle = circular()
+print(next(cycle))
+print(next(cycle))
+'''
+
+round_players = ["player_1", "player_2", "player_3"]
+
+def loop(iterator, current_index, forward):
+  if forward == False: #reverse
+    if current_index <= 0:
+      current_index = len(iterator) - 1
+    else:
+      current_index -= 1
+    
+  else:
+    if current_index >= len(iterator) - 1:
+      current_index = 0
+    else:
+      current_index += 1
+
+  return iterator[current_index]
+print(loop(round_players, 3, True))
