@@ -318,8 +318,8 @@ class database(): #takes save file name
 
 
 class Player(): 
-  def __init__(self, args): # takes hands, player_id/arguments including player_id
-    self.player_id_value, self.chips_left, self.big_blind = args    
+  def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
+    self.chips_left = chips_left   
 
 
   def NewCards(self, new_hand):
@@ -415,8 +415,8 @@ class Player():
 
 
 class Bot(new_round, Player): #inherits functions of new_round 
-  def __init__(self, currentHand, risk, difficulty):
-    super().__init__()
+  def __init__(self, chips_left, currentHand, risk, difficulty):
+    Player.__init__(self, chips_left)
     self.__currentHand = currentHand
     self.risk = risk  #0-1 the probability threshold for a card to appear which would be accepted 
     self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is
@@ -473,10 +473,6 @@ class Bot(new_round, Player): #inherits functions of new_round
 
   def Strategy1(self):
     pass
-
-
-
-
 
 
 if __name__ == "__main__":

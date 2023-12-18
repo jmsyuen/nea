@@ -297,30 +297,53 @@ print(loop(round_players, 3, True))
 
 hand = ["hearts.14", "spades.14"]
 #blackbox
+
+class new_round(): # money system, carry over chips,  beginning of round, sub class
+  def __init__(self, players, player_dict): # players, starting_chips
+    self.suits = ("hearts", "diamonds", "spades", "clubs")
+    self.players = players
+    self.player_dict = player_dict
+  def func(self):
+    print(2)
+  
+
 class Player(): 
- def __init__(self, args): # takes hands, player_id/arguments including player_id
-    self.player_id_value, self.chips_left, self.big_blind = args    
+  def __init__(self, player_id_value, chips_left, big_blind): # takes hands, player_id/arguments including player_id
+    self.player_id_value = player_id_value
+    self.chips_left = chips_left
+    self.big_blind = big_blind    
 
 
- def NewCards(self, new_hand):
+  def NewCards(self, new_hand):
     self.__hand = new_hand
-
- def GetHand(self):
     return self.__hand
 
-class ExtendedPlayer(Player): 
- def __init__(self, args, a, b): # takes hands, player_id/arguments including player_id, and new variables a and b
-    super().__init__(args)
+  def GetHand(self):
+    return self.__hand
+
+
+class ExtendedPlayer(Player, new_round): 
+  def __init__(self, player_id_value, chips_left, big_blind, a, b): # takes hands, player_id/arguments including player_id, and new variables a and b
+    Player.__init__(self, player_id_value, chips_left, big_blind)
     self.a = a
     self.b = b
 
 
- def NewCards(self, new_hand): # can be removed
-    super().NewCards(new_hand) #used on its own
+#  def NewCards(self, new_hand): # can be removed
+#     return super().NewCards(new_hand) #used on its own
 
- def GetHand(self):
+  def GetHand(self):
     return super().GetHand()
  
 
-bot = ExtendedPlayer(1,2,3)
-print(bot.super().NewCards(90))
+bot = ExtendedPlayer(1,2,3,4,5)
+print(bot.NewCards(90))
+print(bot.func())
+
+# write a new function for the ExtendedPlayer class to return the variables a and b
+# add more functions to enable the class to function and therefore allow thge user to
+
+
+
+
+
