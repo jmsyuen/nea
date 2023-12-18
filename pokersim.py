@@ -88,10 +88,10 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       raise Exception
   
 
-  def FindCombination(self, hand): # return list [rank, ch, ch, h] for value comparison
-    combined = self.__hands["public"] + hand
+  def FindCombination(self, cards): # return list [rank, ch, ch, h] for value comparison
+    combined = cards
     suits, values = [], []
-    allsuits = ("hearts", "diamonds", "spades", "clubs") # possibly replace
+    allsuits = ("hearts", "diamonds", "spades", "clubs") # repeated as inherited in bot()
 
     for card in combined:
       split = card.split(".")
@@ -414,8 +414,9 @@ class Player():
           return self.Charge(highest_bet + extra_raise)  #new extra bet
 
 
-class Bot(): #maybe move into pokersim later
+class Bot(new_round, Player): #inherits functions of new_round 
   def __init__(self, currentHand, risk, difficulty):
+    super().__init__()
     self.__currentHand = currentHand
     self.risk = risk  #0-1 the probability threshold for a card to appear which would be accepted 
     self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is

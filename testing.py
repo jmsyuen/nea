@@ -296,4 +296,43 @@ print(loop(round_players, 3, True))
 '''
 
 hand = ["hearts.14", "spades.14"]
-print(sorted(hand, key=int))
+
+
+class Player():
+  def __init__(self, args):
+    self.a, self.b, self.c = args
+
+
+  def print1(self):
+    print("1")
+
+class Bot(Player):
+  def __init__(self, a,b,c, var2):
+    super().__init__(a,b,c)
+    self.a, self.b, self.c = a,b,c
+    self.var2 = var2
+    
+
+  def printall(self):
+    print(self.a, self.b, self.c, self.var2)
+
+bot = Bot(1,2,3,4)
+bot.printall()
+
+#blackbox
+class AbacusPlayer(Player):
+    def __init__(self, args):
+        super().__init__(args)
+        self.abacus = []
+
+    def NewCards(self, new_hand):
+        self.__hand = new_hand
+
+    def GetHand(self):
+        return self.__hand
+
+    def GetAbacus(self):
+        return self.abacus
+
+    def AddToAbacus(self, item):
+        self.abacus.append(item)
