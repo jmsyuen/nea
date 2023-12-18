@@ -6,7 +6,7 @@ from sqlite3 import Error #
 # one tag is useful comments
 ## two tags for code clips
 ### three tags for issues
-# 3 tags at the end for testing, remove later ###
+#### important notes or testing clips
 # cards ranked from Ace 2 3 ... 10 Jack Queen King
 # use special behaviour of number 1 to define the high value of it / use ace as the highest value in the list
 # randint is inclusive of both limits
@@ -315,8 +315,6 @@ class database(): #takes save file name
 #def __init__(self):
   #  new_round.__init__():
 
-# for stage in range(4): # stage 0 nothing is shown
-#   new turn   and limit options after first bet
 
 
 class Player(): 
@@ -416,9 +414,82 @@ class Player():
           return self.Charge(highest_bet + extra_raise)  #new extra bet
 
 
+class Bot(): #maybe move into pokersim later
+  def __init__(self, currentHand, risk, difficulty):
+    self.__currentHand = currentHand
+    self.risk = risk  #0-1 the probability threshold for a card to appear which would be accepted 
+    self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is
+    #chance of fold/check/bet in ranges of probabilities
+    #get and use highest_bet to determine next action
+    #replace player objects in player_dict with bot() objects
+    #use same GetAction() functions as player() class in order to implement later
+
+  def Calculate(self, stage): # more vars
+    pass
+    #calculate if next is a pair, a 
+    #for every card not in currently known, calculate next card achieving that combination
+    #therefore probability of each combination with the current hand
+    #consider integration with pokersim findCombination() functions which will require importing
+
+  def StartingHand(self): #outputs rankings of 1-53 with 1 highest
+
+    def Ranking1(): #set rankings from table
+      rankings = []
+
+    def Ranking2(): #calculate possible combinations
+            
+      suit1, value1 = self.__currentHand[0].split(".")
+      suit2, value2 = self.__currentHand[1].split(".")
+      if int(value1) > int(value2): #sort value1 > value2, disregarding suit
+        suit1, value1 = self.__currentHand[1].split(".")
+        suit2, value2 = self.__currentHand[0].split(".")    
+      value1, value2 = int(value1), int(value2) #force int
+
+      onsuit = False
+      pair = False
+      consecutive = False
+      consecutive_potential = 0 #how many cards needed, or rank from 5 highest
+
+      if suit1 == suit2:
+        onsuit = True
+      elif value1 == value2:
+        pair = True
+
+            
+      if value1 - value2 == 1:
+        consecutive = True
+      elif value1 - value2 <= 4:
+        consecutive_potential = value1 - value2
+        # a face value card A-J
+        # is consecutive
+    Ranking2()       
+
+  def GetChoice(self):
+    pass
+
+  def RollRisk(self, probability):
+    pass  #change
+
+  def Strategy1(self):
+    pass
+
+
+
+
 
 
 if __name__ == "__main__":
+  
+  hand = ["hearts.14", "spades.14"]
+  bot1 = Bot(hand, 1, "easy")
+  bot1.StartingHand()
+
+
+
+
+
+
+  '''
   db = database()
   db.con_up()
   round1 = new_round(3)
@@ -432,4 +503,5 @@ if __name__ == "__main__":
     playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
 
   print(round1.FindWinner(playerCombinations))
+  '''
 

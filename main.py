@@ -1,4 +1,4 @@
-import pokersim, bot
+import pokersim
 import random
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
@@ -124,7 +124,7 @@ def NewGame():
               first_loop = False
             elif first_loop == False:
               break
-        #add another loop for highest_bet, might break if highest bettor folds after raising###
+        
     
 
   def value_to_name(value): # convert card values to their name
@@ -142,7 +142,7 @@ def NewGame():
 
 
   valid = False
-  while not valid: #replace with pygame and buttons instead of inputs
+  while not valid: ####replace with pygame and buttons instead of inputs
     try:
       db = pokersim.database()
       db.con_up()
@@ -192,10 +192,10 @@ def NewGame():
     round_players = []
     for player_id in player_dict:
       round_players.append(player_id)
-      player_dict[player_id].NewCards(round.GetHand(player_id)) #int(player_id.split("_")[-1]) 
+      player_dict[player_id].NewCards(round.GetHand(player_id)) ###int(player_id.split("_")[-1]) 
       player_dict[player_id].ResetAllIn()
-      print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
-      #print(round.GetHand("player_1")) #get human uncomment when remove testing function
+      print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
+      ###print(round.GetHand("player_1")) #get human uncomment when remove testing function
 
     
     #iterate stages and return list of finalists
@@ -266,10 +266,10 @@ def NewGame():
         player_dict.pop(player)
       
 
-    ##replace with if save button is pressed in pygame
+    ####replace with if save button is pressed in pygame
     save = input("Save? y/N:")
     #end game if one player left or human out (optional)
-    if len(player_dict) < 2: #or "player_1" not in round.players
+    if len(player_dict) < 2: ###or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
 

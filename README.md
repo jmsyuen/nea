@@ -1,5 +1,5 @@
 # nea notes 
-
+https://github.com/jmsyuen/nea
 
 # general td
 can remove blind doubling like a cash game as only in tournaments #
