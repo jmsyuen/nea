@@ -296,43 +296,31 @@ print(loop(round_players, 3, True))
 '''
 
 hand = ["hearts.14", "spades.14"]
-
-
-class Player():
-  def __init__(self, args):
-    self.a, self.b, self.c = args
-
-
-  def print1(self):
-    print("1")
-
-class Bot(Player):
-  def __init__(self, a,b,c, var2):
-    super().__init__(a,b,c)
-    self.a, self.b, self.c = a,b,c
-    self.var2 = var2
-    
-
-  def printall(self):
-    print(self.a, self.b, self.c, self.var2)
-
-bot = Bot(1,2,3,4)
-bot.printall()
-
 #blackbox
-class AbacusPlayer(Player):
-    def __init__(self, args):
-        super().__init__(args)
-        self.abacus = []
+class Player(): 
+ def __init__(self, args): # takes hands, player_id/arguments including player_id
+    self.player_id_value, self.chips_left, self.big_blind = args    
 
-    def NewCards(self, new_hand):
-        self.__hand = new_hand
 
-    def GetHand(self):
-        return self.__hand
+ def NewCards(self, new_hand):
+    self.__hand = new_hand
 
-    def GetAbacus(self):
-        return self.abacus
+ def GetHand(self):
+    return self.__hand
 
-    def AddToAbacus(self, item):
-        self.abacus.append(item)
+class ExtendedPlayer(Player): 
+ def __init__(self, args, a, b): # takes hands, player_id/arguments including player_id, and new variables a and b
+    super().__init__(args)
+    self.a = a
+    self.b = b
+
+
+ def NewCards(self, new_hand): # can be removed
+    super().NewCards(new_hand) #used on its own
+
+ def GetHand(self):
+    return super().GetHand()
+ 
+
+bot = ExtendedPlayer(1,2,3)
+print(bot.super().NewCards(90))
