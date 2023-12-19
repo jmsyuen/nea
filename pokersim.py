@@ -368,9 +368,10 @@ class Player():
     
     if highest_bet == 0:
       if self.bot == True:
-        choice = BotChoice() ###
+        choice = self.BotChoice(highest_bet, "fold check bet") ###
       else:
         choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
+
       if choice.isnumeric():
         choice = int(choice)
         if choice == self.chips_left:
@@ -393,7 +394,11 @@ class Player():
 
     else: #bet has been made
       if highest_bet >= self.chips_left:
-        choice = input("All in (y) or fold(n)?:")
+        if self.bot == True:
+          choice = self.BotChoice(highest_bet, "fold allin") ###
+        else:
+          choice = input("All in (y) or fold(n)?:")
+
         if choice == "y":
           result = self.Charge(self.chips_left)
           self.AllIn = True
@@ -402,7 +407,10 @@ class Player():
           return False
       
       elif highest_bet > 0:
-        choice = input("Fold(n), Call(y) or raise extra:")
+        if self.bot == True:
+          choice = self.BotChoice(highest_bet, "fold call raise") ###
+        else:
+          choice = input("Fold(n), Call(y) or raise extra:")
 
         previouscharge = self.PreviousCharge()
         if previouscharge != False:
@@ -419,9 +427,8 @@ class Player():
 
 
 class Bot(new_round, Player): #inherits functions of new_round 
-  def __init__(self, chips_left, currentHand, risk, difficulty):
+  def __init__(self, chips_left, risk, difficulty):
     Player.__init__(self, chips_left)
-    self.__currentHand = currentHand
     self.risk = risk  #0-1 the probability threshold for a card to appear which would be accepted 
     self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is
     #chance of fold/check/bet in ranges of probabilities
@@ -430,10 +437,36 @@ class Bot(new_round, Player): #inherits functions of new_round
     #use same GetAction() functions as player() class in order to implement later
     self.bot = True
 
-  def isbot(self):
-    print(self.bot)
+  #carried over from player() class
+  def NewCards(self, new_hand):
+    self.__hand = new_hand
 
-  def BotChoice(self, highest_bet)
+
+  def BotChoice(self, highest_bet, available_choices):
+    if available_choices == "fold check bet":
+      print("fold check bet")
+      if True:  # bet
+        return 10
+      if True:  # check
+        return "y"
+      if True:  # fold
+        return "n"
+      
+    elif available_choices == "fold allin":
+      print("fold allin")
+      if True:  # all in
+        return "y"
+      if True:  # fold
+        return "n"
+    elif available_choices == "fold call raise":
+      print("fold call raise")
+      if True:  # raise
+        return 10
+      if True:  # call
+        return "y"
+      if True:  # fold
+        return "n"    
+
 
   def Calculate(self, stage): # more vars
     pass
@@ -449,11 +482,11 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     def Ranking2(): #calculate possible combinations
             
-      suit1, value1 = self.__currentHand[0].split(".")
-      suit2, value2 = self.__currentHand[1].split(".")
+      suit1, value1 = self.__hand[0].split(".")
+      suit2, value2 = self.__hand[1].split(".")
       if int(value1) > int(value2): #sort value1 > value2, disregarding suit
-        suit1, value1 = self.__currentHand[1].split(".")
-        suit2, value2 = self.__currentHand[0].split(".")    
+        suit1, value1 = self.__hand[1].split(".")
+        suit2, value2 = self.__hand[0].split(".")    
       value1, value2 = int(value1), int(value2) #force int
 
       onsuit = False
@@ -475,8 +508,6 @@ class Bot(new_round, Player): #inherits functions of new_round
         # is consecutive
     Ranking2()       
 
-  def GetChoice(self):
-    pass
 
   def RollRisk(self, probability):
     pass  #change
@@ -488,9 +519,17 @@ class Bot(new_round, Player): #inherits functions of new_round
 if __name__ == "__main__":
   
   hand = ["hearts.14", "spades.14"]
-  bot1 = Bot(5000, hand, 1, "easy")
+  bot1 = Bot(5000, 1, "easy")
+  
+  bot1.NewCards(hand)
+  bot1.ResetAllIn()
+  bot1.ResetStageBet()
+
+
   bot1.StartingHand()
-  bot1.isbot()
+  print(bot1.GetChoice(500))
+  print(bot1.AllIn)
+  print(bot1.Charge(100))
 
 
 
