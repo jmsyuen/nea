@@ -319,7 +319,8 @@ class database(): #takes save file name
 
 class Player(): 
   def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
-    self.chips_left = chips_left   
+    self.chips_left = chips_left
+    self.bot = False
 
 
   def NewCards(self, new_hand):
@@ -366,7 +367,10 @@ class Player():
       return "AllIn"
     
     if highest_bet == 0:
-      choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
+      if self.bot == True:
+        choice = BotChoice() ###
+      else:
+        choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
       if choice.isnumeric():
         choice = int(choice)
         if choice == self.chips_left:
@@ -424,6 +428,12 @@ class Bot(new_round, Player): #inherits functions of new_round
     #get and use highest_bet to determine next action
     #replace player objects in player_dict with bot() objects
     #use same GetAction() functions as player() class in order to implement later
+    self.bot = True
+
+  def isbot(self):
+    print(self.bot)
+
+  def BotChoice(self, highest_bet)
 
   def Calculate(self, stage): # more vars
     pass
@@ -478,8 +488,9 @@ class Bot(new_round, Player): #inherits functions of new_round
 if __name__ == "__main__":
   
   hand = ["hearts.14", "spades.14"]
-  bot1 = Bot(hand, 1, "easy")
+  bot1 = Bot(5000, hand, 1, "easy")
   bot1.StartingHand()
+  bot1.isbot()
 
 
 
