@@ -5,10 +5,11 @@ import random
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 414, 896 #logical point resolution of iphone 11
 WHITE = (255, 255, 255)
 GREEN = (0, 128, 0)
 RED = (255, 0, 0)
+BLACK = (0, 0, 0)
 CARD_WIDTH, CARD_HEIGHT = 75, 100
 
 # Initialize Pygame window
@@ -16,7 +17,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pygame Poker Interface")
 
 # Load card images
-card_images = []
+card_images = []  # https://code.google.com/archive/p/vector-playing-cards/
 for suit in ["hearts", "diamonds", "spades", "clubs"]:
   for value in range(2, 15):
       card_images.append(pygame.image.load(f"cards/{suit}.{value}.png"))
@@ -59,7 +60,7 @@ def game_loop():
         pygame.quit()
         sys.exit()
 
-    screen.fill(GREEN)
+    screen.fill(BLACK)
 
     # Draw cards on the table
     draw_cards(cards_on_table, 50, 250)
