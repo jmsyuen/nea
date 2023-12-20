@@ -13,6 +13,7 @@ GREEN = (0, 128, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 GREY = (105, 105, 105)
+DARK_GREY = (75, 75, 75)
 #small card size 50x72px, big 100x144px
 #includes padding of 20px around right and bottom sides
 SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT = 70, 92  
@@ -26,7 +27,7 @@ button_fill_colour = BLACK
 button_border_colour = WHITE
 button_border_width = 1
 
-small_font = pygame.font.SysFont("courier", 15)
+
 
 
 # Initialize Pygame window
@@ -59,43 +60,44 @@ back.append(pygame.image.load(f"big_cards/back.png"))
 
 
 #draw buttons and execute function when pressed
-def draw_button(text, x, y, width, height, colour, action):
+def draw_button(text, box_colour, x, y, width, height, action):
   mouse = pygame.mouse.get_pos()
   click = pygame.mouse.get_pressed()
   hover_colour = GREY
+  font = pygame.font.SysFont("courier", 15)
   #check if hover
   if x + width > mouse[0] > x and y + height > mouse[1] > y:
     pygame.draw.rect(screen, hover_colour, (x, y, width, height))
     if click[0] == 1:
       action()
   else:
-    pygame.draw.rect(screen, colour, (x, y, width, height))
+    pygame.draw.rect(screen, box_colour, (x, y, width, height))
 
   #white border
   border_width = 1
   pygame.draw.rect(screen, (255, 255, 255), (x, y, width, height), border_width)
 
   #add text
-  text_surface = small_font.render(text, True, WHITE)
+  text_surface = font.render(text, True, WHITE)
   text_rect = text_surface.get_rect()
   #add text to centre
   text_rect.center = ((x + (width // 2)), (y + (height // 2)))
   screen.blit(text_surface, text_rect)
 
 
-def draw_text_box(text, x, y, width, height):
-  box_colour = WHITE
+def draw_text_box(text, box_colour, font_size, x, y, width, height):
   text_colour = BLACK
-
+  font = pygame.font.SysFont("courier", font_size)
+  
   pygame.draw.rect(screen, box_colour, (x, y, width, height))
-  text_surface = small_font.render(text, True, text_colour)
+  text_surface = font.render(text, True, text_colour)
   text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
   screen.blit(text_surface, text_rect)
 
 
-
-def out():
-  print("out")
+#for greyed out button
+def blank():  
+  pass
 
 
 
@@ -116,47 +118,66 @@ def draw_game():
       screen.blit(back[0], (40 + i * SMALL_CARD_WIDTH, 20))
     
     #list of players on left for right handed players on mobile
-    for i in range(6):
-      screen.blit(back[0], (20 , 112 + i * SMALL_CARD_HEIGHT))
-      screen.blit(back[0], (90 , 112 + i * SMALL_CARD_HEIGHT))
-    
+    for i in range(6):  #range of other opponents #player in players
+      screen.blit(back[0], (20, 122 + i * SMALL_CARD_HEIGHT))
+      screen.blit(back[0], (80, 122 + i * SMALL_CARD_HEIGHT))
+      draw_text_box("player 1", WHITE, 13, 140, 122 + i * SMALL_CARD_HEIGHT, 100, 24) #change string with player name  ###
+      draw_text_box("", WHITE, 13, 140, 146 + i * SMALL_CARD_HEIGHT, 100, 24)  #two to be replaced with actual variables ###
+      draw_text_box("Chips:£50.00", WHITE, 13, 140, 170 + i * SMALL_CARD_HEIGHT, 100, 24)
+
+    #pot
+    draw_text_box("Pot: £20.00", WHITE, 15, WIDTH - 160, 122, 140, 30)
+
     #big cards bottom left
     screen.blit(back[1], (20, HEIGHT - 162))
     screen.blit(back[1], (20 + BIG_CARD_WIDTH, HEIGHT - 162))
 
-    
-    # Draw cards on the table
-    #draw_cards(cards_on_table, 50, 250)
+    #buttons ADD FUNCTIONS ###      
+    draw_text_box("Chips: £20.50", WHITE, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
+    draw_button("All In", BLACK, 20, HEIGHT - 205, 60, 30, blank)
+    draw_button("Fold", BLACK, 20 + 80 + 80, HEIGHT - 205, 60, 30, blank)
 
-    # Draw player's hand
-    #draw_cards(player_hand, 50, 450)
+    draw_button("Clear Bet", BLACK, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
+    draw_button("- 50p", BLACK, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
+    draw_button("+ 50p", BLACK, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
+    draw_button("Confirm Raise", BLACK, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
 
-    #buttons ADD FUNCTIONS ###
-    draw_button("All In", 20, HEIGHT - 205, 60, 30, BLACK, out)
-    draw_button("Check", 20 + 80, HEIGHT - 205, 60, 30, BLACK, out)
-    draw_button("Fold", 20 + 80 + 80, HEIGHT - 205, 60, 30, BLACK, out)
-
-    draw_button("Clear", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 60, 30, BLACK, out)
-    draw_button("- 50p", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, BLACK, out)
-    draw_button("+ 50p", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 60, 30, BLACK, out)
-    draw_button("Fold", WIDTH - 80, HEIGHT - 55, 60, 30, BLACK, out)
-    draw_button("Check", WIDTH - 80, HEIGHT - 105, 60, 30, BLACK, out)
-    draw_button("All In", WIDTH - 80, HEIGHT - 155, 60, 30, BLACK, out)
-    
-
-    #show bet amount, minimum value £0.50 to prevent raising nothing
-    draw_text_box("£20.50", 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 60, 30)
+    def fold_check_bet():
+      draw_text_box("Bet: £0.50", WHITE, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+      draw_button("Check", BLACK, 20 + 80, HEIGHT - 205, 60, 30, blank)
+      #show bet amount, minimum value £0.50 to prevent raising nothing
   
-    #instead of sliders add more buttons to raise pot by (chip values just like a real table)
+    def fold_call_bet():
+      draw_text_box("Bet: £10.00", WHITE, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+      draw_button("Call", BLACK, 20 + 80, HEIGHT - 205, 60, 30, blank)
+      
+    def fold_all_in():
+      draw_text_box("Bet: £50", WHITE, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+      #draw over in black to eliminate white
+      draw_text_box("", BLACK, 15, 20 + 80, HEIGHT - 205, 60, 30)
+      draw_text_box("", BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30)
+      draw_text_box("", BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30)
+      draw_text_box("", BLACK, 15, WIDTH - 80, HEIGHT - 105, 60, 30)
+      draw_text_box("", BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30)
+      #grey out with buttons that do nothing
+      draw_button("Call", DARK_GREY, 20 + 80, HEIGHT - 205, 60, 30, blank)
+      draw_button("Clear Bet", DARK_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
+      draw_button("- 50p", DARK_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
+      draw_button("+ 50p", DARK_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
+      draw_button("Confirm Raise", DARK_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
 
-    #draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
-    #draw_button("Call", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
-    #draw_button("Raise", WIDTH - 80, HEIGHT - 200, 60, 30, BLACK, out)
+    def show_winners():
+      draw_text_box("Winning combination", WHITE, 11, WIDTH - 160, 490, 140, 24)
+      draw_text_box("Three of a kind", WHITE, 15, WIDTH - 160, 514, 140, 24)#
+      draw_text_box("6 high", WHITE, 15, WIDTH - 160, 538, 140, 24)# 
 
-    #draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
-    #draw_button("All In", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
+      draw_text_box("Winner(s)", WHITE, 11, WIDTH - 160, 214, 140, 24)
+      for i in range(7):
+        draw_text_box("player_1", WHITE, 11, WIDTH - 160, 238 + i * 24, 140, 24)
 
 
+    fold_all_in()
+    show_winners()
     #update display
     pygame.display.flip()
 
