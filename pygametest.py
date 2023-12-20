@@ -12,7 +12,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 128, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-GREY = (220, 220, 220)
+GREY = (105, 105, 105)
 #small card size 50x72px, big 100x144px
 #includes padding of 20px around right and bottom sides
 SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT = 70, 92  
@@ -25,6 +25,8 @@ button_font_colour = WHITE
 button_fill_colour = BLACK
 button_border_colour = WHITE
 button_border_width = 1
+
+small_font = pygame.font.SysFont("courier", 15)
 
 
 # Initialize Pygame window
@@ -56,7 +58,7 @@ back.append(pygame.image.load(f"big_cards/back.png"))
 
 
 
-# Function to draw buttons
+#draw buttons and execute function when pressed
 def draw_button(text, x, y, width, height, colour, action):
   mouse = pygame.mouse.get_pos()
   click = pygame.mouse.get_pressed()
@@ -74,17 +76,23 @@ def draw_button(text, x, y, width, height, colour, action):
   pygame.draw.rect(screen, (255, 255, 255), (x, y, width, height), border_width)
 
   #add text
-  small_text = pygame.font.SysFont("courier", 15)
-  text_surface, text_rect = text_objects(text, small_text)
-  text_rect.center = ((x + (width / 2)), (y + (height / 2)))
+  text_surface = small_font.render(text, True, WHITE)
+  text_rect = text_surface.get_rect()
+  #add text to centre
+  text_rect.center = ((x + (width // 2)), (y + (height // 2)))
   screen.blit(text_surface, text_rect)
 
 
+def draw_text_box(text, x, y, width, height):
+  box_colour = WHITE
+  text_colour = BLACK
 
-# Function to create text objects
-def text_objects(text, font):
-  text_surface = font.render(text, True, WHITE)
-  return text_surface, text_surface.get_rect()
+  pygame.draw.rect(screen, box_colour, (x, y, width, height))
+  text_surface = small_font.render(text, True, text_colour)
+  text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
+  screen.blit(text_surface, text_rect)
+
+
 
 def out():
   print("out")
@@ -93,8 +101,8 @@ def out():
 
 # Main game loop
 def draw_game():
-  cards_on_table = [random.randint(1, 52) for _ in range(5)]
-  player_hand = [random.randint(1, 52) for _ in range(2)]
+  cards_on_table = [random.randint(1, 52) for i in range(5)]
+  player_hand = [random.randint(1, 52) for i in range(2)]
 
   while True:
     for event in pygame.event.get():
@@ -123,19 +131,30 @@ def draw_game():
     # Draw player's hand
     #draw_cards(player_hand, 50, 450)
 
+    #buttons ADD FUNCTIONS ###
+    draw_button("All In", 20, HEIGHT - 205, 60, 30, BLACK, out)
+    draw_button("Check", 20 + 80, HEIGHT - 205, 60, 30, BLACK, out)
+    draw_button("Fold", 20 + 80 + 80, HEIGHT - 205, 60, 30, BLACK, out)
 
+    draw_button("Clear", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 60, 30, BLACK, out)
+    draw_button("- 50p", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, BLACK, out)
+    draw_button("+ 50p", 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 60, 30, BLACK, out)
+    draw_button("Fold", WIDTH - 80, HEIGHT - 55, 60, 30, BLACK, out)
+    draw_button("Check", WIDTH - 80, HEIGHT - 105, 60, 30, BLACK, out)
+    draw_button("All In", WIDTH - 80, HEIGHT - 155, 60, 30, BLACK, out)
+    
 
-    draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
-    draw_button("Check", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
-    draw_button("Raise", WIDTH - 80, HEIGHT - 200, 60, 30, BLACK, out)
+    #show bet amount, minimum value £0.50 to prevent raising nothing
+    draw_text_box("£20.50", 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 60, 30)
+  
     #instead of sliders add more buttons to raise pot by (chip values just like a real table)
 
-    draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
-    draw_button("Call", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
-    draw_button("Raise", WIDTH - 80, HEIGHT - 200, 60, 30, BLACK, out)
+    #draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
+    #draw_button("Call", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
+    #draw_button("Raise", WIDTH - 80, HEIGHT - 200, 60, 30, BLACK, out)
 
-    draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
-    draw_button("All In", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
+    #draw_button("Fold", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 80, 60, 30, BLACK, out)
+    #draw_button("All In", 10 + BIG_CARD_WIDTH*2 , HEIGHT - 140, 60, 30, BLACK, out)
 
 
     #update display
