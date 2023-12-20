@@ -10,17 +10,18 @@ WHITE = (255, 255, 255)
 GREEN = (0, 128, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-CARD_WIDTH, CARD_HEIGHT = 75, 100
+CARD_WIDTH, CARD_HEIGHT = 70, 92
+LARGE_CARD_WIDTH, LARGE_CARD_HEIGHT = 120, 164
 
 # Initialize Pygame window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Pygame Poker Interface")
+pygame.display.set_caption("Poker")
 
 # Load card images
 card_images = []  # https://code.google.com/archive/p/vector-playing-cards/
 for suit in ["hearts", "diamonds", "spades", "clubs"]:
   for value in range(2, 15):
-      card_images.append(pygame.image.load(f"cards/{suit}.{value}.png"))
+      card_images.append(pygame.image.load(f"small_cards/{suit}.{value}.png"))
 
 # Function to draw cards
 def draw_cards(cards, x, y):
@@ -39,7 +40,7 @@ def draw_button(text, x, y, width, height, color, hover_color, action):
     else:
       pygame.draw.rect(screen, color, (x, y, width, height))
 
-    small_text = pygame.font.SysFont("comicsansms", 20)
+    small_text = pygame.font.SysFont("courier", 20)
     text_surface, text_rect = text_objects(text, small_text)
     text_rect.center = ((x + (width / 2)), (y + (height / 2)))
     screen.blit(text_surface, text_rect)
