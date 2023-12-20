@@ -167,14 +167,18 @@ def draw_game():
       draw_button("Confirm Raise", DARK_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
 
     def show_winners():
-      draw_text_box("Winning combination", WHITE, 11, WIDTH - 160, 490, 140, 24)
-      draw_text_box("Three of a kind", WHITE, 15, WIDTH - 160, 514, 140, 24)#
-      draw_text_box("6 high", WHITE, 15, WIDTH - 160, 538, 140, 24)# 
+      draw_text_box("Winning combination", WHITE, 11, WIDTH - 160, 422, 140, 24)
+      draw_text_box("Three of a kind", WHITE, 15, WIDTH - 160, 446, 140, 24)#
+      draw_text_box("6 high", WHITE, 15, WIDTH - 160, 470, 140, 24)# 
 
-      draw_text_box("Winner(s)", WHITE, 11, WIDTH - 160, 214, 140, 24)
+      draw_text_box("Winner(s)", WHITE, 15, WIDTH - 160, 214, 140, 24)
       for i in range(7):
-        draw_text_box("player_1", WHITE, 11, WIDTH - 160, 238 + i * 24, 140, 24)
-
+        draw_text_box("player_1", WHITE, 15, WIDTH - 160, 238 + i * 24, 140, 24)
+      
+      #continue to next round or save
+      draw_text_box("Save and exit?", WHITE, 11, WIDTH - 160, HEIGHT - 375, 140, 24)
+      draw_button("Yes", BLACK, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 345, 60, 30, blank)
+      draw_button("No", BLACK, WIDTH - 80, HEIGHT - 345, 60, 30, blank)
 
     fold_all_in()
     show_winners()
