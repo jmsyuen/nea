@@ -343,7 +343,8 @@ print(bot.func())
 # write a new function for the ExtendedPlayer class to return the variables a and b
 # add more functions to enable the class to function and therefore allow thge user to
 
-
+face_values = [face_value for face_value in range(11,15)]
+print(face_values)
 
 
 

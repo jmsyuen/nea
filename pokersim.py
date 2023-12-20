@@ -475,38 +475,53 @@ class Bot(new_round, Player): #inherits functions of new_round
     #therefore probability of each combination with the current hand
     #consider integration with pokersim findCombination() functions which will require importing
 
-  def StartingHand(self): #outputs rankings of 1-53 with 1 highest
+  def StartingHand(self): #outputs rankings of 1-53 with 1 highest #also take difficulty
+    
+    hand_attributes = []  #if onsuit, pair, high face value etc
+    onsuit_rankings = []
+    offsuit_rankings = []
+    
+    #split suit and values, sort value1 > value2
+    suit1, value1 = self.__hand[0].split(".")
+    suit2, value2 = self.__hand[1].split(".")
+    if int(value1) > int(value2): #
+      suit1, value1 = self.__hand[1].split(".")
+      suit2, value2 = self.__hand[0].split(".")    
+    value1, value2 = int(value1), int(value2) #force int
+
+    #assign variables to match certain commbinations
+    onsuit = False
+    pair = False
+    consecutive = False
+    consecutive_potential = 0 #how many cards needed to be consecutive, or rank from 5 highest
+    face_values = [face_value for face_value in range(11,15)]
+
+    if suit1 == suit2:
+      onsuit = True
+    elif value1 == value2:
+      pair = True
+          
+    if value1 - value2 == 1:
+      consecutive = True
+    elif value1 - value2 <= 4:
+      consecutive_potential = value1 - value2
+    if value1 in face_values:
+      face_value += 1
+    if value2 in face_values:
+      face_value += 1
+    
+    hand_attributes.append((onsuit, pair, consecutive, consecutive_potential))
+    
+    #dict for how high ranges of pairs, consecutive
+
+
 
     def Ranking1(): #set rankings from table
-      rankings = []
+      pass
 
     def Ranking2(): #calculate possible combinations
-            
-      suit1, value1 = self.__hand[0].split(".")
-      suit2, value2 = self.__hand[1].split(".")
-      if int(value1) > int(value2): #sort value1 > value2, disregarding suit
-        suit1, value1 = self.__hand[1].split(".")
-        suit2, value2 = self.__hand[0].split(".")    
-      value1, value2 = int(value1), int(value2) #force int
-
-      onsuit = False
-      pair = False
-      consecutive = False
-      consecutive_potential = 0 #how many cards needed, or rank from 5 highest
-
-      if suit1 == suit2:
-        onsuit = True
-      elif value1 == value2:
-        pair = True
-
-            
-      if value1 - value2 == 1:
-        consecutive = True
-      elif value1 - value2 <= 4:
-        consecutive_potential = value1 - value2
-        # a face value card A-J
-        # is consecutive
-    Ranking2()       
+      pass
+      
 
 
   def RollRisk(self, probability):
