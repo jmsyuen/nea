@@ -187,10 +187,3 @@ def draw_game():
 
 draw_game()
 
-
-'''
-# Function to draw cards
-def draw_cards(cards, x, y):
-  for i, card in enumerate(cards):
-      screen.blit(card_images[card - 1], (x + i * CARD_WIDTH, y))
-'''
