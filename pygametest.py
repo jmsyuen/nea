@@ -190,7 +190,7 @@ class ui():
 
     suit, value = card.split(".")
     #map index 2-14 to 0-12, add offset of 13 for each suit
-    list_index = value - 2
+    list_index = int(value) - 2
     if suit == "diamonds":
       list_index += 13
     elif suit == "spades":
@@ -216,6 +216,10 @@ class ui():
     self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 48, 100, 24)
 
 
+  def flip_card(self, size, new_card, position):  #position as an xy tuple
+    self.draw_card(size, new_card, position)
+    
+
   def draw_game(self):
     #first time draw
     
@@ -239,9 +243,7 @@ class ui():
     #big cards bottom left
     self.draw_card("big", "back", self.locations["player_1"][0])
     self.draw_card("big", "back", self.locations["player_1"][1])
-    self.screen.blit(self.back[1], (20, self.HEIGHT - 162))
-    self.screen.blit(self.back[1], (20 + self.BIG_CARD_WIDTH, self.HEIGHT - 162))
-    
+       
 
     #buttons ADD FUNCTIONS ###      
     self.draw_text_box("Chips: £20.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
@@ -254,8 +256,6 @@ class ui():
     self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
 
-    self.fold_all_in()
-    self.show_winners()
     #update display
     pygame.display.flip()
 
@@ -283,13 +283,14 @@ class ui():
     self.draw_button("+ 50p", self.DARK_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("Confirm Raise", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
+
   def show_winners(self):
     self.draw_text_box("Winning combination", self.BLACK, self.WHITE, 11, self.WIDTH - 160, 422, 140, 24)
     self.draw_text_box("Three of a kind", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 446, 140, 24)#
     self.draw_text_box("6 high", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 470, 140, 24)# 
 
     self.draw_text_box("Winner(s)", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 214, 140, 24)
-    for i in range(7):
+    for i in range(7):  #winner in winners
       self.draw_text_box("player_1", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
     
     #continue to next round or save
@@ -298,11 +299,17 @@ class ui():
     self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
 
 
-  
+  def game_loop(self):
+
+    self.fold_all_in()
+    self.show_winners()
+    self.flip_card("small", "spades.4",self.locations["public"][0])
+    self.flip_card("big", "spades.4",self.locations["player_1"][1])
+    pygame.display.flip()
 
 
-  def flip_card(self):
-    pass
+    
+    
 
 
 ui = ui()
@@ -319,7 +326,7 @@ if __name__ == "__main__":
     menu = ui.GetMenu()
 
     if menu == "game_lock":
-      ui.draw_game()
+      ui.game_loop()
     else:  
       if menu == "main menu":
         ui.main_menu()
@@ -330,11 +337,8 @@ if __name__ == "__main__":
       elif menu == "game":
         ui.ChangeMenu("game_lock")
         ui.ClearScreen() 
-
-
-    
+        ui.draw_game()
   
     clock.tick(30)
-    #draw_game()
 
 
