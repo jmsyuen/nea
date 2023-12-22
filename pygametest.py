@@ -52,11 +52,14 @@ class ui():
     self.back.append(pygame.image.load(f"big_cards/back.png"))
 
     #screen locations of cards 
-    self.locations = {"public":((40 + i * self.SMALL_CARD_WIDTH, 20) for i in range(5))}
-    for player_id_value in range(1,7):  #range of other opponents #player in players
-      location1 = (20, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
-      location2 = (80, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
+    self.locations = dict() #size of cards followed by x and y of each
+    self.locations["public"] = tuple((40 + i * self.SMALL_CARD_WIDTH, 20) for i in range(5))
+    self.locations["player_1"] = [(20, self.HEIGHT - 162), (20 + self.BIG_CARD_WIDTH, self.HEIGHT - 162)]
+    for player_id_value in range(2,8):  #range of other opponents #player in players
+      location1 = (20, 122 + (player_id_value-2) * self.SMALL_CARD_HEIGHT)
+      location2 = (80, 122 + (player_id_value-2) * self.SMALL_CARD_HEIGHT)
       self.locations[f"player_{player_id_value}"] = [location1, location2]
+    
 
     #screen locations of info boxes
     self.player_info_locations = dict()
@@ -64,7 +67,7 @@ class ui():
     for i in range(6):
       x =  140
       y =  122 + i * self.SMALL_CARD_HEIGHT
-      self.player_info_locations[f"player_{i+1}"] = [x, y]
+      self.player_info_locations[f"player_{i+2}"] = [x, y]
     #two big cards at bottom left
     #maybe big public cards at top 
     #list of 9 other players with cards on right side
@@ -77,7 +80,7 @@ class ui():
     click = pygame.mouse.get_pressed()
     hover_colour = self.GREY
     font = pygame.font.SysFont("courier", 15)
-    #check if hover
+    #check if hover, might be redundant
     if x + width > mouse[0] > x and y + height > mouse[1] > y:
       pygame.draw.rect(self.screen, hover_colour, (x, y, width, height))
       if click[0] == 1:
@@ -104,6 +107,8 @@ class ui():
     text_surface = font.render(text, True, text_colour)
     text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
     self.screen.blit(text_surface, text_rect)
+
+
 
 
   def blank(self):  #dummy for greyed out button
@@ -138,8 +143,7 @@ class ui():
     self.draw_button("Help", self.BLACK, 0, 300, 414, 50, self.help)
     self.draw_button("Quit", self.BLACK, 0, 350, 414, 50, self.quit)
     pygame.display.flip()
-    #draw_button("New Game", LIGHTGREY, 375, 460, 100,
-    #play game, settings, help, quit button
+    
 
 
   def help(self):
@@ -202,30 +206,34 @@ class ui():
 
 
   def draw_game(self):
-    self.menu = "game"
-    self.cards_on_table = [random.randint(1, 52) for i in range(5)]
-    self.player_hand = [random.randint(1, 52) for i in range(2)]
+    #first time draw
+    if self.menu != "game_lock":
+      self.menu = "game_lock"
+      self.screen.fill(self.BLACK)  #background
+      pygame.display.flip()
 
-    self.screen.fill(self.BLACK)  #background
-    #5 small cards at top
-    for i in range(5):
-      self.draw_card("small", "back", self.locations["public"][i])
-    
-    #list of players on left for right handed players on mobile
-    for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
-      player_id = f"player_{i}"
-      self.draw_card("small", "back", self.locations[player_id][0])
-      self.draw_card("small", "back", self.locations[player_id][1])
+      #5 small cards at top
+      for i in range(5):
+        self.draw_card("small", "back", self.locations["public"][i])
+      
+      #list of players on left for right handed players on mobile
+      for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
+        player_id = f"player_{player_id_value}"
+        self.draw_card("small", "back", self.locations[player_id][0])
+        self.draw_card("small", "back", self.locations[player_id][1])
 
-      self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
+        self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
       
 
     #pot
     self.update_pot(20.00)
 
     #big cards bottom left
+    self.draw_card("big", "back", self.locations["player_1"][0])
+    self.draw_card("big", "back", self.locations["player_1"][1])
     self.screen.blit(self.back[1], (20, self.HEIGHT - 162))
     self.screen.blit(self.back[1], (20 + self.BIG_CARD_WIDTH, self.HEIGHT - 162))
+    
 
     #buttons ADD FUNCTIONS ###      
     self.draw_text_box("Chips: £20.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
@@ -306,9 +314,43 @@ if __name__ == "__main__":
       ui.settings()
     elif menu == "help":
       ui.help()
-    elif menu == "game":
+    elif menu == "game" or "game_lock":
       ui.draw_game()
     
     #draw_game()
-    
 
+
+###adapt with run function
+def handle_events(self, game):
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      self.quit()
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+      # Check if any button was clicked, e.g., play, settings, help
+      if self.is_button_clicked(event.pos, "Play"):
+        game.start_new_game()
+      elif self.is_button_clicked(event.pos, "Settings"):
+        self.menu = "settings"
+      elif self.is_button_clicked(event.pos, "Help"):
+        self.menu = "help"
+      elif self.is_button_clicked(event.pos, "Quit"):
+        self.quit()
+
+### adapt again
+def run(self):
+  pygame.init()
+  clock = pygame.time.Clock()
+
+  game = Game()
+  
+  while True:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        self.quit()
+
+    self.handle_events(game)
+    game.update()
+    self.draw(game)
+
+    pygame.display.flip()
+    clock.tick(30)  # Adjust the frame rate as needed
