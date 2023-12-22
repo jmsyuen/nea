@@ -348,7 +348,7 @@ face_values = [face_value for face_value in range(11,15)]
 print(face_values)
 
 '''
-
+'''
 var = 34
 output = f"player {var}"
 print(output)
@@ -370,3 +370,7 @@ for player_id_value in range(6):
   x =  140
   y =  122 + i * self.SMALL_CARD_HEIGHT
   self.player_info_locations[f"player_{player_id_value}"] = [x, y]
+'''
+
+
+

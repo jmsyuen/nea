@@ -236,17 +236,25 @@ class ui():
 
       self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
     
-
-    #pot
-    self.update_pot(20.00)
-
     #big cards bottom left
     self.draw_card("big", "back", self.locations["player_1"][0])
     self.draw_card("big", "back", self.locations["player_1"][1])
-       
+    
+    #dynamic variables to be udpated
+    self.update_pot(20.00)
+    self.draw_text_box("Chips: £50.00", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
 
     #buttons ADD FUNCTIONS ###      
-    self.draw_text_box("Chips: £20.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
+
+
+    #update display
+    pygame.display.flip()
+
+  def fold_check_bet(self):
+    #show bet amount, minimum value £0.50 to prevent raising nothing
+    self.draw_text_box("Bet: £0.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Check", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    
     self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
     self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
@@ -254,22 +262,24 @@ class ui():
     self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
-
-
-    #update display
-    pygame.display.flip()
-
-  def fold_check_bet(self):
-    self.draw_text_box("Bet: £0.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Check", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-    #show bet amount, minimum value £0.50 to prevent raising nothing
-
-  def fold_call_bet(self):
-    self.draw_text_box("Bet: £10.00", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Call", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     
-  def fold_all_in(self):
-    self.draw_text_box("Bet: £50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+
+  def fold_call_bet(self, highest_bet):
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Call", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+
+    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+
+    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+    
+  def fold_all_in(self, highest_bet):
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     #draw over in black to eliminate self.WHITE
     self.draw_text_box("", self.WHITE, self.BLACK, 15, 20 + 80, self.HEIGHT - 205, 60, 30)
     self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30)
@@ -301,21 +311,15 @@ class ui():
 
   def game_loop(self):
 
-    self.fold_all_in()
+    self.fold_all_in(500)
     self.show_winners()
     self.flip_card("small", "spades.4",self.locations["public"][0])
     self.flip_card("big", "spades.4",self.locations["player_1"][1])
     pygame.display.flip()
 
 
-    
-    
-
-
-ui = ui()
-
-
 if __name__ == "__main__":
+  ui = ui()
   pygame.init()
   clock = pygame.time.Clock()
   while True:
