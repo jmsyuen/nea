@@ -220,6 +220,68 @@ class ui():
     self.draw_card(size, new_card, position)
     
 
+#buttons ADD FUNCTIONS ###      
+  def fold_check_bet(self):
+    #show bet amount, minimum value £0.50 to prevent raising nothing
+    self.draw_text_box("Bet: £0.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Check", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    
+    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+
+    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+
+
+  def fold_call_bet(self, highest_bet):
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Call", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+
+    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+
+    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+    
+
+  def fold_all_in(self, highest_bet):
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    #draw over in black to eliminate self.WHITE
+    self.draw_text_box("", self.WHITE, self.BLACK, 15, 20 + 80, self.HEIGHT - 205, 60, 30)
+    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30)
+    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30)
+    self.draw_text_box("", self.WHITE, self.BLACK, 15, self.WIDTH - 80, self.HEIGHT - 105, 60, 30)
+    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30)
+    #grey out with buttons that do nothing
+    self.draw_button("Call", self.DARK_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Clear Bet", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.DARK_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+
+
+  def show_winners(self, winners, combination, combination_high):
+    self.draw_text_box("Winning combination", self.BLACK, self.WHITE, 11, self.WIDTH - 160, 422, 140, 24)
+    self.draw_text_box(f"{combination}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 446, 140, 24)#
+    self.draw_text_box(f"{combination_high} high", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 470, 140, 24)# 
+
+    self.draw_text_box("Winner(s)", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 214, 140, 24)
+    for i in range(len(winners)):  #winner in winners
+      self.draw_text_box(f"{winners[i]}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
+
+
+  def ask_save(self): #continue to next round or save #may be unused
+    self.draw_text_box("Save and exit?", self.BLACK, self.WHITE, 11, self.WIDTH - 160, self.HEIGHT - 375, 140, 24)
+    self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.MainMenu)
+    self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
+
+
   def draw_game(self):
     #first time draw
     
@@ -240,81 +302,19 @@ class ui():
     self.draw_card("big", "back", self.locations["player_1"][0])
     self.draw_card("big", "back", self.locations["player_1"][1])
     
+    pygame.display.flip()
+
+
+  def game_loop(self):  #used to integrate with main.py
     #dynamic variables to be udpated
     self.update_pot(20.00)
     self.draw_text_box("Chips: £50.00", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
 
-    #buttons ADD FUNCTIONS ###      
-
-
-    #update display
-    pygame.display.flip()
-
-  def fold_check_bet(self):
-    #show bet amount, minimum value £0.50 to prevent raising nothing
-    self.draw_text_box("Bet: £0.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Check", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-    
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-
-    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
-    
-
-  def fold_call_bet(self, highest_bet):
-    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Call", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-
-    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
-    
-  def fold_all_in(self, highest_bet):
-    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-    #draw over in black to eliminate self.WHITE
-    self.draw_text_box("", self.WHITE, self.BLACK, 15, 20 + 80, self.HEIGHT - 205, 60, 30)
-    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30)
-    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30)
-    self.draw_text_box("", self.WHITE, self.BLACK, 15, self.WIDTH - 80, self.HEIGHT - 105, 60, 30)
-    self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30)
-    #grey out with buttons that do nothing
-    self.draw_button("Call", self.DARK_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Clear Bet", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.DARK_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
-
-
-  def show_winners(self):
-    self.draw_text_box("Winning combination", self.BLACK, self.WHITE, 11, self.WIDTH - 160, 422, 140, 24)
-    self.draw_text_box("Three of a kind", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 446, 140, 24)#
-    self.draw_text_box("6 high", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 470, 140, 24)# 
-
-    self.draw_text_box("Winner(s)", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 214, 140, 24)
-    for i in range(7):  #winner in winners
-      self.draw_text_box("player_1", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
-    
-    #continue to next round or save
-    self.draw_text_box("Save and exit?", self.BLACK, self.WHITE, 11, self.WIDTH - 160, self.HEIGHT - 375, 140, 24)
-    self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.MainMenu)
-    self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
-
-
-  def game_loop(self):
-
     self.fold_all_in(500)
-    self.show_winners()
+    self.show_winners(["player_1", "player_3"], "Three of kind", 6)
     self.flip_card("small", "spades.4",self.locations["public"][0])
-    self.flip_card("big", "spades.4",self.locations["player_1"][1])
+    self.flip_card("small", "clubs.14",self.locations["player_5"][1])
+
     pygame.display.flip()
 
 

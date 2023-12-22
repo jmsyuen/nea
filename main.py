@@ -236,16 +236,16 @@ def NewGame():
           elif combination == 4:
             combination = "Three of a kind"
           elif combination == 5:
-            combination = "high Straight"
+            combination = "Straight"
           elif combination == 6:
-            combination = "high Flush"
+            combination = "Flush"
           elif combination == 7:
             combination = "Full house"
             combination_high += ", " + str(value_to_name(player[3]))
           elif combination == 8:
             combination = "Four of a kind"
           elif combination == 9:
-            combination = "high Straight Flush"
+            combination = "Straight Flush"
           elif combination == 10:
             combination = "Royal Flush"
           
