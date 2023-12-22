@@ -109,6 +109,9 @@ class ui():
     self.screen.blit(text_surface, text_rect)
 
 
+  def ClearScreen(self):
+    self.screen.fill(self.BLACK)  #background
+    pygame.display.flip()
 
 
   def blank(self):  #dummy for greyed out button
@@ -119,9 +122,17 @@ class ui():
     return self.menu
   
 
-  def GoBack(self):
-    self.menu = "main menu"
+  def ChangeMenu(self, menu):
+    self.menu = menu 
+
+
+  def MainMenu(self):
+    self.ChangeMenu("main menu")
   
+
+  def StartGame(self):
+    self.ChangeMenu("game")
+
 
   def open_wikipedia(self):
     webbrowser.open("https://en.wikipedia.org/wiki/Texas_hold_%27em")
@@ -136,29 +147,29 @@ class ui():
 
   #display menu functions
   def main_menu(self):
-    self.screen.fill(self.BLACK)
+    self.ClearScreen()
     self.draw_text_box("Poker VS Bots", self.WHITE, self.BLACK, 30, 0, 40, 414, 100)
-    self.draw_button("Play", self.BLACK, 0, 200, 414, 50, self.draw_game)
     self.draw_button("Settings", self.BLACK, 0, 250, 414, 50, self.settings)
     self.draw_button("Help", self.BLACK, 0, 300, 414, 50, self.help)
     self.draw_button("Quit", self.BLACK, 0, 350, 414, 50, self.quit)
+    self.draw_button("Play", self.BLACK, 0, 200, 414, 50, self.StartGame)
     pygame.display.flip()
     
 
 
   def help(self):
     self.menu = "help"
-    self.screen.fill(self.BLACK)
+    self.ClearScreen()
     self.draw_text_box("Welcome to Poker VS Bots!", self.WHITE, self.BLACK, 20, 0, 40, 414, 100)
     self.draw_button("Wikipedia page", self.BLACK, 0, 200, 414, 100, self.open_wikipedia)
-    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.GoBack)
+    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
     pygame.display.flip()
 
     
   def settings(self):
     self.menu = "settings"
-    self.screen.fill(self.BLACK)
-    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.GoBack)
+    self.ClearScreen()
+    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
     pygame.display.flip()
 
 
@@ -207,23 +218,20 @@ class ui():
 
   def draw_game(self):
     #first time draw
-    if self.menu != "game_lock":
-      self.menu = "game_lock"
-      self.screen.fill(self.BLACK)  #background
-      pygame.display.flip()
+    
 
-      #5 small cards at top
-      for i in range(5):
-        self.draw_card("small", "back", self.locations["public"][i])
-      
-      #list of players on left for right handed players on mobile
-      for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
-        player_id = f"player_{player_id_value}"
-        self.draw_card("small", "back", self.locations[player_id][0])
-        self.draw_card("small", "back", self.locations[player_id][1])
+    #5 small cards at top
+    for i in range(5):
+      self.draw_card("small", "back", self.locations["public"][i])
+    
+    #list of players on left for right handed players on mobile
+    for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
+      player_id = f"player_{player_id_value}"
+      self.draw_card("small", "back", self.locations[player_id][0])
+      self.draw_card("small", "back", self.locations[player_id][1])
 
-        self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
-      
+      self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
+    
 
     #pot
     self.update_pot(20.00)
@@ -286,7 +294,7 @@ class ui():
     
     #continue to next round or save
     self.draw_text_box("Save and exit?", self.BLACK, self.WHITE, 11, self.WIDTH - 160, self.HEIGHT - 375, 140, 24)
-    self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.blank)
+    self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.MainMenu)
     self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
 
 
@@ -302,55 +310,31 @@ ui = ui()
 
 if __name__ == "__main__":
   pygame.init()
+  clock = pygame.time.Clock()
   while True:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         ui.quit()
     
     menu = ui.GetMenu()
-    if menu == "main menu":
-      ui.main_menu()
-    elif menu == "settings":
-      ui.settings()
-    elif menu == "help":
-      ui.help()
-    elif menu == "game" or "game_lock":
+
+    if menu == "game_lock":
       ui.draw_game()
+    else:  
+      if menu == "main menu":
+        ui.main_menu()
+      elif menu == "settings":
+        ui.settings()
+      elif menu == "help":
+        ui.help()
+      elif menu == "game":
+        ui.ChangeMenu("game_lock")
+        ui.ClearScreen() 
+
+
     
+  
+    clock.tick(30)
     #draw_game()
 
 
-###adapt with run function
-def handle_events(self, game):
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      self.quit()
-    elif event.type == pygame.MOUSEBUTTONDOWN:
-      # Check if any button was clicked, e.g., play, settings, help
-      if self.is_button_clicked(event.pos, "Play"):
-        game.start_new_game()
-      elif self.is_button_clicked(event.pos, "Settings"):
-        self.menu = "settings"
-      elif self.is_button_clicked(event.pos, "Help"):
-        self.menu = "help"
-      elif self.is_button_clicked(event.pos, "Quit"):
-        self.quit()
-
-### adapt again
-def run(self):
-  pygame.init()
-  clock = pygame.time.Clock()
-
-  game = Game()
-  
-  while True:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        self.quit()
-
-    self.handle_events(game)
-    game.update()
-    self.draw(game)
-
-    pygame.display.flip()
-    clock.tick(30)  # Adjust the frame rate as needed
