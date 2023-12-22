@@ -3,7 +3,8 @@ https://github.com/jmsyuen/nea
 
 # general td
 can remove blind doubling like a cash game as only in tournaments #
-enable chip carry over between rounds (database r/w) ##database unnecessary
+remove database
+add help menu text
 bot strategies, ai
 pygame interface
 

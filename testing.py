@@ -295,6 +295,7 @@ def loop(iterator, current_index, forward):
 print(loop(round_players, 3, True))
 '''
 
+'''
 hand = ["hearts.14", "spades.14"]
 #blackbox
 
@@ -346,5 +347,26 @@ print(bot.func())
 face_values = [face_value for face_value in range(11,15)]
 print(face_values)
 
+'''
+
+var = 34
+output = f"player {var}"
+print(output)
 
 
+other_player_card_locations = []
+
+for player_id_value in range(1,7):  #range of other opponents #player in players
+  location1 = (20, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
+  location2 = (80, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
+  diction[f"player_{player_id_value}"] = [location1, location2]
+
+
+
+
+self.player_info_locations = dict()
+
+for player_id_value in range(6):
+  x =  140
+  y =  122 + i * self.SMALL_CARD_HEIGHT
+  self.player_info_locations[f"player_{player_id_value}"] = [x, y]

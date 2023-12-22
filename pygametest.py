@@ -1,14 +1,15 @@
 import pygame
 import sys
-import random
-import time
 import webbrowser
 
+import random
+import time
 
 
 class ui():
   def __init__(self):
     #origin at top left
+    
     self.WIDTH, self.HEIGHT = 414, 896 #logical point resolution of iphone 11
     self.WHITE = (255, 255, 255)
     self.GREEN = (0, 128, 0)
@@ -40,29 +41,38 @@ class ui():
     self.small_card_images = []  # https://code.google.com/archive/p/vector-playing-cards/
     self.big_card_images = []
     self.back = [] #small, big
-
-    for suit in ("hearts", "diamonds", "spades", "clubs"):
+    self.suits = ("hearts", "diamonds", "spades", "clubs")
+    
+    for suit in self.suits:
       for value in range(2, 15):
         self.small_card_images.append(pygame.image.load(f"small_cards/{suit}.{value}.png"))  
         self.big_card_images.append(pygame.image.load(f"big_cards/{suit}.{value}.png"))
 
-    #map index 2-14 to 0-12, add offset of 13 for each suit
-
     self.back.append(pygame.image.load(f"small_cards/back.png"))
     self.back.append(pygame.image.load(f"big_cards/back.png"))
 
+    #screen locations of cards 
+    self.locations = {"public":((40 + i * self.SMALL_CARD_WIDTH, 20) for i in range(5))}
+    for player_id_value in range(1,7):  #range of other opponents #player in players
+      location1 = (20, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
+      location2 = (80, 122 + (player_id_value-1) * self.SMALL_CARD_HEIGHT)
+      self.locations[f"player_{player_id_value}"] = [location1, location2]
 
+    #screen locations of info boxes
+    self.player_info_locations = dict()
+
+    for i in range(6):
+      x =  140
+      y =  122 + i * self.SMALL_CARD_HEIGHT
+      self.player_info_locations[f"player_{i+1}"] = [x, y]
     #two big cards at bottom left
     #maybe big public cards at top 
     #list of 9 other players with cards on right side
     # reveal cards in succession by moving down 5px and flipping and up 5px again
 
 
-
-
-
-  #draw buttons and execute function when pressed
-  def draw_button(self, text, box_colour, x, y, width, height, action):
+  #core ui drawing functions
+  def draw_button(self, text, box_colour, x, y, width, height, action): #draw buttons and execute function when pressed
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     hover_colour = self.GREY
@@ -96,8 +106,7 @@ class ui():
     self.screen.blit(text_surface, text_rect)
 
 
-  #for greyed out button
-  def blank(self):  
+  def blank(self):  #dummy for greyed out button
     pass
 
 
@@ -109,6 +118,18 @@ class ui():
     self.menu = "main menu"
   
 
+  def open_wikipedia(self):
+    webbrowser.open("https://en.wikipedia.org/wiki/Texas_hold_%27em")
+    time.sleep(1)
+
+
+  def quit(self):
+    pygame.quit()
+    sys.exit()
+
+
+
+  #display menu functions
   def main_menu(self):
     self.screen.fill(self.BLACK)
     self.draw_text_box("Poker VS Bots", self.WHITE, self.BLACK, 30, 0, 40, 414, 100)
@@ -116,18 +137,9 @@ class ui():
     self.draw_button("Settings", self.BLACK, 0, 250, 414, 50, self.settings)
     self.draw_button("Help", self.BLACK, 0, 300, 414, 50, self.help)
     self.draw_button("Quit", self.BLACK, 0, 350, 414, 50, self.quit)
-
-
     pygame.display.flip()
     #draw_button("New Game", LIGHTGREY, 375, 460, 100,
     #play game, settings, help, quit button
-
-
-
-
-  def open_wikipedia(self):
-    webbrowser.open("https://en.wikipedia.org/wiki/Texas_hold_%27em")
-    time.sleep(1)
 
 
   def help(self):
@@ -136,12 +148,9 @@ class ui():
     self.draw_text_box("Welcome to Poker VS Bots!", self.WHITE, self.BLACK, 20, 0, 40, 414, 100)
     self.draw_button("Wikipedia page", self.BLACK, 0, 200, 414, 100, self.open_wikipedia)
     self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.GoBack)
-    
-    #if button pressed
     pygame.display.flip()
-    return "help"
-    
 
+    
   def settings(self):
     self.menu = "settings"
     self.screen.fill(self.BLACK)
@@ -149,32 +158,70 @@ class ui():
     pygame.display.flip()
 
 
-  def quit(self):
-    pygame.quit()
-    sys.exit()
+  #integration functions
+  def update_pot(self, pot):
+    self.draw_text_box(f"Pot: {pot}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 122, 140, 30)
 
-  # Main game loop
+  
+  def draw_card(self, size, card, position): #takes card like spades.3, and xy position as tuple
+    if card == "back":
+      if size == "small":
+        self.screen.blit(self.back[0], position)
+      elif size == "big":
+        self.screen.blit(self.back[1], position)
+      
+      pygame.display.flip()
+      return
+
+    suit, value = card.split(".")
+    #map index 2-14 to 0-12, add offset of 13 for each suit
+    list_index = value - 2
+    if suit == "diamonds":
+      list_index += 13
+    elif suit == "spades":
+      list_index += 26
+    elif suit == "clubs":
+      list_index += 39
+
+    if size == "small":
+      self.screen.blit(self.small_card_images[list_index], position)
+    elif size == "big":
+      self.screen.blit(self.big_card_images[list_index], position)
+    
+    pygame.display.flip()
+    return
+
+
+  def draw_player_info(self, player_id_value, prev_action, chips_left):
+    top_left_x = self.player_info_locations[f"player_{player_id_value}"][0]
+    top_left_y = self.player_info_locations[f"player_{player_id_value}"][1]
+
+    self.draw_text_box(f"Player {player_id_value}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###self.
+    self.draw_text_box(prev_action, self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
+    self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 48, 100, 24)
+
+
   def draw_game(self):
     self.menu = "game"
     self.cards_on_table = [random.randint(1, 52) for i in range(5)]
     self.player_hand = [random.randint(1, 52) for i in range(2)]
 
-    
     self.screen.fill(self.BLACK)  #background
     #5 small cards at top
     for i in range(5):
-      self.screen.blit(self.back[0], (40 + i * self.SMALL_CARD_WIDTH, 20))
+      self.draw_card("small", "back", self.locations["public"][i])
     
     #list of players on left for right handed players on mobile
-    for i in range(6):  #range of other opponents #player in players
-      self.screen.blit(self.back[0], (20, 122 + i * self.SMALL_CARD_HEIGHT))
-      self.screen.blit(self.back[0], (80, 122 + i * self.SMALL_CARD_HEIGHT))
-      self.draw_text_box("player 1", self.BLACK, self.WHITE, 13, 140, 122 + i * self.SMALL_CARD_HEIGHT, 100, 24) #change string with player name  ###self.
-      self.draw_text_box("", self.BLACK, self.WHITE, 13, 140, 146 + i * self.SMALL_CARD_HEIGHT, 100, 24)  #two to be replaced with actual variables ###
-      self.draw_text_box("Chips:£50.00", self.BLACK, self.WHITE, 13, 140, 170 + i * self.SMALL_CARD_HEIGHT, 100, 24)
+    for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
+      player_id = f"player_{i}"
+      self.draw_card("small", "back", self.locations[player_id][0])
+      self.draw_card("small", "back", self.locations[player_id][1])
+
+      self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
+      
 
     #pot
-    self.draw_text_box("Pot: £20.00", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 122, 140, 30)
+    self.update_pot(20.00)
 
     #big cards bottom left
     self.screen.blit(self.back[1], (20, self.HEIGHT - 162))
@@ -234,7 +281,9 @@ class ui():
     self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.blank)
     self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
 
-    
+
+  
+
 
   def flip_card(self):
     pass
@@ -242,22 +291,24 @@ class ui():
 
 ui = ui()
 
-pygame.init()
-while True:
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      ui.quit()
-  
-  menu = ui.GetMenu()
-  if menu == "main menu":
-    ui.main_menu()
-  elif menu == "settings":
-    ui.settings()
-  elif menu == "help":
-    ui.help()
-  elif menu == "game":
-    ui.draw_game()
-  
-  #draw_game()
-  
+
+if __name__ == "__main__":
+  pygame.init()
+  while True:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        ui.quit()
+    
+    menu = ui.GetMenu()
+    if menu == "main menu":
+      ui.main_menu()
+    elif menu == "settings":
+      ui.settings()
+    elif menu == "help":
+      ui.help()
+    elif menu == "game":
+      ui.draw_game()
+    
+    #draw_game()
+    
 
