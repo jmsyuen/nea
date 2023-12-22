@@ -312,11 +312,6 @@ class database(): #takes save file name
   # SELECT chips FROM table WHERE player
 
 
-#def __init__(self):
-  #  new_round.__init__():
-
-
-
 class Player(): 
   def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
     self.chips_left = chips_left
@@ -443,29 +438,9 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   def BotChoice(self, highest_bet, available_choices):
-    if available_choices == "fold check bet":
-      print("fold check bet")
-      if True:  # bet
-        return 10
-      if True:  # check
-        return "y"
-      if True:  # fold
-        return "n"
-      
-    elif available_choices == "fold allin":
-      print("fold allin")
-      if True:  # all in
-        return "y"
-      if True:  # fold
-        return "n"
-    elif available_choices == "fold call raise":
-      print("fold call raise")
-      if True:  # raise
-        return 10
-      if True:  # call
-        return "y"
-      if True:  # fold
-        return "n"    
+    #if difficulty, risk
+    choice = self.Strategy1(highest_bet, available_choices)
+    return choice
 
 
   def Calculate(self, stage): # more vars
@@ -495,6 +470,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     consecutive = False
     consecutive_potential = 0 #how many cards needed to be consecutive, or rank from 5 highest
     face_values = [face_value for face_value in range(11,15)]
+    face_value_total = 0
+
 
     if suit1 == suit2:
       onsuit = True
@@ -506,9 +483,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif value1 - value2 <= 4:
       consecutive_potential = value1 - value2
     if value1 in face_values:
-      face_value += 1
+      face_value_total += 1
     if value2 in face_values:
-      face_value += 1
+      face_value_total += 1
     
     hand_attributes.append((onsuit, pair, consecutive, consecutive_potential))
     
@@ -527,8 +504,46 @@ class Bot(new_round, Player): #inherits functions of new_round
   def RollRisk(self, probability):
     pass  #change
 
-  def Strategy1(self):
-    pass
+  def Strategy1(self, highest_bet, available_choices): #equal chance of any option
+    #pickrandom choice, pickrandom bet 
+    choice = random.choice(available_choices.split(" "))
+    
+    if choice == "fold":
+      return "n"
+    if choice == "allin" or "call" or "check":
+      return "y"
+
+    if choice == "raise":
+      raise_value = random.randrange(50, self.chips_left, 50) 
+      #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
+      return raise_value
+
+
+  def Strategy2(self, highest_bet, available_choices):
+    if available_choices == "fold check raise":
+      print("fold check raise")
+      if True:  # bet
+        return 10
+      if True:  # check
+        return "y"
+      if True:  # fold
+        return "n"
+      
+    elif available_choices == "fold allin":
+      print("fold allin")
+      if True:  # all in
+        return "y"
+      if True:  # fold
+        return "n"
+    elif available_choices == "fold call raise":
+      print("fold call raise")
+      if True:  # raise
+        return 10
+      if True:  # call
+        return "y"
+      if True:  # fold
+        return "n"   
+        
 
 
 if __name__ == "__main__":
