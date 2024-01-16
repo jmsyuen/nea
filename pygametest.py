@@ -33,8 +33,11 @@ class ui():
     self.button_border_colour = self.WHITE
     self.button_border_width = 1
 
+    #default values
     self.menu = "main menu"
-
+    self.opponents = 3
+    self.bot_starting_chips = 5000
+    self.difficulty = "medium"
 
     # start pygame window
     self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -155,8 +158,22 @@ class ui():
   def set_6_opponents(self):
     self.opponents = 6
   
-  def GetOpponents(self):
-    return self.opponents
+  def set_easy_difficulty(self):
+    self.difficulty = "easy"
+  def set_medium_difficulty(self):
+    self.difficulty = "medium"
+  def set_hard_difficulty(self):
+    self.difficulty = "hard"
+
+  def set_5000_chips(self):
+    self.bot_starting_chips = 5000
+  def set_10000_chips(self):
+    self.bot_starting_chips = 10000
+  def set_20000_chips(self):
+    self.bot_starting_chips = 20000
+
+  def GetSettings(self):
+    return self.opponents, self.difficulty, self.bot_starting_chips
 
 
   def quit(self):
@@ -176,7 +193,6 @@ class ui():
     pygame.display.flip()
     
 
-
   def help(self):
     self.menu = "help"
     self.ClearScreen()
@@ -194,7 +210,7 @@ class ui():
     self.draw_button("Back", self.LIGHT_GREY, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
 
     #number of opponents
-    self.draw_text_box("Number of opponents:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 760, 414, 40)
+    self.draw_text_box(f"Number of opponents: {self.opponents}", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 760, 414, 40)
     self.draw_button("1", self.LIGHT_GREY, 67, self.HEIGHT - 700, 30, 30, self.set_1_opponents)
     self.draw_button("2", self.LIGHT_GREY, 117, self.HEIGHT - 700, 30, 30, self.set_2_opponents)
     self.draw_button("3", self.LIGHT_GREY, 167, self.HEIGHT - 700, 30, 30, self.set_3_opponents)
@@ -202,16 +218,16 @@ class ui():
     self.draw_button("5", self.LIGHT_GREY, 267, self.HEIGHT - 700, 30, 30, self.set_5_opponents)
     self.draw_button("6", self.LIGHT_GREY, 317, self.HEIGHT - 700, 30, 30, self.set_6_opponents)
     #bot difficulty
-    self.draw_text_box("Opponent difficulty:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 650, 414, 40)
-    self.draw_button("Easy", self.LIGHT_GREY, 20, self.HEIGHT - 590, 100, 30, self.blank)
-    self.draw_button("Medium", self.LIGHT_GREY, 160, self.HEIGHT - 590, 100, 30, self.blank)
-    self.draw_button("Hard", self.LIGHT_GREY, 300, self.HEIGHT - 590, 100, 30, self.blank)
+    self.draw_text_box(f"Opponent difficulty: {self.difficulty}", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 650, 414, 40)
+    self.draw_button("Easy", self.LIGHT_GREY, 20, self.HEIGHT - 590, 100, 30, self.set_easy_difficulty)
+    self.draw_button("Medium", self.LIGHT_GREY, 160, self.HEIGHT - 590, 100, 30, self.set_medium_difficulty)
+    self.draw_button("Hard", self.LIGHT_GREY, 300, self.HEIGHT - 590, 100, 30, self.set_hard_difficulty)
     #buy in value
-    self.draw_text_box("Opponent starting money:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 540, 414, 40)
+    self.draw_text_box(f"Opponent starting money: {self.bot_starting_chips}", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 540, 414, 40)
     self.draw_text_box("(you always start with £50)", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 510, 414, 30)
-    self.draw_button("£50", self.LIGHT_GREY, 20, self.HEIGHT - 460, 100, 30, self.blank)
-    self.draw_button("£100", self.LIGHT_GREY, 160, self.HEIGHT - 460, 100, 30, self.blank)
-    self.draw_button("£200", self.LIGHT_GREY, 300, self.HEIGHT - 460, 100, 30, self.blank)
+    self.draw_button("£50", self.LIGHT_GREY, 20, self.HEIGHT - 460, 100, 30, self.set_5000_chips)
+    self.draw_button("£100", self.LIGHT_GREY, 160, self.HEIGHT - 460, 100, 30, self.set_10000_chips)
+    self.draw_button("£200", self.LIGHT_GREY, 300, self.HEIGHT - 460, 100, 30, self.set_20000_chips)
 
 
     pygame.display.flip()
@@ -383,14 +399,14 @@ class ui():
     #dynamic variables to be udpated
     self.update_pot(20.00)
     self.draw_text_box("Chips: £50.00", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
-
+    #fetch settings when new game is started
     
     self.fold_all_in(500)
     self.show_winners(["player_1", "player_3"], "Three of kind", 6)
     self.show_hand("player_2", ["spades.3", "diamonds.9"])
     self.show_hand("player_1", ["spades.14", "diamonds.14"])
     self.show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
-    self.show_hand("public", ["hearts.13"], 2)  
+    self.show_hand("public", ["hearts.13"], 2)
 
     self.menu_button()
 
