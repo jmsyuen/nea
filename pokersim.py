@@ -422,9 +422,9 @@ class Player():
 
 
 class Bot(new_round, Player): #inherits functions of new_round 
-  def __init__(self, chips_left, risk, difficulty):
+  def __init__(self, chips_left, difficulty):
     Player.__init__(self, chips_left)
-    self.risk = risk  #0-1 the probability threshold for a card to appear which would be accepted 
+    self.risk = 0.5  #0-1 the probability threshold for a card to appear which would be accepted 
     self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is
     #chance of fold/check/bet in ranges of probabilities
     #get and use highest_bet to determine next action

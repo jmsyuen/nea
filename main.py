@@ -175,8 +175,9 @@ def NewGame():
     if first_time:
       first_time = False
       player_dict = dict()
-      for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
-        player_dict["player_" + str(player_id_value)] = pokersim.Player(chips_left) #add 
+      player_dict["player_1"] = pokersim.Player(5000)
+      for player_id_value in range(2, total_players_left + 1): ###replace with actual players left
+        player_dict["player_" + str(player_id_value)] = pokersim.Bot(chips_left, difficulty) #add bots
       current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
       current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
       #human always player_1

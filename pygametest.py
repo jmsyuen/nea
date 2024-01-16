@@ -114,7 +114,7 @@ class ui():
 
   def ClearScreen(self):
     self.screen.fill(self.DARK_BEIGE)  #background
-    
+    #pygame.display.flip()
 
 
   def blank(self):  #dummy for greyed out button
@@ -157,7 +157,6 @@ class ui():
   
   def GetOpponents(self):
     return self.opponents
-
 
 
   def quit(self):
