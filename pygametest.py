@@ -173,7 +173,7 @@ class ui():
     self.bot_starting_chips = 20000
 
   def GetSettings(self):
-    return self.opponents, self.difficulty, self.bot_starting_chips
+    return {"opponents": self.opponents, "difficulty": self.difficulty, "bot_starting_chips": self.bot_starting_chips}
 
 
   def quit(self):
@@ -207,6 +207,7 @@ class ui():
     self.menu = "settings"
     self.ClearScreen()
     self.draw_text_box("Settings", self.BLACK, self.IVORY, 15, 0, 0, 414, 40)
+    self.draw_text_box("You can only change settings before a game", self.BLACK, self.IVORY, 13, 0, 40, 414, 30)
     self.draw_button("Back", self.LIGHT_GREY, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
 
     #number of opponents
