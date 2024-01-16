@@ -216,8 +216,33 @@ class ui():
     self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 48, 100, 24)
 
 
-  def flip_card(self, size, new_card, position):  #position as an xy tuple
-    self.draw_card(size, new_card, position)
+  def show_hand(self, *args):  #player_id in full string, cards as a list, if public choose stage
+    player_id = args[0] 
+    cards = args[1]
+    #does not catch if only one card given - enter single item as a list
+    position = 0
+
+    if player_id == "public": #position card accordingly
+      stage = args[2]
+      
+      if stage == 2:
+        position = 3
+      elif stage == 3:
+        position = 4
+
+
+    if player_id == "player_1":
+      size = "big"
+    else:
+      size = "small"
+    
+    
+    for card in cards:
+      self.draw_card(size, card, self.locations[player_id][position])
+      position += 1
+      
+    #self.locations as an xy tuple
+      
     
 
 #buttons ADD FUNCTIONS ###      
@@ -312,8 +337,10 @@ class ui():
 
     self.fold_all_in(500)
     self.show_winners(["player_1", "player_3"], "Three of kind", 6)
-    self.flip_card("small", "spades.4",self.locations["public"][0])
-    self.flip_card("small", "clubs.14",self.locations["player_5"][1])
+    self.show_hand("player_2", ["spades.3", "diamonds.9"])
+    self.show_hand("player_1", ["spades.14", "diamonds.14"])
+    self.show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
+    self.show_hand("public", ["hearts.13"], 2)  
 
     pygame.display.flip()
 

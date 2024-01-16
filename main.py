@@ -75,7 +75,7 @@ def NewGame():
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
       action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
-      print(action)
+      print(action) # print into player info box
       
 
       if type(action) == tuple: #allin
@@ -167,7 +167,7 @@ def NewGame():
     big_blind = 100 #small blind is always half of big
   
   
-  #game
+  ### game  ###
   first_time = True
   play_game = True # new round
   while play_game: # iterate rounds
