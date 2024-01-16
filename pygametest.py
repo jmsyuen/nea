@@ -1,10 +1,8 @@
 import pygame
 import sys
 import webbrowser
-
-import random
 import time
-
+#reduce flicker by reducing frame updates
 
 class ui():
   def __init__(self):
@@ -15,8 +13,13 @@ class ui():
     self.GREEN = (0, 128, 0)
     self.RED = (255, 0, 0)
     self.BLACK = (0, 0, 0)
-    self.GREY = (105, 105, 105)
     self.DARK_GREY = (75, 75, 75)
+    #main colours
+    self.DARK_BEIGE = (204, 204, 183) #background
+    self.IVORY = (245,245,230)        #text box
+    self.OLIVE = (137, 137, 97)       #button hover 
+    self.LIGHT_GREY = (184, 184, 165) #button normal
+    
     #small card size 50x72px, big 100x144px
     #includes padding of 20px around right and bottom sides
     self.SMALL_CARD_WIDTH, self.SMALL_CARD_HEIGHT = 70, 92  
@@ -33,11 +36,11 @@ class ui():
     self.menu = "main menu"
 
 
-    # Initialize Pygame window
+    # start pygame window
     self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
     pygame.display.set_caption("Poker VS Bots")
 
-    # Load card images
+    # load images
     self.small_card_images = []  # https://code.google.com/archive/p/vector-playing-cards/
     self.big_card_images = []
     self.back = [] #small, big
@@ -78,7 +81,7 @@ class ui():
   def draw_button(self, text, box_colour, x, y, width, height, action): #draw buttons and execute function when pressed
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    hover_colour = self.GREY
+    hover_colour = self.OLIVE
     font = pygame.font.SysFont("courier", 15)
     #check if hover, might be redundant
     if x + width > mouse[0] > x and y + height > mouse[1] > y:
@@ -110,8 +113,8 @@ class ui():
 
 
   def ClearScreen(self):
-    self.screen.fill(self.BLACK)  #background
-    pygame.display.flip()
+    self.screen.fill(self.DARK_BEIGE)  #background
+    
 
 
   def blank(self):  #dummy for greyed out button
@@ -136,7 +139,25 @@ class ui():
 
   def open_wikipedia(self):
     webbrowser.open("https://en.wikipedia.org/wiki/Texas_hold_%27em")
-    time.sleep(1)
+    time.sleep(1) #prevents several instances opened at same time
+
+
+  def set_1_opponents(self):
+    self.opponents = 1
+  def set_2_opponents(self):
+    self.opponents = 2
+  def set_3_opponents(self):
+    self.opponents = 3
+  def set_4_opponents(self):
+    self.opponents = 4
+  def set_5_opponents(self):
+    self.opponents = 5
+  def set_6_opponents(self):
+    self.opponents = 6
+  
+  def GetOpponents(self):
+    return self.opponents
+
 
 
   def quit(self):
@@ -148,11 +169,11 @@ class ui():
   #display menu functions
   def main_menu(self):
     self.ClearScreen()
-    self.draw_text_box("Poker VS Bots", self.WHITE, self.BLACK, 30, 0, 40, 414, 100)
-    self.draw_button("Settings", self.BLACK, 0, 250, 414, 50, self.settings)
-    self.draw_button("Help", self.BLACK, 0, 300, 414, 50, self.help)
-    self.draw_button("Quit", self.BLACK, 0, 350, 414, 50, self.quit)
-    self.draw_button("Play", self.BLACK, 0, 200, 414, 50, self.StartGame)
+    self.draw_text_box("Poker VS Bots", self.WHITE, self.DARK_BEIGE, 30, 0, 40, 414, 100)
+    self.draw_button("Settings", self.LIGHT_GREY, 0, 250, 414, 50, self.settings)
+    self.draw_button("Help", self.LIGHT_GREY, 0, 300, 414, 50, self.help)
+    self.draw_button("Quit", self.LIGHT_GREY, 0, 350, 414, 50, self.quit)
+    self.draw_button("Play", self.LIGHT_GREY, 0, 200, 414, 50, self.StartGame)
     pygame.display.flip()
     
 
@@ -160,22 +181,46 @@ class ui():
   def help(self):
     self.menu = "help"
     self.ClearScreen()
-    self.draw_text_box("Welcome to Poker VS Bots!", self.WHITE, self.BLACK, 20, 0, 40, 414, 100)
-    self.draw_button("Wikipedia page", self.BLACK, 0, 200, 414, 100, self.open_wikipedia)
-    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
+    self.draw_text_box("Help", self.BLACK, self.IVORY, 15, 0, 0, 414, 40)
+    self.draw_text_box("Welcome to Poker VS Bots!", self.BLACK, self.DARK_BEIGE, 20, 0, 40, 414, 100)
+    self.draw_button("Wikipedia page", self.LIGHT_GREY, 0, 200, 414, 100, self.open_wikipedia)
+    self.draw_button("Back", self.LIGHT_GREY, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
     pygame.display.flip()
 
     
   def settings(self):
     self.menu = "settings"
     self.ClearScreen()
-    self.draw_button("Back", self.BLACK, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
+    self.draw_text_box("Settings", self.BLACK, self.IVORY, 15, 0, 0, 414, 40)
+    self.draw_button("Back", self.LIGHT_GREY, 0, self.HEIGHT - 100, 414, 100, self.MainMenu)
+
+    #number of opponents
+    self.draw_text_box("Number of opponents:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 760, 414, 40)
+    self.draw_button("1", self.LIGHT_GREY, 67, self.HEIGHT - 700, 30, 30, self.set_1_opponents)
+    self.draw_button("2", self.LIGHT_GREY, 117, self.HEIGHT - 700, 30, 30, self.set_2_opponents)
+    self.draw_button("3", self.LIGHT_GREY, 167, self.HEIGHT - 700, 30, 30, self.set_3_opponents)
+    self.draw_button("4", self.LIGHT_GREY, 217, self.HEIGHT - 700, 30, 30, self.set_4_opponents)
+    self.draw_button("5", self.LIGHT_GREY, 267, self.HEIGHT - 700, 30, 30, self.set_5_opponents)
+    self.draw_button("6", self.LIGHT_GREY, 317, self.HEIGHT - 700, 30, 30, self.set_6_opponents)
+    #bot difficulty
+    self.draw_text_box("Opponent difficulty:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 650, 414, 40)
+    self.draw_button("Easy", self.LIGHT_GREY, 20, self.HEIGHT - 590, 100, 30, self.blank)
+    self.draw_button("Medium", self.LIGHT_GREY, 160, self.HEIGHT - 590, 100, 30, self.blank)
+    self.draw_button("Hard", self.LIGHT_GREY, 300, self.HEIGHT - 590, 100, 30, self.blank)
+    #buy in value
+    self.draw_text_box("Opponent starting money:", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 540, 414, 40)
+    self.draw_text_box("(you always start with £50)", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 510, 414, 30)
+    self.draw_button("£50", self.LIGHT_GREY, 20, self.HEIGHT - 460, 100, 30, self.blank)
+    self.draw_button("£100", self.LIGHT_GREY, 160, self.HEIGHT - 460, 100, 30, self.blank)
+    self.draw_button("£200", self.LIGHT_GREY, 300, self.HEIGHT - 460, 100, 30, self.blank)
+
+
     pygame.display.flip()
 
 
   #integration functions
   def update_pot(self, pot):
-    self.draw_text_box(f"Pot: {pot}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 122, 140, 30)
+    self.draw_text_box(f"Pot: {pot}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 122, 140, 30)
 
   
   def draw_card(self, size, card, position): #takes card like spades.3, and xy position as tuple
@@ -211,9 +256,9 @@ class ui():
     top_left_x = self.player_info_locations[f"player_{player_id_value}"][0]
     top_left_y = self.player_info_locations[f"player_{player_id_value}"][1]
 
-    self.draw_text_box(f"Player {player_id_value}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###self.
-    self.draw_text_box(prev_action, self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
-    self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.WHITE, 13, top_left_x, top_left_y + 48, 100, 24)
+    self.draw_text_box(f"Player {player_id_value}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###self.
+    self.draw_text_box(prev_action, self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
+    self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
 
 
   def show_hand(self, *args):  #player_id in full string, cards as a list, if public choose stage
@@ -248,35 +293,35 @@ class ui():
 #buttons ADD FUNCTIONS ###      
   def fold_check_bet(self):
     #show bet amount, minimum value £0.50 to prevent raising nothing
-    self.draw_text_box("Bet: £0.50", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Check", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_text_box("Bet: £0.50", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Check", self.LIGHT_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("All In", self.LIGHT_GREY, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.LIGHT_GREY, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
-    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+    self.draw_button("Clear Bet", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
 
   def fold_call_bet(self, highest_bet):
-    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("Call", self.BLACK, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("Call", self.LIGHT_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("All In", self.LIGHT_GREY, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.LIGHT_GREY, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
-    self.draw_button("Clear Bet", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.BLACK, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+    self.draw_button("Clear Bet", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
     
 
   def fold_all_in(self, highest_bet):
-    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
-    self.draw_button("All In", self.BLACK, 20, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Fold", self.BLACK, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_text_box(f"Bet: {highest_bet}", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_button("All In", self.LIGHT_GREY, 20, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Fold", self.LIGHT_GREY, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     #draw over in black to eliminate self.WHITE
     self.draw_text_box("", self.WHITE, self.BLACK, 15, 20 + 80, self.HEIGHT - 205, 60, 30)
     self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30)
@@ -284,21 +329,21 @@ class ui():
     self.draw_text_box("", self.WHITE, self.BLACK, 15, self.WIDTH - 80, self.HEIGHT - 105, 60, 30)
     self.draw_text_box("", self.WHITE, self.BLACK, 15, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30)
     #grey out with buttons that do nothing
-    self.draw_button("Call", self.DARK_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
-    self.draw_button("Clear Bet", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.DARK_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("Confirm Raise", self.DARK_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
+    self.draw_button("Call", self.OLIVE, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
+    self.draw_button("Clear Bet", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
+    self.draw_button("- 50p", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50p", self.OLIVE, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("Confirm Raise", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
 
   def show_winners(self, winners, combination, combination_high):
-    self.draw_text_box("Winning combination", self.BLACK, self.WHITE, 11, self.WIDTH - 160, 422, 140, 24)
-    self.draw_text_box(f"{combination}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 446, 140, 24)#
-    self.draw_text_box(f"{combination_high} high", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 470, 140, 24)# 
+    self.draw_text_box("Winning combination", self.BLACK, self.IVORY, 11, self.WIDTH - 160, 422, 140, 24)
+    self.draw_text_box(f"{combination}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 446, 140, 24)#
+    self.draw_text_box(f"{combination_high} high", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 470, 140, 24)# 
 
-    self.draw_text_box("Winner(s)", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 214, 140, 24)
+    self.draw_text_box("Winner(s)", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 214, 140, 24)
     for i in range(len(winners)):  #winner in winners
-      self.draw_text_box(f"{winners[i]}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
+      self.draw_text_box(f"{winners[i]}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
 
 
   '''
@@ -309,7 +354,7 @@ class ui():
   '''
 
   def menu_button(self):
-    self.draw_button("Menu", self.BLACK, self.WIDTH - 79, self.HEIGHT - 305, 60, 30, self.MainMenu)
+    self.draw_button("Menu", self.LIGHT_GREY, self.WIDTH - 79, self.HEIGHT - 305, 60, 30, self.MainMenu)
 
 
   def draw_game(self):
@@ -335,11 +380,12 @@ class ui():
     pygame.display.flip()
 
 
-  def game_loop(self):  #used to integrate with main.py
+  def New_Game(self):  #testing displays
     #dynamic variables to be udpated
     self.update_pot(20.00)
-    self.draw_text_box("Chips: £50.00", self.BLACK, self.WHITE, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
+    self.draw_text_box("Chips: £50.00", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
 
+    
     self.fold_all_in(500)
     self.show_winners(["player_1", "player_3"], "Three of kind", 6)
     self.show_hand("player_2", ["spades.3", "diamonds.9"])
@@ -364,7 +410,7 @@ if __name__ == "__main__":
     menu = ui.GetMenu()
 
     if menu == "game_lock":
-      ui.game_loop()
+      ui.New_Game()
     else:  
       if menu == "main menu":
         ui.main_menu()
@@ -377,6 +423,6 @@ if __name__ == "__main__":
         ui.ClearScreen() 
         ui.draw_game()
   
-    clock.tick(30)
+    clock.tick(30)  #frame limit
 
 

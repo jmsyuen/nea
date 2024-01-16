@@ -372,5 +372,12 @@ for player_id_value in range(6):
   self.player_info_locations[f"player_{player_id_value}"] = [x, y]
 '''
 
+def function1(num):
+	print(num)
 
 
+def bigfunc(funcname):
+	funcname()
+
+#change number of opponents
+bigfunc(function1(3))

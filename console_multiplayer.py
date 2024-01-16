@@ -19,12 +19,6 @@ def initiate_connection(path):
 # print("Save file found! Restore it?")
 # else reset 
 
-#class new_game(): # new round, get chip carry over return # in main.py
-  #bot difficulty select
-  #round settings
-  
-  #pass
-
 
 # nea
 def NewGame():

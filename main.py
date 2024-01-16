@@ -1,5 +1,6 @@
 import pokersim
 import random
+import pygametest
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
 from sqlite3 import Error
@@ -18,12 +19,6 @@ def initiate_connection(path):
 #save file if found on first startup message
 # print("Save file found! Restore it?")
 # else reset 
-
-#class new_game(): # new round, get chip carry over return # in main.py
-  #bot difficulty select
-  #round settings
-  
-  #pass
 
 
 # nea
@@ -289,7 +284,7 @@ def NewGame():
     
 
 
-if __name__ == "__main__": # runs if file is being executed rather than imported #run pygame
+if __name__ == "__main__": 
   NewGame()
   
 
