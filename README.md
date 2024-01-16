@@ -12,6 +12,7 @@ integrating
 display functions for:
 revealing all cards at end
 small narration box for whos turn it is ##creates new box is effort OR ADD small indicator for player's turn
+return to menu and save
 
 # when testing done
 remove current_round_player_index = 0

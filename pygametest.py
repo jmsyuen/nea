@@ -301,10 +301,15 @@ class ui():
       self.draw_text_box(f"{winners[i]}", self.BLACK, self.WHITE, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
 
 
-  def ask_save(self): #continue to next round or save #may be unused
+  '''
+  def menu_confirm(self): #continue to next round or save #may be unused
     self.draw_text_box("Save and exit?", self.BLACK, self.WHITE, 11, self.WIDTH - 160, self.HEIGHT - 375, 140, 24)
-    self.draw_button("Yes", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.MainMenu)
-    self.draw_button("No", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.blank)
+    self.draw_button("Yes", self.BLACK, self.WIDTH - 80, self.HEIGHT - 345, 60, 30, self.MainMenu)
+    self.draw_button("No", self.BLACK, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 345, 60, 30, self.blank)  #hide prompt 
+  '''
+
+  def menu_button(self):
+    self.draw_button("Menu", self.BLACK, self.WIDTH - 79, self.HEIGHT - 305, 60, 30, self.MainMenu)
 
 
   def draw_game(self):
@@ -341,6 +346,8 @@ class ui():
     self.show_hand("player_1", ["spades.14", "diamonds.14"])
     self.show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
     self.show_hand("public", ["hearts.13"], 2)  
+
+    self.menu_button()
 
     pygame.display.flip()
 
