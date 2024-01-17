@@ -308,7 +308,10 @@ class ui():
       
     #self.locations as an xy tuple
       
-    
+  
+  def turn_indicator(self, player_id):
+    self.draw_text_box(">", self.BLACK, self.DARK_BEIGE, 20, self.locations[player_id][0][0] - 20, self.locations[player_id][0][1], 20, 20)
+
 
 #buttons ADD FUNCTIONS ###      
   def fold_check_bet(self):
@@ -418,7 +421,7 @@ class ui():
     self.show_hand("player_1", ["spades.14", "diamonds.14"])
     self.show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
     self.show_hand("public", ["hearts.13"], 2)
-
+    self.turn_indicator("player_1")
     self.menu_button()
 
     pygame.display.flip()

@@ -14,6 +14,11 @@ revealing all cards at end
 small narration box for whos turn it is ##creates new box is effort OR ADD small indicator for player's turn
 return to menu and save
 
+FIX LATER 2 problems found may be related
+sometimes loops checking
+sometimes keeps calling 0 value,
+
+
 # when testing done
 remove current_round_player_index = 0
 stop play when human ("player_1") out
