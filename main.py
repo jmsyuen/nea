@@ -1,6 +1,9 @@
 import pokersim
+import gui
+
 import random
-import pygametest
+import pygame
+
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
 from sqlite3 import Error
@@ -63,51 +66,66 @@ def NewGame():
     for player_id in player_dict:
       player_dict[player_id].ResetStageBet()
     
-    def all_other_players_all_in():
-      return all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id)
 
     if stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
+      gui.show_hand("public", round.GetPublicStage(stage), stage)
     elif stage == 0:
       big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
       small_blind_player_id = round_players[loop(player_dict, loop(player_dict, round_player_index, False), False)]
       print(f"big blind: {big_blind_player_id}, small blind: {small_blind_player_id}")
+      gui.update_player_info(big_blind_player_id, "Big Blind")
+      gui.update_player_info(small_blind_player_id, "Small Blind")
       # charge blinds, and add to pot and highest_bet
       highest_bet = player_dict[big_blind_player_id].Charge(big_blind)
       player_dict[small_blind_player_id].Charge(small_blind)
-      pot += big_blind + small_blind    
+      pot += big_blind + small_blind
+      gui.update_pot(pot)
 
 
     while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
+      gui.turn_indicator(current_player_id)
       action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action) # print into player info box
+  
       
       if type(action) == tuple: #allin
         first_loop = False
         action = action[1]
+        gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
 
-      if type(action) == int: #value has been returned  
+      elif type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
           first_loop = False
+          gui.update_player_info(current_player_id, "Call", player_dict[current_player_id].ChipsLeft())
           #works as 0 also counted as False
         
         elif action + previous_charge > highest_bet: #raised
           highest_bettor_index = round_player_index # loop back to highest_bettor
           highest_bet = action + previous_charge
-          raised = True
+          raised = True 
+          gui.update_player_info(current_player_id, f"Raise {action}", player_dict[current_player_id].ChipsLeft())
         pot += action #add to pot
+        gui.update_pot(pot)
 
-      elif action == True or action == "AllIn": #check
+      elif action == True: #check
         first_loop = False
+        gui.update_player_info(current_player_id, "Check", player_dict[current_player_id].ChipsLeft())
+
+      elif action == "AllIn":
+        first_loop = False
+        gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
         
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index
         round_player_index -= 1
+        gui.update_player_info(current_player_id, "Fold", player_dict[current_player_id].ChipsLeft())
+        
 
-      if all_other_players_all_in():
+      if all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id):  #all other players are all in
         return round_players
 
 
@@ -135,32 +153,12 @@ def NewGame():
     
 
  
-
-
-  valid = False
-  while not valid: ####replace with pygame and buttons instead of inputs
-    try:
-      db = pokersim.database()
-      db.con_up()
-
-
-      default = False
-      if not input("Starting with default settings. £50 buy in, 2 opponents, medium bot difficulty. Type anything to customise:"):
-        default = True
-        break
-      total_players_left = int(input("Enter number of computer opponents:")) + 1 #includes human, replace with pygame and specific buttons
-      chips_left = int(input("Enter starting chips:")) # default £50
-      big_blind = int(input("Enter starting big blind:"))
-      #difficulty ranges from easiest to hardest inclusive all including the previous difficulties
-      #remember to add to Player() call below
-      valid = True
-    except:
-      pass 
+  db = pokersim.database()
+  db.con_up()
   
-  if default:
-    total_players_left = 3
-    chips_left = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
-    big_blind = 100 #small blind is always half of big
+  print("Starting with default settings. £50 buy in, 2 opponents, medium bot difficulty. Type anything to customise:")
+  #remember to add to Player() call below
+  
   
   
   ### game  ###
@@ -169,15 +167,18 @@ def NewGame():
   while play_game: # iterate rounds
     #read to and write out every iteration 
     pot = 0
+    gui.update_pot(pot)
     small_blind = big_blind // 2
     #create player object dictionary
     if first_time:
       first_time = False
+      total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
       big_blind_cycle = 0
+      gui.update_blinds(100)      #small blind is always half of big
       player_dict = dict()
       player_dict["player_1"] = pokersim.Player(5000)
-      for player_id_value in range(2, total_players_left + 1): ###replace with actual players left
-        player_dict["player_" + str(player_id_value)] = pokersim.Bot(chips_left, "medium") #add bots
+      for player_id_value in range(2, total_players_left + 1):
+        player_dict["player_" + str(player_id_value)] = pokersim.Bot(bot_starting_chips, difficulty) #add bots
       current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
       current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
       #human always player_1
@@ -214,6 +215,7 @@ def NewGame():
     for finalist in finalists:    #draw winners from database
       #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
+      
       playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ] ) # get combination highs and append to list
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
   
@@ -284,6 +286,8 @@ def NewGame():
       big_blind_cycle += 1
       print("Blinds doubled")
     
+    pygame.display.flip()
+    
     
     
     
@@ -292,7 +296,31 @@ def NewGame():
 
 
 if __name__ == "__main__": 
-  NewGame()
+  ui = gui.ui()
+  pygame.init()
+  clock = pygame.time.Clock()
+  while True:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        ui.quit()
+    
+    menu = ui.GetMenu()
+
+    if menu == "game_lock":
+      NewGame()
+    else:  
+      if menu == "main menu":
+        ui.main_menu()
+      elif menu == "settings":
+        ui.settings()
+      elif menu == "help":
+        ui.help()
+      elif menu == "game":
+        ui.ChangeMenu("game_lock")
+        ui.ClearScreen() 
+        ui.draw_game()
+  
+    clock.tick(30)  #frame limit
   
 
   

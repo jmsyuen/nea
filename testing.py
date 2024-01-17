@@ -384,3 +384,12 @@ bigfunc(function1(3))
 '''
 
 
+list1 = [3,4,5]
+a,b,c = list1
+print(a,b,c)
+
+def update_player_info(self, *args):
+  player_id_value, prev_action, chips_left = args
+  print(player_id_value, prev_action, chips_left)
+
+update_player_info(3,"asdf", 3)

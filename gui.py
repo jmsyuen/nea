@@ -36,8 +36,10 @@ class ui():
     #default values
     self.menu = "main menu"
     self.opponents = 3
-    self.bot_starting_chips = 5000
-    self.difficulty = "medium"
+    self.bot_starting_chips = 5000 #5000 in intervals of 50, 5 chip types 5,2,1,50 blinds left 2 of dealer
+    self.difficulty = "medium" 
+    self.temporary_bet = 0
+
 
     # start pygame window
     self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -173,7 +175,7 @@ class ui():
     self.bot_starting_chips = 20000
 
   def GetSettings(self):
-    return {"opponents": self.opponents, "difficulty": self.difficulty, "bot_starting_chips": self.bot_starting_chips}
+    return [self.opponents + 1, self.difficulty, self.bot_starting_chips]
 
 
   def quit(self):
@@ -241,6 +243,10 @@ class ui():
 
   def update_blinds(self, big_blind):
     self.draw_text_box(f"Blinds {big_blind // 2}/{big_blind}", self.BLACK, self.IVORY, 14, self.WIDTH - 160, 152, 140, 30)
+  
+
+  def update_chips(self, chips):
+    self.draw_text_box(f"Chips: {chips}", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
 
   
   def draw_card(self, size, card, position): #takes card like spades.3, and xy position as tuple
@@ -272,13 +278,30 @@ class ui():
     return
 
 
-  def draw_player_info(self, player_id_value, prev_action, chips_left):
-    top_left_x = self.player_info_locations[f"player_{player_id_value}"][0]
-    top_left_y = self.player_info_locations[f"player_{player_id_value}"][1]
+  def update_player_info(self, *args):   #player_id_value, prev_action, chips_left
+    player_id_value = args[0]
+    prev_action = args[1]
+    if type(player_id_value) == str:
+      player_id_value = player_id_value.split("_")[1]
 
-    self.draw_text_box(f"Player {player_id_value}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###self.
-    self.draw_text_box(prev_action, self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
-    self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
+    if player_id_value == 1:  #ignore showing prev_action
+      if len(args) > 2:
+        chips_left = args[2]
+        self.update_chips(chips_left)
+        
+      
+   
+    else:  
+      top_left_x = self.player_info_locations[f"player_{player_id_value}"][0]
+      top_left_y = self.player_info_locations[f"player_{player_id_value}"][1]
+    
+      if len(args) > 2:
+        chips_left = args[2]
+        self.draw_text_box(f"Chips:{chips_left}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
+
+      self.draw_text_box(f"Player {player_id_value}", self.BLACK, self.IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###self.
+      self.draw_text_box(prev_action, self.BLACK, self.IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
+    
 
 
   def show_hand(self, *args):  #player_id in full string, cards as a list, if public choose stage
@@ -313,7 +336,29 @@ class ui():
     self.draw_text_box(">", self.BLACK, self.DARK_BEIGE, 20, self.locations[player_id][0][0] - 20, self.locations[player_id][0][1], 20, 20)
 
 
-#buttons ADD FUNCTIONS ###      
+#buttons ADD FUNCTIONS ###
+  
+  def GetAction(self):  #different for every set of choices
+    chosen = 0
+    if chosen not in [self.temporary_bet, self.fold, self.check]:
+      return 
+
+  def increase_50(self):
+    #cannot be bigger than chips remaining
+    #if
+    temporary_bet += 50
+  def decrease_50(self):
+    #cannot be less than highest_bet
+    #if 
+    pass
+  def fold(self):
+    pass
+  def allin(self):
+    pass
+  def check(self):
+    pass
+  
+  #get a choice out of the function names
   def fold_check_bet(self):
     #show bet amount, minimum value £0.50 to prevent raising nothing
     self.draw_text_box("Bet: 50", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
@@ -385,21 +430,18 @@ class ui():
     self.draw_button("Menu", self.LIGHT_GREY, self.WIDTH - 79, self.HEIGHT - 305, 60, 30, self.MainMenu)
 
 
-  def draw_game(self):
-    #first time draw
-    
-
+  def draw_game(self, bot_starting_chips, opponents):   #first time draw
     #5 small cards at top
     for i in range(5):
       self.draw_card("small", "back", self.locations["public"][i])
     
     #list of players on left for right handed players on mobile
-    for player_id_value in range(2, 8):  #range of other opponents #player in players ########change this range
+    for player_id_value in range(2, 2 + opponents):  #range of other opponents #player in players ########change this range
       player_id = f"player_{player_id_value}"
       self.draw_card("small", "back", self.locations[player_id][0])
       self.draw_card("small", "back", self.locations[player_id][1])
 
-      self.draw_player_info(player_id_value, "Check test", 5000) ###change to starting chips total_chips_left
+      self.update_player_info(player_id_value, "", bot_starting_chips) ###change to starting chips total_chips_left
     
     #big cards bottom left
     self.draw_card("big", "back", self.locations["player_1"][0])
@@ -412,7 +454,7 @@ class ui():
     #dynamic variables to be udpated
     self.update_pot(200000)
     self.update_blinds(2000)
-    self.draw_text_box("Chips: 5000", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
+    self.update_chips(5000)
     #fetch settings when new game is started
     
     self.fold_all_in(500)
@@ -425,6 +467,7 @@ class ui():
     self.menu_button()
 
     pygame.display.flip()
+    
 
 
 if __name__ == "__main__":
@@ -450,7 +493,7 @@ if __name__ == "__main__":
       elif menu == "game":
         ui.ChangeMenu("game_lock")
         ui.ClearScreen() 
-        ui.draw_game()
+        ui.draw_game(5000, 4)
   
     clock.tick(30)  #frame limit
 
