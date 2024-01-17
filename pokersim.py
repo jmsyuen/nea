@@ -513,7 +513,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     if choice == "allin" or "call" or "check":
       return "y"
 
-    if choice == "raise":
+    if choice == "raise" or choice == "bet":
       raise_value = random.randrange(50, self.chips_left, 50) 
       #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
       return raise_value
@@ -549,7 +549,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 if __name__ == "__main__":
   
   hand = ["hearts.14", "spades.14"]
-  bot1 = Bot(5000, 1, "easy")
+  bot1 = Bot(5000, "easy")
   
   bot1.NewCards(hand)
   bot1.ResetAllIn()

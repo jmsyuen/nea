@@ -54,7 +54,6 @@ def NewGame():
 
 
   def round_stage(stage): 
-    #returns nothing to continue
     nonlocal pot
     round_player_index = current_round_player_index
     bet_matched = False #changes to true if all checked with no bet
@@ -93,7 +92,7 @@ def NewGame():
       if type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
           first_loop = False
-          pass  #works as 0 also counted as False
+          #works as 0 also counted as False
         
         elif action + previous_charge > highest_bet: #raised
           highest_bettor_index = round_player_index # loop back to highest_bettor
@@ -174,14 +173,16 @@ def NewGame():
     #create player object dictionary
     if first_time:
       first_time = False
+      big_blind_cycle = 0
       player_dict = dict()
       player_dict["player_1"] = pokersim.Player(5000)
       for player_id_value in range(2, total_players_left + 1): ###replace with actual players left
-        player_dict["player_" + str(player_id_value)] = pokersim.Bot(chips_left, difficulty) #add bots
+        player_dict["player_" + str(player_id_value)] = pokersim.Bot(chips_left, "medium") #add bots
       current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
       current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
       #human always player_1
       current_round_player_index = 0 ###for testing ease REMOVE LATER
+      
       
     
     round = pokersim.new_round(total_players_left, player_dict)
@@ -198,7 +199,7 @@ def NewGame():
     
     #iterate stages and return list of finalists
     for stage in range(4):
-      finalists = round_stage(stage)
+      finalists = round_stage(stage)  #returns nothing to continue
       if type(finalists) == list:
         break
     
@@ -278,9 +279,14 @@ def NewGame():
     current_round_player_index += 1 #iterate blinds
     if current_round_player_index > len(player_dict) - 1: 
       current_round_player_index = 0
-    if current_round_player_index == current_game_player_index: #if full cycle of players, double blinds
+    if current_round_player_index == current_game_player_index and big_blind < 1600 and big_blind_cycle != 0: #double blinds up to a maximum of 1600 every two cycles
       big_blind *= 2
+      big_blind_cycle += 1
       print("Blinds doubled")
+    
+    
+    
+    
     
     
 

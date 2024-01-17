@@ -224,11 +224,11 @@ class ui():
     self.draw_button("Medium", self.LIGHT_GREY, 160, self.HEIGHT - 590, 100, 30, self.set_medium_difficulty)
     self.draw_button("Hard", self.LIGHT_GREY, 300, self.HEIGHT - 590, 100, 30, self.set_hard_difficulty)
     #buy in value
-    self.draw_text_box(f"Opponent starting money: {self.bot_starting_chips}", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 540, 414, 40)
-    self.draw_text_box("(you always start with £50)", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 510, 414, 30)
-    self.draw_button("£50", self.LIGHT_GREY, 20, self.HEIGHT - 460, 100, 30, self.set_5000_chips)
-    self.draw_button("£100", self.LIGHT_GREY, 160, self.HEIGHT - 460, 100, 30, self.set_10000_chips)
-    self.draw_button("£200", self.LIGHT_GREY, 300, self.HEIGHT - 460, 100, 30, self.set_20000_chips)
+    self.draw_text_box(f"Opponent starting chips: {self.bot_starting_chips}", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 540, 414, 40)
+    self.draw_text_box("(you always start with 5000)", self.BLACK, self.IVORY, 15, 0, self.HEIGHT - 510, 414, 30)
+    self.draw_button("5k", self.LIGHT_GREY, 20, self.HEIGHT - 460, 100, 30, self.set_5000_chips)
+    self.draw_button("10k", self.LIGHT_GREY, 160, self.HEIGHT - 460, 100, 30, self.set_10000_chips)
+    self.draw_button("20k", self.LIGHT_GREY, 300, self.HEIGHT - 460, 100, 30, self.set_20000_chips)
 
 
     pygame.display.flip()
@@ -236,7 +236,11 @@ class ui():
 
   #integration functions
   def update_pot(self, pot):
-    self.draw_text_box(f"Pot: {pot}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 122, 140, 30)
+    self.draw_text_box(f"Pot {pot}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 122, 140, 30)
+
+
+  def update_blinds(self, big_blind):
+    self.draw_text_box(f"Blinds {big_blind // 2}/{big_blind}", self.BLACK, self.IVORY, 14, self.WIDTH - 160, 152, 140, 30)
 
   
   def draw_card(self, size, card, position): #takes card like spades.3, and xy position as tuple
@@ -309,15 +313,15 @@ class ui():
 #buttons ADD FUNCTIONS ###      
   def fold_check_bet(self):
     #show bet amount, minimum value £0.50 to prevent raising nothing
-    self.draw_text_box("Bet: £0.50", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
+    self.draw_text_box("Bet: 50", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 205, 140, 30)
     self.draw_button("Check", self.LIGHT_GREY, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     
     self.draw_button("All In", self.LIGHT_GREY, 20, self.HEIGHT - 205, 60, 30, self.blank)
     self.draw_button("Fold", self.LIGHT_GREY, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
     self.draw_button("Clear Bet", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("- 50", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("Confirm Raise", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
 
@@ -329,8 +333,8 @@ class ui():
     self.draw_button("Fold", self.LIGHT_GREY, 20 + 80 + 80, self.HEIGHT - 205, 60, 30, self.blank)
 
     self.draw_button("Clear Bet", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("- 50", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50", self.LIGHT_GREY, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("Confirm Raise", self.LIGHT_GREY, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
     
 
@@ -347,12 +351,12 @@ class ui():
     #grey out with buttons that do nothing
     self.draw_button("Call", self.OLIVE, 20 + 80, self.HEIGHT - 205, 60, 30, self.blank)
     self.draw_button("Clear Bet", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 55, 140, 30, self.blank)
-    self.draw_button("- 50p", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
-    self.draw_button("+ 50p", self.OLIVE, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("- 50", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 105, 60, 30, self.blank)
+    self.draw_button("+ 50", self.OLIVE, self.WIDTH - 80, self.HEIGHT - 105, 60, 30, self.blank)
     self.draw_button("Confirm Raise", self.OLIVE, 15 + self.BIG_CARD_WIDTH*2 , self.HEIGHT - 155, 140, 30, self.blank)
 
 
-  def show_winners(self, winners, combination, combination_high):
+  def announce_winners(self, winners, combination, combination_high):
     self.draw_text_box("Winning combination", self.BLACK, self.IVORY, 11, self.WIDTH - 160, 422, 140, 24)
     self.draw_text_box(f"{combination}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 446, 140, 24)#
     self.draw_text_box(f"{combination_high} high", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 470, 140, 24)# 
@@ -360,6 +364,11 @@ class ui():
     self.draw_text_box("Winner(s)", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 214, 140, 24)
     for i in range(len(winners)):  #winner in winners
       self.draw_text_box(f"{winners[i]}", self.BLACK, self.IVORY, 15, self.WIDTH - 160, 238 + i * 24, 140, 24)
+
+
+  def show_finalist_cards(self, hands, finalists): #using a dictionary of player_id:cards
+    for player_id in finalists:
+      self.show_hand(hands[player_id], player_id)
 
 
   '''
@@ -398,12 +407,13 @@ class ui():
 
   def New_Game(self):  #testing displays
     #dynamic variables to be udpated
-    self.update_pot(20.00)
-    self.draw_text_box("Chips: £50.00", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
+    self.update_pot(200000)
+    self.update_blinds(2000)
+    self.draw_text_box("Chips: 5000", self.BLACK, self.IVORY, 15, 15 + self.BIG_CARD_WIDTH*2, self.HEIGHT - 255, 140, 30)
     #fetch settings when new game is started
     
     self.fold_all_in(500)
-    self.show_winners(["player_1", "player_3"], "Three of kind", 6)
+    self.announce_winners(["player_1", "player_3"], "Three of kind", 6)
     self.show_hand("player_2", ["spades.3", "diamonds.9"])
     self.show_hand("player_1", ["spades.14", "diamonds.14"])
     self.show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
