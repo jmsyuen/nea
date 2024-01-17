@@ -371,7 +371,7 @@ for player_id_value in range(6):
   y =  122 + i * self.SMALL_CARD_HEIGHT
   self.player_info_locations[f"player_{player_id_value}"] = [x, y]
 '''
-
+'''
 def function1(num):
 	print(num)
 
@@ -381,3 +381,6 @@ def bigfunc(funcname):
 
 #change number of opponents
 bigfunc(function1(3))
+'''
+
+
