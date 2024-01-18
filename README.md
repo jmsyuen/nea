@@ -20,6 +20,10 @@ sometimes loops checking
 sometimes keeps calling 0 value,
 blinds double every total_players - 1 rounds
 
+# improvements
+    
+
+
 # when testing done
 remove current_round_player_index = 0
 stop play when human ("player_1") out

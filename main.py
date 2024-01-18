@@ -89,11 +89,7 @@ def NewGame():
       print(f"{current_player_id} move")
       gui.turn_indicator(current_player_id)
       
-      if current_player_id == "player_1":
-        #action = player_dict[current_player_id].GetChoice(highest_bet)   pass object through 
-        pass
-      else:
-        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action) # print into player info box
   
       
@@ -164,8 +160,11 @@ def NewGame():
   print("Starting with default settings. £50 bot buy in, 3 opponents, medium bot difficulty.")
   #remember to add to Player() call below
 
+  
   total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
-  big_blind_cycle = 0
+  gui.draw_game(bot_starting_chips, total_players_left - 1)
+  big_blind_cycle = 0   #used to know when to double blinds every two cycles of players
+  big_blind = 100
   gui.update_blinds(100)      #small blind is always half of big
 
   #initiate player and bot objects
@@ -298,29 +297,28 @@ def NewGame():
 
 
 if __name__ == "__main__": 
-  ui = gui.ui()
   pygame.init()
   clock = pygame.time.Clock()
   while True:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        ui.quit()
+        gui.quit()
     
-    menu = ui.GetMenu()
+    menu = gui.GetMenu()
 
     if menu == "game_lock":
       NewGame()
     else:  
       if menu == "main menu":
-        ui.main_menu()
+        gui.main_menu()
       elif menu == "settings":
-        ui.settings()
+        gui.settings()
       elif menu == "help":
-        ui.help()
+        gui.help()
       elif menu == "game":
-        ui.ChangeMenu("game_lock")
-        ui.ClearScreen() 
-        ui.draw_game()  #draw in first_time params
+        gui.ChangeMenu("game_lock")
+        gui.ClearScreen() 
+        
   
     clock.tick(30)  #frame limit
   

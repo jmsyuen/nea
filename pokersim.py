@@ -1,3 +1,5 @@
+import gui
+
 import random
 import os
 import sqlite3
@@ -266,6 +268,7 @@ class database(): #takes save file name
   
 
   def con_up(self): # takes filename, performs first-time setup if necessary
+    '''
     if os.path.exists(self.filename):
       self.needsSetup = False
 
@@ -276,7 +279,12 @@ class database(): #takes save file name
     else:
       print("Creating new save file")
       self.needsSetup = True
-  
+    '''
+    os.remove(self.filename)
+    print("Creating new save file")
+    self.needsSetup = True
+
+
     con = sqlite3.connect(self.filename) # creates file if not found
 
 

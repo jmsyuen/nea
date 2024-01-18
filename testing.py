@@ -383,7 +383,7 @@ def bigfunc(funcname):
 bigfunc(function1(3))
 '''
 
-
+'''
 list1 = [3,4,5]
 a,b,c = list1
 print(a,b,c)
@@ -402,5 +402,26 @@ class obj():
   def test(self):
     print(2)
 
+#test()
+'''
 
-test()
+'''
+var = input("enter")
+print(type(var))
+print(var.isnumeric())
+print(int(var).isnumeric())
+'''
+
+choice = "y"
+print(str(300))
+def GetChoice():  #different for every set of choices
+  global choice
+  actual_choice = choice
+  choice = False
+  return actual_choice
+
+print(GetChoice())
+
+var1 = False
+if var1 == str:
+  print("string")

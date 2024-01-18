@@ -35,8 +35,11 @@ menu = "main menu"
 opponents = 3
 bot_starting_chips = 5000 #5000 in intervals of 50, 5 chip types 5,2,1,50 blinds left 2 of dealer
 difficulty = "medium" 
-temporary_bet = 0
 
+temporary_bet = 50   #might need to be 50
+choice = False
+temp_chips_left = False
+temp_highest_bet = False
 
 # start pygame window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -348,71 +351,111 @@ def turn_indicator(player_id):
   draw_text_box(">", BLACK, DARK_BEIGE, 20, locations[player_id][0][0] - 20, locations[player_id][0][1], 20, 20)
 
 
-#buttons ADD FUNCTIONS ###
 
-def GetAction():  #different for every set of choices
-  chosen = 0
-  if chosen not in [temporary_bet, fold, check]:
-    return 
+#buttons - these cannot have arguments as they are executed
 
+def GetChoice():  #different for every set of choices
+  global choice
+  actual_choice = str(choice)
+  choice = False  #reset
+  return actual_choice
+
+#maybe set greyed out state for these 2 buttons
 def increase_50():
-  #cannot be bigger than chips remaining
-  #if
+  global temporary_bet, temp_chips_left
   temporary_bet += 50
+  if temporary_bet > temp_chips_left:
+    temporary_bet -= 50
+    
 def decrease_50():
-  #cannot be less than highest_bet
-  #if 
-  pass
+  global temporary_bet, temp_highest_bet
+  temporary_bet -= 50
+  if temporary_bet < temp_highest_bet:
+    temporary_bet += 50
+
+  
+def reset_temporary_bet():
+  global temporary_bet
+  temporary_bet = 50
+  #min 50 (smallest bet possible)
+
 def fold():
-  pass
+  global choice
+  choice = "n"
 def allin():
-  pass
+  global choice, temp_chips_left
+  choice = str(temp_chips_left) #remanining chips, GetChoice requires values to be a string for isnumeric to work
 def check():
-  pass
+  global choice
+  choice = "y"
+
+def confirm_bet():
+  global choice, temporary_bet
+  choice = temporary_bet
+
+
 #get a choice out of the function names
-def fold_check_bet():
-  #show bet amount, minimum value £0.50 to prevent raising nothing
-  draw_text_box("Bet: 50", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-  draw_button("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, blank)
-  
-  draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, blank)
-  draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, blank)
+def fold_check_bet(highest_bet, chips_left):
 
-  draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
-  draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
-  draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
-  draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
+  global choice, temp_chips_left, temp_highest_bet
+  temp_chips_left, temp_highest_bet = chips_left, highest_bet
+
+  while choice == False:
+    draw_text_box("Bet: 50", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_button("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
+    
+    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+
+    draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
+    draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
+    draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
+    draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
+  return GetChoice()
 
 
-def fold_call_bet(highest_bet):
-  draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-  draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, blank)
+def fold_call_bet(highest_bet, chips_left):
 
-  draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, blank)
-  draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, blank)
+  global choice, temp_chips_left, temp_highest_bet
+  temp_chips_left, temp_highest_bet = chips_left, highest_bet
 
-  draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
-  draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
-  draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
-  draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
-  
+  while choice == False:
+    draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
 
-def fold_all_in(highest_bet):
-  draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-  draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, blank)
-  draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, blank)
-  #draw over in black to eliminate WHITE
-  draw_text_box("", WHITE, BLACK, 15, 20 + 80, HEIGHT - 205, 60, 30)
-  draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30)
-  draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30)
-  draw_text_box("", WHITE, BLACK, 15, WIDTH - 80, HEIGHT - 105, 60, 30)
-  draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30)
-  #grey out with buttons that do nothing
-  draw_button("Call", OLIVE, 20 + 80, HEIGHT - 205, 60, 30, blank)
-  draw_button("Clear Bet", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
-  draw_button("- 50", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
-  draw_button("+ 50", OLIVE, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
-  draw_button("Confirm Raise", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
+    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+
+    draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
+    draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
+    draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
+    draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
+  return GetChoice()
+
+
+def fold_all_in(highest_bet, chips_left):
+
+  global choice, temp_chips_left, temp_highest_bet
+  temp_chips_left, temp_highest_bet = chips_left, highest_bet
+
+  while choice == False:
+    #working buttons
+    draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+    #draw over in black to eliminate WHITE
+    draw_text_box("", WHITE, BLACK, 15, 20 + 80, HEIGHT - 205, 60, 30)
+    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30)
+    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30)
+    draw_text_box("", WHITE, BLACK, 15, WIDTH - 80, HEIGHT - 105, 60, 30)
+    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30)
+    #grey out with buttons that do nothing
+    draw_button("Call", OLIVE, 20 + 80, HEIGHT - 205, 60, 30, blank)
+    draw_button("Clear Bet", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
+    draw_button("- 50", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
+    draw_button("+ 50", OLIVE, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
+    draw_button("Confirm Raise", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
+  return GetChoice()
 
 
 def announce_winners(winners, combination, combination_high):
