@@ -371,9 +371,10 @@ class Player():
     
     if highest_bet == 0:
       if self.bot == True:
-        choice = self.BotChoice(highest_bet, "fold check bet") ###
+        choice = self.BotChoice(highest_bet, "fold check bet") ### bot
       else:
-        choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") ##set hard limit slider at remaining chips and 50p intervals
+        #choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") 
+        choice = gui.fold_check_bet(highest_bet, self.chips_left)
 
       if choice.isnumeric():
         choice = int(choice)
@@ -398,9 +399,10 @@ class Player():
     else: #bet has been made
       if highest_bet >= self.chips_left:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold allin") ###
+          choice = self.BotChoice(highest_bet, "fold allin") ### bot
         else:
-          choice = input("All in (y) or fold(n)?:")
+          #choice = input("All in (y) or fold(n)?:")
+          choice = gui.fold_all_in(highest_bet, self.chips_left)
 
         if choice == "y":
           result = self.Charge(self.chips_left)
@@ -411,9 +413,10 @@ class Player():
       
       elif highest_bet > 0:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold call raise") ###
+          choice = self.BotChoice(highest_bet, "fold call raise") ### bot
         else:
-          choice = input("Fold(n), Call(y) or raise extra:")
+          #choice = input("Fold(n), Call(y) or raise extra:")
+          choice = gui.fold_call_bet(highest_bet, self.chips_left)
 
         previouscharge = self.PreviousCharge()
         if previouscharge != False:

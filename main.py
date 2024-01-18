@@ -267,17 +267,6 @@ def NewGame():
         round_players.remove(player)
         player_dict.pop(player)
       
-
-    ####replace with if save button is pressed in pygame
-    save = input("Save? y/N:")
-    #end game if one player left or human out (optional)
-    if len(player_dict) < 2: ###or "player_1" not in round.players
-      play_game = False
-      print(f"{round_players[0]} remains.")
-
-    elif len(save) != 0:
-      play_game = False
-      #write out
     
     current_round_player_index += 1 #iterate blinds
     if current_round_player_index > len(player_dict) - 1: 
@@ -287,6 +276,30 @@ def NewGame():
       big_blind_cycle += 1
       print("Blinds doubled")
     
+    pygame.display.flip()
+
+    ####end of round
+    #end game if one player left or human out (optional)
+    if len(player_dict) < 2: ###or "player_1" not in round.players
+      play_game = False
+      print(f"{round_players[0]} remains.")
+      gui.MainMenu()
+
+    #save = input("Save? y/N:")
+    continue_round = gui.ask_continue_round()
+    while continue_round == False:
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          gui.quit()
+      gui.menu_confirm()
+      pygame.display.flip()
+    
+    if continue_round == "n":
+      play_game = False
+      #database write out
+
+
+
     pygame.display.flip()
     
     

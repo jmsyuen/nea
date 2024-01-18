@@ -411,7 +411,7 @@ print(type(var))
 print(var.isnumeric())
 print(int(var).isnumeric())
 '''
-
+'''
 choice = "y"
 print(str(300))
 def GetChoice():  #different for every set of choices
@@ -423,5 +423,27 @@ def GetChoice():  #different for every set of choices
 print(GetChoice())
 
 var1 = False
-if var1 == str:
+var2 = str(var1)
+if var2 == str:
   print("string")
+  #cannot case bool as str
+'''
+'''
+import gui
+import pygame
+
+pygame.init()
+clock = pygame.time.Clock()
+while True:
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      quit()
+  gui.test()
+  
+
+
+
+
+  #gui.fold_call_bet(500,5000)
+  clock.tick(30)
+'''

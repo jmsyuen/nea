@@ -21,7 +21,14 @@ sometimes keeps calling 0 value,
 blinds double every total_players - 1 rounds
 
 # improvements
-    
+
+
+# common problems with solutions
+program freezing
+solution - windows needs to know if user can close using the top right x button
+for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        quit()
 
 
 # when testing done
