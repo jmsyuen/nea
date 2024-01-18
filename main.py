@@ -152,6 +152,7 @@ def NewGame():
               first_loop = False
             elif first_loop == False:
               break
+      pygame.display.flip()
         
     
   ### new game setup
@@ -164,7 +165,6 @@ def NewGame():
 
   
   total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
-  gui.draw_game(bot_starting_chips, total_players_left - 1)
   big_blind_cycle = 0   #used to know when to double blinds every two cycles of players
   big_blind = 100
   gui.update_blinds(100)      #small blind is always half of big
@@ -178,6 +178,7 @@ def NewGame():
   current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
   #human always player_1
   current_round_player_index = 0 ###for testing ease REMOVE LATER
+  #list(player_dict.keys())
   
   
   ### game  ###
@@ -189,18 +190,25 @@ def NewGame():
     pot = 0
     gui.update_pot(pot)
     small_blind = big_blind // 2    
-      
+  
     round = pokersim.new_round(total_players_left, player_dict)
 
+
+
     #deal cards for remaining players
+    #hide old cards
     round_players = []
     for player_id in player_dict:
       round_players.append(player_id)
       player_dict[player_id].NewCards(round.GetHand(player_id)) ###int(player_id.split("_")[-1]) 
       player_dict[player_id].ResetAllIn()
       print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
+      gui.update_player_chips(player_id, player_dict[player_id].ChipsLeft())
+      gui.update_player_info(player_id, "")
       ###print(round.GetHand("player_1")) #get human uncomment when remove testing function
+    gui.draw_card_backs(round_players)
     gui.show_hand("player_1", round.GetHand("player_1"))
+    
 
     
     #iterate stages and return list of finalists
@@ -272,6 +280,7 @@ def NewGame():
         total_players_left -= 1
         round_players.remove(player)
         player_dict.pop(player)
+        gui.remove_bust_player(player)
       
     
     current_round_player_index += 1 #iterate blinds
@@ -292,6 +301,7 @@ def NewGame():
       gui.MainMenu()
 
     #save = input("Save? y/N:")
+    pygame.display.flip()
     continue_round = gui.ask_continue_round()
     while continue_round == False:
       for event in pygame.event.get():

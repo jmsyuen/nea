@@ -71,12 +71,12 @@ for player_id_value in range(2,8):  #range of other opponents #player in players
 
 
 #screen locations of info boxes
-player_info_locations = dict()
+bot_info_locations = dict()
 
 for i in range(6):
   x =  140
   y =  122 + i * SMALL_CARD_HEIGHT
-  player_info_locations[f"player_{i+2}"] = [x, y]
+  bot_info_locations[f"player_{i+2}"] = [x, y]
 #two big cards at bottom left
 #maybe big public cards at top 
 #list of 9 other players with cards on right side
@@ -261,8 +261,13 @@ def update_blinds(big_blind):
   draw_text_box(f"Blinds {big_blind // 2}/{big_blind}", BLACK, IVORY, 14, WIDTH - 160, 152, 140, 30)
 
 
-def update_chips(chips):
-  draw_text_box(f"Chips: {chips}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
+def update_player_chips(player_id, chips_left):
+  if player_id == "player_1":
+    draw_text_box(f"Chips: {chips_left}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
+  else:
+    top_left_x = bot_info_locations[player_id][0]
+    top_left_y = bot_info_locations[player_id][1]
+    draw_text_box(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
 
 
 def draw_card(size, card, position): #takes card like spades.3, and xy position as tuple
@@ -300,16 +305,15 @@ def update_player_info(*args):   #player_id_value, prev_action, chips_left
   if type(player_id_value) == str:
     player_id_value = player_id_value.split("_")[1]
 
-  if str(player_id_value) == "1":  #ignore showing prev_action
+  if str(player_id_value) == "1":  #catch and ignore showing prev_action for human player
     if len(args) > 2:
       chips_left = args[2]
-      update_chips(chips_left)
+      update_player_chips("player_1", chips_left)
       
     
-  
   else:  
-    top_left_x = player_info_locations[f"player_{player_id_value}"][0]
-    top_left_y = player_info_locations[f"player_{player_id_value}"][1]
+    top_left_x = bot_info_locations[f"player_{player_id_value}"][0]
+    top_left_y = bot_info_locations[f"player_{player_id_value}"][1]
   
     if len(args) > 2:
       chips_left = args[2]
@@ -520,31 +524,56 @@ def menu_button(): #maybe unused
   draw_button("Menu", LIGHT_GREY, WIDTH - 79, HEIGHT - 305, 60, 30, MainMenu)
 
 
-def draw_game(bot_starting_chips, opponents):   #first time draw
-  #5 small cards at top
+def draw_card_backs(remaining_players_list):   #hide cards from previous round
+  remaining_bots = len(remaining_players_list)
+  if "player_1" in remaining_players_list:  
+    #big cards for human player
+    draw_card("big", "back", locations["player_1"][0])
+    draw_card("big", "back", locations["player_1"][1])
+    remaining_bots -= 1
+  
+  #draw public cards at top
   for i in range(5):
     draw_card("small", "back", locations["public"][i])
   
   #list of players on left for right handed players on mobile
-  for player_id_value in range(2, 2 + opponents):  #range of other opponents #player in players ########change this range
+  for player_id_value in range(2, 2 + remaining_bots):  #range of other opponents #player in players ########change this range
     player_id = f"player_{player_id_value}"
     draw_card("small", "back", locations[player_id][0])
     draw_card("small", "back", locations[player_id][1])
 
-    update_player_info(player_id_value, "", bot_starting_chips) ###change to starting chips total_chips_left
-  
-  #big cards bottom left
-  draw_card("big", "back", locations["player_1"][0])
-  draw_card("big", "back", locations["player_1"][1])
-  
+    #update_player_info(player_id_value, "", bot_remaining_chips) ###change to starting chips total_chips_left
+    
   pygame.display.flip()
+
+
+def remove_bust_player(player_id): 
+  first_card_x, first_card_y = locations[player_id][0][0], locations[player_id][0][1]
+  second_card_x, second_card_y = locations[player_id][1][0], locations[player_id][1][1]
+
+  if player_id == "player_1":
+    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH, BIG_CARD_HEIGHT)
+    draw_text_box("", BLACK, DARK_BEIGE, 11, second_card_x, second_card_y, BIG_CARD_WIDTH, BIG_CARD_HEIGHT)
+
+  else:
+    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT)
+    draw_text_box("", BLACK, DARK_BEIGE, 11, second_card_x, second_card_y, SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT)
+
+    #and remove info boxes
+    top_left_x = bot_info_locations[player_id][0]
+    top_left_y = bot_info_locations[player_id][1]
+  
+    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
+    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) 
+    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  
+    
 
 
 def New_Game():  #testing displays
   #dynamic variables to be udpated
   update_pot(200000)
   update_blinds(2000)
-  update_chips(5000)
+  update_player_chips("player_1", 5000)
   #fetch settings when new game is started
   
   #fold_all_in(500, 5000)
@@ -596,7 +625,7 @@ if __name__ == "__main__":
       elif menu == "game":
         ChangeMenu("game_lock")
         ClearScreen() 
-        draw_game(5000, 6)
+        draw_card_backs(5000, 6)
   
     clock.tick(30)  #frame limit
 
