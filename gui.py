@@ -300,7 +300,7 @@ def update_player_info(*args):   #player_id_value, prev_action, chips_left
   if type(player_id_value) == str:
     player_id_value = player_id_value.split("_")[1]
 
-  if player_id_value == 1:  #ignore showing prev_action
+  if str(player_id_value) == "1":  #ignore showing prev_action
     if len(args) > 2:
       chips_left = args[2]
       update_chips(chips_left)
@@ -323,6 +323,8 @@ def update_player_info(*args):   #player_id_value, prev_action, chips_left
 def show_hand(*args):  #player_id in full string, cards as a list, if public choose stage
   player_id = args[0] 
   cards = args[1]
+  if type(cards) == str:
+    cards = [cards]
   #does not catch if only one card given - enter single item as a list
   position = 0
 
@@ -349,6 +351,7 @@ def show_hand(*args):  #player_id in full string, cards as a list, if public cho
     
 
 def turn_indicator(player_id):
+  draw_text_box("", BLACK, DARK_BEIGE, 20, 0, 120, 20, HEIGHT)  #clear bar on the side
   draw_text_box(">", BLACK, DARK_BEIGE, 20, locations[player_id][0][0] - 20, locations[player_id][0][1], 20, 20)
 
 
@@ -493,10 +496,6 @@ def announce_winners(winners, combination, combination_high):
 
 def announce_remaining_player(player_id):
   draw_text_box(f"{player_id} remains.", BLACK, IVORY, 11, WIDTH - 160, HEIGHT - 375, 140, 24)
-
-def show_finalist_cards(hands, finalists): #using a dictionary of player_id:cards
-  for player_id in finalists:
-    show_hand(hands[player_id], player_id)
 
 
 def ask_continue_round():

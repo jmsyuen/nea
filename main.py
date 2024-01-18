@@ -2,7 +2,9 @@ import pokersim
 import gui
 
 import random
+import time
 import pygame
+
 
 ''' maybe move into pokersim.py, and create new sqlite file
 import sqlite3
@@ -152,7 +154,7 @@ def NewGame():
               break
         
     
-
+  ### new game setup
  
   db = pokersim.database()
   db.con_up()
@@ -183,6 +185,7 @@ def NewGame():
   play_game = True # new round
   while play_game: # iterate rounds
     #read to and write out every iteration (database)
+    ### new round setup
     pot = 0
     gui.update_pot(pot)
     small_blind = big_blind // 2    
@@ -197,6 +200,7 @@ def NewGame():
       player_dict[player_id].ResetAllIn()
       print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
       ###print(round.GetHand("player_1")) #get human uncomment when remove testing function
+    gui.show_hand("player_1", round.GetHand("player_1"))
 
     
     #iterate stages and return list of finalists
@@ -216,6 +220,8 @@ def NewGame():
     for finalist in finalists:    #draw winners from database
       #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
+      gui.show_hand(finalist, round.GetHand(finalist))
+      time.sleep(0.5)
 
       playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ] ) # get combination highs and append to list
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
@@ -252,7 +258,7 @@ def NewGame():
             combination = "Royal Flush"
           
     print(f"winner: {winners} with a {combination_high} {combination}")
-              
+    gui.announce_winners(winners, combination, combination_high)
     
     #split pot  
     winnings = pot // len(winners)
@@ -291,7 +297,9 @@ def NewGame():
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           gui.quit()
+
       gui.menu_confirm()
+      continue_round = gui.ask_continue_round()
       pygame.display.flip()
     
     if continue_round == "n":
