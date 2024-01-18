@@ -88,7 +88,11 @@ def NewGame():
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
       gui.turn_indicator(current_player_id)
-      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+      if current_player_id == "player_1":
+        #action = player_dict[current_player_id].GetChoice(highest_bet)   pass object through 
+        pass
+      else:
+        action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action) # print into player info box
   
       
@@ -156,36 +160,33 @@ def NewGame():
   db = pokersim.database()
   db.con_up()
   
-  print("Starting with default settings. £50 buy in, 2 opponents, medium bot difficulty. Type anything to customise:")
+  print("Starting with default settings. £50 bot buy in, 3 opponents, medium bot difficulty.")
   #remember to add to Player() call below
-  
+
+  total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
+  big_blind_cycle = 0
+  gui.update_blinds(100)      #small blind is always half of big
+
+  #initiate player and bot objects
+  player_dict = dict()
+  player_dict["player_1"] = pokersim.Player(5000)
+  for player_id_value in range(2, total_players_left + 1):
+    player_dict["player_" + str(player_id_value)] = pokersim.Bot(bot_starting_chips, difficulty) #add bots
+  current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
+  current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
+  #human always player_1
+  current_round_player_index = 0 ###for testing ease REMOVE LATER
   
   
   ### game  ###
-  first_time = True
+  
   play_game = True # new round
   while play_game: # iterate rounds
-    #read to and write out every iteration 
+    #read to and write out every iteration (database)
     pot = 0
     gui.update_pot(pot)
-    small_blind = big_blind // 2
-    #create player object dictionary
-    if first_time:
-      first_time = False
-      total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
-      big_blind_cycle = 0
-      gui.update_blinds(100)      #small blind is always half of big
-      player_dict = dict()
-      player_dict["player_1"] = pokersim.Player(5000)
-      for player_id_value in range(2, total_players_left + 1):
-        player_dict["player_" + str(player_id_value)] = pokersim.Bot(bot_starting_chips, difficulty) #add bots
-      current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
-      current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
-      #human always player_1
-      current_round_player_index = 0 ###for testing ease REMOVE LATER
+    small_blind = big_blind // 2    
       
-      
-    
     round = pokersim.new_round(total_players_left, player_dict)
 
     #deal cards for remaining players
@@ -215,7 +216,7 @@ def NewGame():
     for finalist in finalists:    #draw winners from database
       #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
-      
+
       playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ] ) # get combination highs and append to list
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
   
@@ -318,7 +319,7 @@ if __name__ == "__main__":
       elif menu == "game":
         ui.ChangeMenu("game_lock")
         ui.ClearScreen() 
-        ui.draw_game()
+        ui.draw_game()  #draw in first_time params
   
     clock.tick(30)  #frame limit
   

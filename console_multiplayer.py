@@ -162,6 +162,15 @@ def NewGame():
     chips_left = 5000 #£50 buy in chips interval bet of 0.5, for aesthetic only can be calculated easily, 5 chips 5,2,1,50 blinds left 2 of dealer
     big_blind = 100 #small blind is always half of big
   
+
+
+  player_dict = dict()
+  for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
+    player_dict["player_" + str(player_id_value)] = pokersim.Player(chips_left) #add 
+  current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
+  current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
+  #human always player_1
+  current_round_player_index = 0 ###for testing ease REMOVE LATER
   
   ### game  ###
   first_time = True
@@ -171,15 +180,7 @@ def NewGame():
     pot = 0
     small_blind = big_blind // 2
     #create player object dictionary
-    if first_time:
-      first_time = False
-      player_dict = dict()
-      for player_id_value in range(1, total_players_left + 1): ###replace with actual players left
-        player_dict["player_" + str(player_id_value)] = pokersim.Player(chips_left) #add 
-      current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
-      current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
-      #human always player_1
-      current_round_player_index = 0 ###for testing ease REMOVE LATER
+    
       
     
     round = pokersim.new_round(total_players_left, player_dict)
