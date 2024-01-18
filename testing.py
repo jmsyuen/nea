@@ -393,3 +393,14 @@ def update_player_info(self, *args):
   print(player_id_value, prev_action, chips_left)
 
 update_player_info(3,"asdf", 3)
+
+
+class obj():
+  def __init__(self):
+    pass
+
+  def test(self):
+    print(2)
+
+
+test()

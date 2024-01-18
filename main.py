@@ -88,6 +88,7 @@ def NewGame():
       previous_charge = player_dict[current_player_id].PreviousCharge()
       print(f"{current_player_id} move")
       gui.turn_indicator(current_player_id)
+      
       if current_player_id == "player_1":
         #action = player_dict[current_player_id].GetChoice(highest_bet)   pass object through 
         pass
