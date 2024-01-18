@@ -494,13 +494,14 @@ def fold_all_in(highest_bet, chips_left):
 
 
 def announce_winners(winners, combination, combination_high):
-  draw_text_box("Winning combination", BLACK, IVORY, 11, WIDTH - 160, 422, 140, 24)
-  draw_text_box(f"{combination}", BLACK, IVORY, 15, WIDTH - 160, 446, 140, 24)#
-  draw_text_box(f"{combination_high} high", BLACK, IVORY, 15, WIDTH - 160, 470, 140, 24)# 
+  draw_text_box("Winning combination", BLACK, IVORY, 11, WIDTH - 160, 214, 140, 24)
+  draw_text_box(f"{combination}", BLACK, IVORY, 15, WIDTH - 160, 238, 140, 24)#
+  draw_text_box(f"{combination_high} high", BLACK, IVORY, 15, WIDTH - 160, 262, 140, 24)# 
 
-  draw_text_box("Winner(s)", BLACK, IVORY, 15, WIDTH - 160, 214, 140, 24)
+  draw_text_box("Winner(s)", BLACK, IVORY, 15, WIDTH - 160, 306, 140, 24)
   for i in range(len(winners)):  #winner in winners
-    draw_text_box(f"{winners[i]}", BLACK, IVORY, 15, WIDTH - 160, 238 + i * 24, 140, 24)
+    winner_value = winners[i][-1]
+    draw_text_box(f"Player {winner_value}", BLACK, IVORY, 15, WIDTH - 160, 330 + i * 24, 140, 24)#+24
 
 def announce_remaining_player(player_id):
   draw_text_box(f"{player_id} remains.", BLACK, IVORY, 11, WIDTH - 160, HEIGHT - 375, 140, 24)
@@ -562,23 +563,12 @@ def draw_card_backs(remaining_players_list):   #hide cards from previous round
 
 def remove_bust_player(player_id): 
   first_card_x, first_card_y = locations[player_id][0][0], locations[player_id][0][1]
-  second_card_x, second_card_y = locations[player_id][1][0], locations[player_id][1][1]
-
   if player_id == "player_1":
-    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH, BIG_CARD_HEIGHT)
-    draw_text_box("", BLACK, DARK_BEIGE, 11, second_card_x, second_card_y, BIG_CARD_WIDTH, BIG_CARD_HEIGHT)
-
+    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH*2 - 20, BIG_CARD_HEIGHT)
   else:
-    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT)
-    draw_text_box("", BLACK, DARK_BEIGE, 11, second_card_x, second_card_y, SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT)
-
+    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH*2 + 100, SMALL_CARD_HEIGHT)
     #and remove info boxes
-    top_left_x = bot_info_locations[player_id][0]
-    top_left_y = bot_info_locations[player_id][1]
-  
-    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
-    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) 
-    draw_text_box("", BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  
+
     
 
 

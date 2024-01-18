@@ -227,6 +227,7 @@ def NewGame():
     if len(finalists) == 1:
       winners = finalists
     
+    gui.show_hand("public", round.GetHand("public"), 0)
     playerCombinations = []
     for finalist in finalists:    #draw winners from database
       #finalist_value = int(finalist.split("_")[-1])
