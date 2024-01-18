@@ -210,6 +210,7 @@ def NewGame():
       ###print(round.GetHand("player_1")) #get human uncomment when remove testing function
     gui.draw_card_backs(round_players)
     gui.show_hand("player_1", round.GetHand("player_1"))
+    gui.clear_right_sidebar()
     
 
     
@@ -314,7 +315,7 @@ def NewGame():
       gui.menu_confirm()
       continue_round = gui.ask_continue_round()
       pygame.display.flip()
-    gui.clear_menu()
+    
     
     if continue_round == "n":
       play_game = False

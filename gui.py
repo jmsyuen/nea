@@ -502,9 +502,14 @@ def announce_winners(winners, combination, combination_high):
   for i in range(len(winners)):  #winner in winners
     draw_text_box(f"{winners[i]}", BLACK, IVORY, 15, WIDTH - 160, 238 + i * 24, 140, 24)
 
-
 def announce_remaining_player(player_id):
   draw_text_box(f"{player_id} remains.", BLACK, IVORY, 11, WIDTH - 160, HEIGHT - 375, 140, 24)
+
+
+def clear_right_sidebar():
+  draw_text_box("", BLACK, DARK_BEIGE, 15, WIDTH - 160, 214, 140, 420)
+
+
 
 
 def ask_continue_round():
@@ -525,8 +530,6 @@ def menu_confirm(): #continue to next round or save
   draw_button("Yes", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2, HEIGHT - 295, 60, 30, exit_to_menu)
   draw_button("No", LIGHT_GREY, WIDTH - 80, HEIGHT - 295, 60, 30, continue_round)  #hide prompt 
 
-def clear_menu():
-  draw_text_box("", BLACK, DARK_BEIGE, 11, WIDTH - 160, HEIGHT - 325, 140, 60)
 
 
 
