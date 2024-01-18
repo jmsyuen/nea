@@ -93,6 +93,8 @@ def NewGame():
       
       action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
       print(action) # print into player info box
+      pygame.display.flip()
+      time.sleep(0.5)
   
       
       if type(action) == tuple: #allin
@@ -229,6 +231,7 @@ def NewGame():
       #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
       gui.show_hand(finalist, round.GetHand(finalist))
+      pygame.display.flip()
       time.sleep(0.5)
 
       playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ] ) # get combination highs and append to list
@@ -311,6 +314,7 @@ def NewGame():
       gui.menu_confirm()
       continue_round = gui.ask_continue_round()
       pygame.display.flip()
+    gui.clear_menu()
     
     if continue_round == "n":
       play_game = False

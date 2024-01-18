@@ -374,12 +374,16 @@ def increase_50():
   temporary_bet += 50
   if temporary_bet > temp_chips_left:
     temporary_bet -= 50
+  pygame.display.flip()
+  time.sleep(0.1)
     
 def decrease_50():
   global temporary_bet, temp_highest_bet
   temporary_bet -= 50
   if temporary_bet < temp_highest_bet:
     temporary_bet += 50
+  pygame.display.flip()
+  time.sleep(0.2)
 
   
 def reset_temporary_bet():
@@ -415,7 +419,7 @@ def fold_check_bet(highest_bet, chips_left):
       if event.type == pygame.QUIT:
         quit()
         
-    draw_text_box("Bet: 50", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
     
     draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
@@ -432,15 +436,16 @@ def fold_check_bet(highest_bet, chips_left):
 
 def fold_call_bet(highest_bet, chips_left):
 
-  global choice, temp_chips_left, temp_highest_bet
+  global choice, temp_chips_left, temp_highest_bet, temporary_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
+  temporary_bet = highest_bet
 
 
   while choice == False:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         quit()
-    draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
 
     draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
@@ -458,16 +463,16 @@ def fold_call_bet(highest_bet, chips_left):
 
 def fold_all_in(highest_bet, chips_left):
 
-  global choice, temp_chips_left, temp_highest_bet
+  global choice, temp_chips_left, temp_highest_bet, temporary_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
-
+  temporary_bet = chips_left
 
   while choice == False:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         quit()
     #working buttons
-    draw_text_box(f"Bet: {highest_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
     draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
     #draw over in black to eliminate WHITE
@@ -519,6 +524,11 @@ def menu_confirm(): #continue to next round or save
   draw_text_box("Save and exit?", BLACK, WHITE, 11, WIDTH - 160, HEIGHT - 325, 140, 24)
   draw_button("Yes", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2, HEIGHT - 295, 60, 30, exit_to_menu)
   draw_button("No", LIGHT_GREY, WIDTH - 80, HEIGHT - 295, 60, 30, continue_round)  #hide prompt 
+
+def clear_menu():
+  draw_text_box("", BLACK, DARK_BEIGE, 11, WIDTH - 160, HEIGHT - 325, 140, 60)
+
+
 
 def menu_button(): #maybe unused
   draw_button("Menu", LIGHT_GREY, WIDTH - 79, HEIGHT - 305, 60, 30, MainMenu)
