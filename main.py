@@ -102,6 +102,8 @@ def NewGame():
         action = action[1]
         if action > highest_bet:
           highest_bet = action
+          highest_bettor_index = round_player_index 
+          raised = True 
         gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
         pot += action #add to pot
         gui.update_pot(pot)
@@ -114,8 +116,8 @@ def NewGame():
         
         elif action + previous_charge > highest_bet: #raised
           highest_bettor_index = round_player_index # loop back to highest_bettor
-          highest_bet = action + previous_charge
           raised = True 
+          highest_bet = action + previous_charge
           gui.update_player_info(current_player_id, f"Raise {action}", player_dict[current_player_id].ChipsLeft())
         pot += action #add to pot
         gui.update_pot(pot)
@@ -231,6 +233,7 @@ def NewGame():
     
     if len(finalists) == 1:
       winners = finalists
+      
     
     gui.show_hand("public", round.GetHand("public"), 0)
     playerCombinations = []
@@ -277,7 +280,8 @@ def NewGame():
           
     print(f"winner: {winners} with a {combination_high} {combination}")
     gui.announce_winners(winners, combination, combination_high)
-    
+      
+
     #split pot  
     winnings = pot // len(winners)
     for winner in winners:
@@ -311,6 +315,7 @@ def NewGame():
     if len(player_dict) < 2: ###or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
+      gui.announce_remaining_player(finalists[0])
       gui.MainMenu()
 
     #save = input("Save? y/N:")

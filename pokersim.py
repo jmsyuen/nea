@@ -417,12 +417,12 @@ class Player():
           #choice = input("All in (y) or fold(n)?:")
           choice = gui.fold_all_in(highest_bet, self.chips_left)
 
-        if type(choice) == int:
+        if choice == "n":
+          return False
+        else:
           result = self.Charge(self.chips_left)
           self.AllIn = True
           return "AllIn", result
-        else:
-          return False
       
       elif highest_bet > 0:
         if self.bot == True:

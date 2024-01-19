@@ -539,20 +539,19 @@ def menu_button(): #maybe unused
 
 
 def draw_card_backs(remaining_players_list):   #hide cards from previous round
-  remaining_bots = len(remaining_players_list)
   if "player_1" in remaining_players_list:  
     #big cards for human player
     draw_card("big", "back", locations["player_1"][0])
     draw_card("big", "back", locations["player_1"][1])
-    remaining_bots -= 1
   
   #draw public cards at top
   for i in range(5):
     draw_card("small", "back", locations["public"][i])
   
   #list of players on left for right handed players on mobile
-  for player_id_value in range(2, 2 + remaining_bots):  #range of other opponents #player in players ########change this range
-    player_id = f"player_{player_id_value}"
+  for player_id in remaining_players_list:  #range of other opponents #player in players ########change this range
+    if player_id == "player_1":
+      continue
     draw_card("small", "back", locations[player_id][0])
     draw_card("small", "back", locations[player_id][1])
 
