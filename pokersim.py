@@ -324,6 +324,7 @@ class Player():
   def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
     self.chips_left = chips_left
     self.bot = False
+    self.AllIn = False
     ##extra stats - resets on object instantiation
     self.lifetime_chips_wagered = 0
     self.lifetime_winnings = 0
@@ -359,6 +360,7 @@ class Player():
     if self.AllIn == True:
       self.allin_count += 1
     self.AllIn = False
+    
 
 
   def ResetStageBet(self):
@@ -440,12 +442,13 @@ class Player():
           return False
         else:
           extra_raise = int(choice)
-          result = self.Charge(highest_bet + extra_raise)  #new extra bet
-          if result  == self.chips_left:
+          if extra_raise  == self.chips_left:
             self.AllIn = True
+            result = self.Charge(extra_raise)  #new extra bet
             return "AllIn", result
-      
-          return result
+          else:
+            result = self.Charge(highest_bet + extra_raise)  #new extra bet
+            return result
 
   
 

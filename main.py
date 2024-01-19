@@ -100,6 +100,8 @@ def NewGame():
       if type(action) == tuple: #allin
         first_loop = False
         action = action[1]
+        if action > highest_bet:
+          highest_bet = action
         gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
         pot += action #add to pot
         gui.update_pot(pot)
@@ -285,12 +287,13 @@ def NewGame():
     #remove bust players
     for player in list(player_dict):
       if player_dict[player].ChipsLeft() == 0:
+        gui.remove_bust_player(player)
         if player == "player_1":
           gui.human_bust(player_dict[player])
         total_players_left -= 1
         round_players.remove(player)
         player_dict.pop(player)
-        gui.remove_bust_player(player)
+        
       
     
     current_round_player_index += 1 #iterate blinds

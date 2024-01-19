@@ -202,10 +202,10 @@ def quit():
 def main_menu():
   ClearScreen()
   draw_text_box("Poker VS Bots", WHITE, DARK_BEIGE, 30, 0, 40, 414, 100)
-  draw_button("Settings", LIGHT_GREY, 0, 250, 414, 50, settings)
-  draw_button("Help", LIGHT_GREY, 0, 300, 414, 50, help)
-  draw_button("Quit", LIGHT_GREY, 0, 350, 414, 50, quit)
-  draw_button("Play", LIGHT_GREY, 0, 200, 414, 50, StartGame)
+  draw_button("Settings", LIGHT_GREY, -5, 250, 420, 50, settings)
+  draw_button("Help", LIGHT_GREY, -5, 300, 420, 50, help)
+  draw_button("Quit", LIGHT_GREY, -5, 350, 420, 50, quit)
+  draw_button("New Game", LIGHT_GREY, -5, 200, 420, 50, StartGame)
   pygame.display.flip()
   
 
@@ -505,7 +505,7 @@ def announce_winners(winners, combination, combination_high):
     draw_text_box(f"Player {winner_value}", BLACK, IVORY, 15, WIDTH - 160, 330 + i * 24, 140, 24)#+24
 
 def announce_remaining_player(player_id):
-  draw_text_box(f"{player_id} remains.", BLACK, IVORY, 11, WIDTH - 160, HEIGHT - 375, 140, 24)
+  draw_text_box(f"Player {player_id[-1]} remains.", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 375, 140, 24)
 
 
 def clear_right_sidebar():
@@ -528,9 +528,8 @@ def exit_to_menu():
   continue_choice = "n"
 
 def menu_confirm(): #continue to next round or save
-  draw_text_box("Save and exit?", BLACK, WHITE, 11, WIDTH - 160, HEIGHT - 325, 140, 24)
-  draw_button("Yes", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2, HEIGHT - 295, 60, 30, exit_to_menu)
-  draw_button("No", LIGHT_GREY, WIDTH - 80, HEIGHT - 295, 60, 30, continue_round)  #hide prompt 
+  draw_button("Exit to menu", LIGHT_GREY, WIDTH - 160, HEIGHT - 340, 140, 30, exit_to_menu)
+  draw_button("Continue", LIGHT_GREY, WIDTH - 160, HEIGHT - 300, 140, 30, continue_round) 
 
 
 
@@ -574,15 +573,14 @@ def remove_bust_player(player_id):
 def human_bust(player_object):
   top_left_x, top_left_y = locations["player_1"][0][0], locations["player_1"][0][1]
   #position relative to top left card
-  
+  player_object.ResetAllIn()
+
   draw_text_box(f"Bust", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y, 220, 20)
   draw_text_box(f"", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 20, 220, 20)
-  draw_text_box(f"Return to the menu", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 40, 220, 20)
-  draw_text_box(f"after the round ends.", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 60, 220, 20)
-  draw_text_box(f"{player_object.rounds_played} rounds played", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 80, 220, 20)
-  draw_text_box(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 100, 220, 20)
-  draw_text_box(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 120, 220, 20)
-  draw_text_box(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 140, 220, 20)
+  draw_text_box(f"{player_object.rounds_played} rounds played", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 40, 220, 20)
+  draw_text_box(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 60, 220, 20)
+  draw_text_box(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 80, 220, 20)
+  draw_text_box(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 100, 220, 20)
 
   #remove buttons
 
