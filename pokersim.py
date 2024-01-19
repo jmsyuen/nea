@@ -324,10 +324,15 @@ class Player():
   def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
     self.chips_left = chips_left
     self.bot = False
-
+    ##extra stats - resets on object instantiation
+    self.lifetime_chips_wagered = 0
+    self.lifetime_winnings = 0
+    self.allin_count = 0
+    self.rounds_played = 0
 
   def NewCards(self, new_hand):
     self.__hand = new_hand
+    self.rounds_played += 1
 
   def GetHand(self):
     return self.__hand
@@ -336,17 +341,23 @@ class Player():
   def Charge(self, amount): #returns amount taken
     if amount > self.chips_left:
       return False
+    elif amount == self.chips_left:
+      self.AllIn = True
     self.total_stage_bet += amount
+    self.lifetime_chips_wagered += amount
     self.chips_left -= amount
     return amount
     
 
   def Collect(self, amount):
     self.chips_left += amount
+    self.lifetime_winnings += amount
     return amount
 
 
   def ResetAllIn(self):
+    if self.AllIn == True:
+      self.allin_count += 1
     self.AllIn = False
 
 
@@ -404,7 +415,7 @@ class Player():
           #choice = input("All in (y) or fold(n)?:")
           choice = gui.fold_all_in(highest_bet, self.chips_left)
 
-        if choice == "y":
+        if type(choice) == int:
           result = self.Charge(self.chips_left)
           self.AllIn = True
           return "AllIn", result
@@ -429,7 +440,14 @@ class Player():
           return False
         else:
           extra_raise = int(choice)
-          return self.Charge(highest_bet + extra_raise)  #new extra bet
+          result = self.Charge(highest_bet + extra_raise)  #new extra bet
+          if result  == self.chips_left:
+            self.AllIn = True
+            return "AllIn", result
+      
+          return result
+
+  
 
 
 class Bot(new_round, Player): #inherits functions of new_round 

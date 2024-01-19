@@ -404,6 +404,7 @@ def check():
 def confirm_bet():
   global choice, temporary_bet
   choice = temporary_bet
+  
 
 
 
@@ -412,7 +413,7 @@ def fold_check_bet(highest_bet, chips_left):
 
   global choice, temp_chips_left, temp_highest_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
-
+  reset_temporary_bet()
   
   while choice == False:
     for event in pygame.event.get():
@@ -566,10 +567,24 @@ def remove_bust_player(player_id):
   if player_id == "player_1":
     draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH*2 - 20, BIG_CARD_HEIGHT)
   else:
-    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH*2 + 100, SMALL_CARD_HEIGHT)
+    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH*2 + 80, SMALL_CARD_HEIGHT)
     #and remove info boxes
 
-    
+
+def human_bust(player_object):
+  top_left_x, top_left_y = locations["player_1"][0][0], locations["player_1"][0][1]
+  #position relative to top left card
+  
+  draw_text_box(f"Bust", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y, 220, 20)
+  draw_text_box(f"", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 20, 220, 20)
+  draw_text_box(f"Return to the menu", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 40, 220, 20)
+  draw_text_box(f"after the round ends.", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 60, 220, 20)
+  draw_text_box(f"{player_object.rounds_played} rounds played", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 80, 220, 20)
+  draw_text_box(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 100, 220, 20)
+  draw_text_box(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 120, 220, 20)
+  draw_text_box(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 140, 220, 20)
+
+  #remove buttons
 
 
 def New_Game():  #testing displays
@@ -628,7 +643,7 @@ if __name__ == "__main__":
       elif menu == "game":
         ChangeMenu("game_lock")
         ClearScreen() 
-        draw_card_backs(5000, 6)
+        draw_card_backs(6)
   
     clock.tick(30)  #frame limit
 

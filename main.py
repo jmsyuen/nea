@@ -101,6 +101,8 @@ def NewGame():
         first_loop = False
         action = action[1]
         gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
+        pot += action #add to pot
+        gui.update_pot(pot)
 
       elif type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
@@ -207,9 +209,10 @@ def NewGame():
       print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
       gui.update_player_chips(player_id, player_dict[player_id].ChipsLeft())
       gui.update_player_info(player_id, "")
-      ###print(round.GetHand("player_1")) #get human uncomment when remove testing function
+  
     gui.draw_card_backs(round_players)
-    gui.show_hand("player_1", round.GetHand("player_1"))
+    if "player_1" in player_dict:
+      gui.show_hand("player_1", round.GetHand("player_1"))
     gui.clear_right_sidebar()
     
 
@@ -282,6 +285,8 @@ def NewGame():
     #remove bust players
     for player in list(player_dict):
       if player_dict[player].ChipsLeft() == 0:
+        if player == "player_1":
+          gui.human_bust(player_dict[player])
         total_players_left -= 1
         round_players.remove(player)
         player_dict.pop(player)

@@ -447,3 +447,6 @@ while True:
   #gui.fold_call_bet(500,5000)
   clock.tick(30)
 '''
+list1 = ("plasdr", "plasdfkajsdf")
+var1, var2 = list1.split()
+print(var1, var2)
