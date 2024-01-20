@@ -448,13 +448,14 @@ while True:
   #gui.fold_call_bet(500,5000)
   clock.tick(30)
 '''
+'''
 list1 = ["player_1", "plasdfkajsdf"]
 
 
 list1.remove("player_1")
 print(list1)
 
-def Strategy1(highest_bet, available_choices): #equal chance of any option
+def Strategy1(available_choices): #equal chance of any option
     #pickrandom choice, pickrandom bet 
     choice = random.choice(available_choices.split(" "))
     
@@ -477,3 +478,10 @@ for i in range(10):
 print("fold check bet".split(" "))
 print(random.randint(0,0))
 
+list2 = [Strategy1("fold allin")]
+'''
+
+def strat():
+	print("hi")
+
+list1 = [strat()]

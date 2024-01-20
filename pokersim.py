@@ -457,9 +457,22 @@ class Bot(new_round, Player): #inherits functions of new_round
   def __init__(self, chips_left, max_difficulty):
     Player.__init__(self, chips_left)
     self.risk = 0.5  #0-1 the probability threshold for a card to appear which would be accepted 
-    difficulties = ["easy", "medium", "hard"] #how smart the bot is
-    self.difficulty = difficulties[random.randint(0, difficulties.index(max_difficulty))]  #it can only be dumber than the max_difficulty set
+    self.difficulties = ["easy", "medium", "hard"] #how smart the bot is
+    self.difficulty = self.difficulties[random.randint(0, self.difficulties.index(max_difficulty))]  #it can only be dumber than the max_difficulty set
     
+    if self.difficulty == "easy":
+      self.strategy = random.randint(1,3)
+    elif self.difficulty == "medium":
+      self.strategy = random.randint(4,6)
+    elif self.difficulty == "hard":
+      self.strategy = random.randint(7,10)
+      #strategy 10 "cheats"
+    #most to least riskiest in each difficulty
+
+    #a strategy lasts for the whole round
+    #strategy may take into account card hand, public cards, chips left, a bet to match, self risk, self difficulty, and any strategic plans. 
+    #each difficulty has its own set of strategies
+
     #chance of fold/check/bet in ranges of probabilities
     #use same GetAction() functions as player() class in order to implement later
     self.bot = True
@@ -475,8 +488,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.available_choices = available_choices.split(" ")
     #strategies are smarter and win more starting from 1
     #if difficulty, risk
-    #strategy may take into account card hand, public cards, chips left, a bet to match, self risk, self difficulty, and any strategic plans. 
-
+    if self.strategy == 1:
+      self.Strategy1()
+    
     choice = self.Strategy1()
     return choice
 
@@ -544,7 +558,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
   def Strategy1(self): #equal uniform distribution of choices in each choice
     #pickrandom choice, pickrandom bet 
-    choice = random.choice()
+    choice = random.choice(self.available_choices)
     
     if choice == "fold":
       return "n"
