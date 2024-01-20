@@ -1,3 +1,4 @@
+import random
 
 '''
 letters = ["s", "d" , "c", "h"]
@@ -452,3 +453,27 @@ list1 = ["player_1", "plasdfkajsdf"]
 
 list1.remove("player_1")
 print(list1)
+
+def Strategy1(highest_bet, available_choices): #equal chance of any option
+    #pickrandom choice, pickrandom bet 
+    choice = random.choice(available_choices.split(" "))
+    
+    if choice == "fold":
+      return "n"
+    elif choice == "allin" or choice == "call" or choice == "check":
+      return "y"
+
+    #elif choice == "raise" or choice == "bet":
+    else:
+      raise_value = random.randrange(50, 5000, 50) 
+      #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
+      return raise_value
+    
+for i in range(10):
+  print(Strategy1(30, "fold check bet"))
+  difficulties = ["easy", "medium", "hard"] #how smart the bot is
+  print(difficulties[random.randint(0, difficulties.index("hard"))])
+
+print("fold check bet".split(" "))
+print(random.randint(0,0))
+

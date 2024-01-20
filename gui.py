@@ -34,7 +34,7 @@ button_border_width = 1
 menu = "main menu"
 opponents = 3
 bot_starting_chips = 5000 #5000 in intervals of 50, 5 chip types 5,2,1,50 blinds left 2 of dealer
-difficulty = "medium" 
+max_difficulty = "medium" 
 
 temporary_bet = 50   #might need to be 50
 choice = False
@@ -169,14 +169,14 @@ def set_6_opponents():
   opponents = 6
 
 def set_easy_difficulty():
-  global difficulty
-  difficulty = "easy"
+  global max_difficulty
+  max_difficulty = "easy"
 def set_medium_difficulty():
-  global difficulty
-  difficulty = "medium"
+  global max_difficulty
+  max_difficulty = "medium"
 def set_hard_difficulty():
-  global difficulty
-  difficulty = "hard"
+  global max_difficulty
+  max_difficulty = "hard"
 
 def set_5000_chips():
   global bot_starting_chips
@@ -189,7 +189,7 @@ def set_20000_chips():
   bot_starting_chips = 20000
 
 def GetSettings():
-  return [opponents + 1, difficulty, bot_starting_chips]
+  return [opponents + 1, max_difficulty, bot_starting_chips]
 
 
 def quit():
@@ -237,7 +237,7 @@ def settings():
   draw_button("5", LIGHT_GREY, 267, HEIGHT - 700, 30, 30, set_5_opponents)
   draw_button("6", LIGHT_GREY, 317, HEIGHT - 700, 30, 30, set_6_opponents)
   #bot difficulty
-  draw_text_box(f"Opponent difficulty: {difficulty}", BLACK, IVORY, 15, 0, HEIGHT - 650, 414, 40)
+  draw_text_box(f"Maximum opponent difficulty: {max_difficulty}", BLACK, IVORY, 15, 0, HEIGHT - 650, 414, 40)
   draw_button("Easy", LIGHT_GREY, 20, HEIGHT - 590, 100, 30, set_easy_difficulty)
   draw_button("Medium", LIGHT_GREY, 160, HEIGHT - 590, 100, 30, set_medium_difficulty)
   draw_button("Hard", LIGHT_GREY, 300, HEIGHT - 590, 100, 30, set_hard_difficulty)

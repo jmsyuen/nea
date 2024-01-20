@@ -96,7 +96,7 @@ def NewGame():
       pygame.display.flip()
       time.sleep(0.5)
   
-      
+      ##logic to decode action
       if type(action) == tuple: #allin
         first_loop = False
         action = action[1]

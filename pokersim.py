@@ -389,7 +389,7 @@ class Player():
         #choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") 
         choice = gui.fold_check_bet(highest_bet, self.chips_left)
 
-      if choice.isnumeric():
+      if str(choice).isnumeric():
         choice = int(choice)
         if choice == self.chips_left:
           result = self.Charge(self.chips_left)
@@ -454,13 +454,13 @@ class Player():
 
 
 class Bot(new_round, Player): #inherits functions of new_round 
-  def __init__(self, chips_left, difficulty):
+  def __init__(self, chips_left, max_difficulty):
     Player.__init__(self, chips_left)
     self.risk = 0.5  #0-1 the probability threshold for a card to appear which would be accepted 
-    self.difficulty = difficulty  #easy, med, hard - how genuinely smart the bot is
+    difficulties = ["easy", "medium", "hard"] #how smart the bot is
+    self.difficulty = difficulties[random.randint(0, difficulties.index(max_difficulty))]  #it can only be dumber than the max_difficulty set
+    
     #chance of fold/check/bet in ranges of probabilities
-    #get and use highest_bet to determine next action
-    #replace player objects in player_dict with bot() objects
     #use same GetAction() functions as player() class in order to implement later
     self.bot = True
 
@@ -470,8 +470,14 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   def BotChoice(self, highest_bet, available_choices):
+    #choose from strategies based on difficulty and risk
+    self.highest_bet = highest_bet
+    self.available_choices = available_choices.split(" ")
+    #strategies are smarter and win more starting from 1
     #if difficulty, risk
-    choice = self.Strategy1(highest_bet, available_choices)
+    #strategy may take into account card hand, public cards, chips left, a bet to match, self risk, self difficulty, and any strategic plans. 
+
+    choice = self.Strategy1()
     return choice
 
 
@@ -536,22 +542,23 @@ class Bot(new_round, Player): #inherits functions of new_round
   def RollRisk(self, probability):
     pass  #change
 
-  def Strategy1(self, highest_bet, available_choices): #equal chance of any option
+  def Strategy1(self): #equal uniform distribution of choices in each choice
     #pickrandom choice, pickrandom bet 
-    choice = random.choice(available_choices.split(" "))
+    choice = random.choice()
     
     if choice == "fold":
       return "n"
-    if choice == "allin" or "call" or "check":
+    elif choice == "allin" or choice == "call" or choice == "check":
       return "y"
 
-    if choice == "raise" or choice == "bet":
+    #elif choice == "raise" or choice == "bet":
+    else:
       raise_value = random.randrange(50, self.chips_left, 50) 
       #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
       return raise_value
 
 
-  def Strategy2(self, highest_bet, available_choices):
+  def Strategy2(self):
     if available_choices == "fold check raise":
       print("fold check raise")
       if True:  # bet

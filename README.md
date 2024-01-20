@@ -6,21 +6,15 @@ can remove blind doubling like a cash game as only in tournaments #
 remove database
 add help menu text
 bot strategies, ai
-pygame interface
 
-integrating
-display functions for:
-revealing all cards at end
-small narration box for whos turn it is ##creates new box is effort OR ADD small indicator for player's turn
-return to menu and save
 
-# problems
-FIX LATER 2 problems found may be related
-sometimes loops checking
-sometimes keeps calling 0 value,
+
+
+# optional bugs 
 blinds double every total_players - 1 rounds
-
-# improvements
+optional bug found infinite check loop with 0 bet
+small bug when raising everyone after doesn't match
+remove buttons when human bust
 
 
 # common problems with solutions
