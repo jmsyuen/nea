@@ -503,6 +503,7 @@ print(remaining_cards)
 remaining_cards.remove("hearts.2")
 remaining_cards.remove("hearts.3")
 
+'''
 for i in range(0):
   print("test")
 
@@ -517,3 +518,13 @@ comb = MathsFindCombination(remaining_cards, 2)
 # Print the obtained combinations 
 #for order in list(comb): 
 print(list(comb))
+'''
+
+
+
+tuple1 = (1,2)
+list1 = list(tuple1)
+print(list1)
+
+dict1 = {1:2, 2:3}
+print(dict1.copy())
