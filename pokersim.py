@@ -490,6 +490,25 @@ class Bot(new_round, Player): #inherits functions of new_round
     #if difficulty, risk
     if self.strategy == 1:
       self.Strategy1()
+    elif self.strategy == 2:
+      self.Strategy2()
+    elif self.strategy == 3:
+      self.Strategy3()
+    elif self.strategy == 4:
+      self.Strategy4()
+    elif self.strategy == 5:
+      self.Strategy5()
+    elif self.strategy == 6:
+      self.Strategy6()
+    elif self.strategy == 7:
+      self.Strategy7()
+    elif self.strategy == 8:
+      self.Strategy8()
+    elif self.strategy == 9:
+      self.Strategy9()
+    elif self.strategy == 10:
+      self.Strategy10()
+    
     
     choice = self.Strategy1()
     return choice
