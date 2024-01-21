@@ -4,6 +4,7 @@ import random
 import os
 import sqlite3
 from sqlite3 import Error #
+from itertools import combinations as MATHSFindCombination
 
 # one tag is useful comments
 ## two tags for code clips
@@ -226,6 +227,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       
       else:
         return False
+    
     return output()
 
 
@@ -377,14 +379,14 @@ class Player():
     return self.chips_left
 
   
-  def GetChoice(self, highest_bet): #current bet to call #check if returned amount matches bet to determine a reraise
+  def GetChoice(self, highest_bet, revealed_cards): #current bet to call #check if returned amount matches bet to determine a reraise
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
     if self.AllIn: #persistent
       return "AllIn"
     
     if highest_bet == 0:
       if self.bot == True:
-        choice = self.BotChoice(highest_bet, "fold check bet") ### bot
+        choice = self.BotChoice(highest_bet, "fold check bet", revealed_cards) ### bot
       else:
         #choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") 
         choice = gui.fold_check_bet(highest_bet, self.chips_left)
@@ -412,7 +414,7 @@ class Player():
     else: #bet has been made
       if highest_bet >= self.chips_left:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold allin") ### bot
+          choice = self.BotChoice(highest_bet, "fold allin", revealed_cards) ### bot
         else:
           #choice = input("All in (y) or fold(n)?:")
           choice = gui.fold_all_in(highest_bet, self.chips_left)
@@ -426,7 +428,7 @@ class Player():
       
       elif highest_bet > 0:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold call raise") ### bot
+          choice = self.BotChoice(highest_bet, "fold call raise", revealed_cards) ### bot
         else:
           #choice = input("Fold(n), Call(y) or raise extra:")
           choice = gui.fold_call_bet(highest_bet, self.chips_left)
@@ -459,15 +461,14 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.risk = 0.5  #0-1 the probability threshold for a card to appear which would be accepted 
     self.difficulties = ["easy", "medium", "hard"] #how smart the bot is
     self.difficulty = self.difficulties[random.randint(0, self.difficulties.index(max_difficulty))]  #it can only be dumber than the max_difficulty set
+    self.suits = ("hearts", "diamonds", "spades", "clubs")
+
     
-    if self.difficulty == "easy":
-      self.strategy = random.randint(1,3)
-    elif self.difficulty == "medium":
-      self.strategy = random.randint(4,6)
-    elif self.difficulty == "hard":
-      self.strategy = random.randint(7,10)
+
       #strategy 10 "cheats"
     #most to least riskiest in each difficulty
+    ##self.strategy = random.randint(1,3)
+
 
     #a strategy lasts for the whole round
     #strategy may take into account card hand, public cards, chips left, a bet to match, self risk, self difficulty, and any strategic plans. 
@@ -482,45 +483,57 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.__hand = new_hand
 
 
-  def BotChoice(self, highest_bet, available_choices):
+  def BotChoice(self, highest_bet, available_choices, public_cards):  # strategy for each of the 4 stages
     #choose from strategies based on difficulty and risk
     self.highest_bet = highest_bet
     self.available_choices = available_choices.split(" ")
+    self.public_cards = public_cards
+    self.known_cards = self.public_cards + self.__hand
+    #get stage
+    if len(public_cards) == 0:
+      self.stage = 0
+    elif len(public_cards) == 3:
+      self.stage = 1
+    elif len(public_cards) == 4:
+      self.stage = 2
+    elif len(public_cards) == 5:
+      self.stage = 3
+    
     #strategies are smarter and win more starting from 1
     #if difficulty, risk
-    if self.strategy == 1:
-      self.Strategy1()
-    elif self.strategy == 2:
-      self.Strategy2()
-    elif self.strategy == 3:
-      self.Strategy3()
-    elif self.strategy == 4:
-      self.Strategy4()
-    elif self.strategy == 5:
-      self.Strategy5()
-    elif self.strategy == 6:
-      self.Strategy6()
-    elif self.strategy == 7:
-      self.Strategy7()
-    elif self.strategy == 8:
-      self.Strategy8()
-    elif self.strategy == 9:
-      self.Strategy9()
-    elif self.strategy == 10:
-      self.Strategy10()
+    if self.difficulty == "easy":
+      choice = self.Strategy1()
+    elif self.difficulty == "medium":
+      choice = self.Strategy2()
+    elif self.difficulty == "hard":
+      choice = self.Strategy3()
     
-    
-    choice = self.Strategy1()
     return choice
 
+  #conversion functions
+  def convert_letter_to_value(self, character):  #make values understandable in terms of this program
+    if character.isnumeric():
+      return int(character)
+    elif character == "T":
+      return 10
+    elif character == "J":
+      return 11
+    elif character == "Q":
+      return 12
+    elif character == "K":
+      return 13
+    elif character == "A":
+      return 14
 
-  def Calculate(self, stage): # more vars
-    pass
-    #calculate if next is a pair, a 
-    #for every card not in currently known, calculate next card achieving that combination
-    #therefore probability of each combination with the current hand
-    #consider integration with pokersim findCombination() functions which will require importing
+  def convert_combination(self, string):  #takes AKo as a string and returns 14, 13, offsuit
+    if len(string) == 3:
+      return self.convert_letter_to_value(string[0]), self.convert_letter_to_value(string[1]), "offsuit"
+    else:
+      return self.convert_letter_to_value(string[0]), self.convert_letter_to_value(string[1])
 
+  #strategy logic functions
+  
+  #stage 0 two starting cards
   def StartingHand(self): #outputs rankings of 1-53 with 1 highest #also take difficulty
     
     hand_attributes = []  #if onsuit, pair, high face value etc
@@ -540,7 +553,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     pair = False
     consecutive = False
     consecutive_potential = 0 #how many cards needed to be consecutive, or rank from 5 highest
-    face_values = [face_value for face_value in range(11,15)]
+    face_values = [face_value for face_value in range(10,15)]   #includes 10 as also very good
     face_value_total = 0
 
 
@@ -570,6 +583,54 @@ class Bot(new_round, Player): #inherits functions of new_round
     def Ranking2(): #calculate possible combinations
       pass
       
+  def StartingHandRankings(self): #complete 169 possible combinations - by default hands are suited unless specified with "o"
+    top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
+    #best 10% of hands (21 types)
+
+
+  #stage 1 three cards shown and stage 2 fourth card is shown
+  def calculate_combinations_probability(self): # for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
+    
+    #run this function for combined and then public alone to calculate chance of someone having higher combination
+    
+    remaining_cards = [] # list containing all remaining cards
+    for suit in self.suits:
+      for value in range(2,15):
+        remaining_cards.append(f"{suit}.{value}")  
+    for card in self.known_cards:
+      remaining_cards.remove(card)
+      
+    #test each possible upcoming set of cards
+    #combination ONLY done after the flop #max 2 cards as would take too long 51C2 = 1275, 51C3 = 20825
+    all_test_tuples = list( MATHSFindCombination(remaining_cards, 5 - len(self.public_cards)) )  #contains lists of combinations 
+    all_test_combinations = []
+      
+    for j in range(all_test_tuples): #every possible combination of remaining hands
+      all_test_combinations.append( [j] + [int(x) for x in new_round.FindCombination(self.known_cards + all_test_tuples[j])] )
+    
+    top_combinations = new_round.FindWinner(all_test_combinations)
+    
+    #calculated values to compare
+    top_combination = top_combinations[0][1]  #eg. value of high card, flush, etc - #highest out of 1-10 
+    highest_combination_probability = len(top_combinations) / len(remaining_cards)
+    #can find the highest possible combination - implement with risk
+    
+    
+    #iterate every remaining possible card combination in unknown cards to determine probability of every possible combination
+    #run each function for every combination
+    #if one is found, find probability of higher one being found
+
+    
+    
+    #calculate if next is a pair, a 
+    #for every card not in currently known, calculate next card achieving that combination
+    #therefore probability of each combination with the current hand
+    #consider integration with pokersim FindCombination() functions which will require importing
+
+
+  #stage 3 all cards revealed
+  def chance_of_win(self):
+    pass
 
 
   def RollRisk(self, probability):
@@ -587,12 +648,11 @@ class Bot(new_round, Player): #inherits functions of new_round
     #elif choice == "raise" or choice == "bet":
     else:
       raise_value = random.randrange(50, self.chips_left, 50) 
-      #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
       return raise_value
 
 
   def Strategy2(self):
-    if available_choices == "fold check raise":
+    if self.available_choices == "fold check raise":
       print("fold check raise")
       if True:  # bet
         return 10
@@ -601,13 +661,13 @@ class Bot(new_round, Player): #inherits functions of new_round
       if True:  # fold
         return "n"
       
-    elif available_choices == "fold allin":
+    elif self.available_choices == "fold allin":
       print("fold allin")
       if True:  # all in
         return "y"
       if True:  # fold
         return "n"
-    elif available_choices == "fold call raise":
+    elif self.available_choices == "fold call raise":
       print("fold call raise")
       if True:  # raise
         return 10
@@ -617,11 +677,17 @@ class Bot(new_round, Player): #inherits functions of new_round
         return "n"   
         
 
+  def Strategy3(self):  #hard
+    #ranks every hand from lowest to highest and has cutoff point to fold at start
+    pass
+
+  
+  #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
 
 if __name__ == "__main__":
   
   hand = ["hearts.14", "spades.14"]
-  bot1 = Bot(5000, "easy")
+  bot1 = Bot(5000, "medium")
   
   bot1.NewCards(hand)
   bot1.ResetAllIn()
@@ -629,9 +695,7 @@ if __name__ == "__main__":
 
 
   bot1.StartingHand()
-  print(bot1.GetChoice(500))
-  print(bot1.AllIn)
-  print(bot1.Charge(100))
+  bot1.Strategy1()
 
 
 

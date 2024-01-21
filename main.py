@@ -72,6 +72,11 @@ def NewGame():
     if stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
       gui.show_hand("public", round.GetPublicStage(stage), stage)
+      
+      revealed_cards = []
+      for i in range(1, stage + 1):
+        revealed_cards += round.GetPublicStage(i)
+
     elif stage == 0:
       big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
       small_blind_player_id = round_players[loop(player_dict, loop(player_dict, round_player_index, False), False)]
@@ -83,6 +88,7 @@ def NewGame():
       player_dict[small_blind_player_id].Charge(small_blind)
       pot += big_blind + small_blind
       gui.update_pot(pot)
+      revealed_cards = []
 
 
     while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
@@ -91,7 +97,9 @@ def NewGame():
       print(f"{current_player_id} move")
       gui.turn_indicator(current_player_id)
       
-      action = player_dict[current_player_id].GetChoice(highest_bet) #returns value if bet
+      
+
+      action = player_dict[current_player_id].GetChoice(highest_bet, revealed_cards) #returns value if bet
       print(action) # print into player info box
       pygame.display.flip()
       time.sleep(0.5)

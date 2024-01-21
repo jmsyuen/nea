@@ -1,4 +1,5 @@
 import random
+from itertools import combinations as MathsFindCombination
 
 '''
 letters = ["s", "d" , "c", "h"]
@@ -480,8 +481,39 @@ print(random.randint(0,0))
 
 list2 = [Strategy1("fold allin")]
 '''
-
+'''
 def strat():
-	print("hi")
+	return [12,3,4]
 
-list1 = [strat()]
+list1 = []
+list1.append(strat())
+print(list1)
+list2 = [4,5,6]
+list2 += [1,2,3]
+print(list2)
+'''
+suits = ("hearts", "diamonds", "spades", "clubs")
+remaining_cards = []
+
+
+for suit in suits:
+  for value in range(2,15):
+    remaining_cards.append(f"{suit}.{value}")
+print(remaining_cards)
+remaining_cards.remove("hearts.2")
+remaining_cards.remove("hearts.3")
+
+for i in range(0):
+  print("test")
+
+list1 = [1,2,3]
+list2 = list1.copy()
+list2.remove(2)
+print(list1, list2)
+
+
+comb = MathsFindCombination(remaining_cards, 2) 
+ 
+# Print the obtained combinations 
+#for order in list(comb): 
+print(list(comb))
