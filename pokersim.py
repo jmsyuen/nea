@@ -19,7 +19,6 @@ from itertools import combinations as MATHSFindCombination
 # * to unpack lists
 
 
-
 class new_round(): # money system, carry over chips,  beginning of round, sub class
   def __init__(self, players, player_dict): # players, starting_chips
     self.suits = ("hearts", "diamonds", "spades", "clubs")
@@ -251,75 +250,6 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
     for num in locations:
       winners.append(remainingPlayers[num][0])
     return winners
-
-    
-# make a system for money: pot, big_blind_value, isDealer, each player's _chips_, 3 playerAction fold raise call
-#winner, list for remaining players that decreases down to winner(s) to split with
-# chips_left, isDealer, cards, hasFolded, isAllIn, combination_rank, combination_high, high_card(if applicable) 
-#database table bot_settings risk, difficulty, strategy
-
-
-
-# database connection should go in main.py
-class database(): #takes save file name 
-  def __init__(self, *args):
-    if len(args) == 0: 
-      self.filename = "save.db"
-    else: # might be redundant
-      self.filename = args[0] + ".db"
-  
-
-  def con_up(self): # takes filename, performs first-time setup if necessary
-    '''
-    if os.path.exists(self.filename):
-      self.needsSetup = False
-
-      if input("Save file found! Restore it? y/N: ") != "y": ###replace pygame
-        os.remove(self.filename) # deletes file for new creation, need to restart sqlite explorer to view
-        print("Creating new save file")
-        self.needsSetup = True
-    else:
-      print("Creating new save file")
-      self.needsSetup = True
-    '''
-    os.remove(self.filename)
-    print("Creating new save file")
-    self.needsSetup = True
-
-
-    con = sqlite3.connect(self.filename) # creates file if not found
-
-
-    if self.needsSetup: # sqlite has no bool data type, only integer 0,1 but recognises True and False
-      cursor = con.cursor() # save data and fetch between new rounds
-      cursor.execute('''
-    CREATE TABLE Tbl_players (
-      player_id TEXT PRIMARY KEY,
-      chips_left INTEGER NOT NULL,
-      dealer INTEGER NOT NULL --bool
-    )
-''') # set types and relational database structure
-      
-      #can add more
-      cursor.execute('''
-    CREATE TABLE Tbl_bot_settings (
-      bot_id TEXT PRIMARY KEY,
-      risk INTEGER NOT NULL,
-      difficulty INTEGER NOT NULL,
-      strategies TEXT                   
-    )
-''') # strategies may be list
-
-    else: #parse load functions
-      pass
-    con.commit()
-    con.close()
-
-  # add database modify functions
-  #def RaiseBet(self, player_id, bet_amount):
-  #def 
-
-  # SELECT chips FROM table WHERE player
 
 
 class Player(): 
@@ -848,21 +778,4 @@ if __name__ == "__main__":
   print(bot1.StartingHandRankings())
   print(bot1.RollRisk())
 
-
-
-  '''
-  db = database()
-  db.con_up()
-  round1 = new_round(3)
-
-  print(round1.Deck())
-  print(round1.PickHistory())
-
-  showdownPlayers = [1,2,3]
-  playerCombinations = []
-  for player in showdownPlayers:    #draw winners from database
-    playerCombinations.append( [player] + [ int(x) for x in round1.FindCombination(round1.GetHand(player)) ] ) # add player number
-
-  print(round1.FindWinner(playerCombinations))
-  '''
 

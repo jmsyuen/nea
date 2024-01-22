@@ -5,27 +5,6 @@ import random
 import time
 import pygame
 
-
-''' maybe move into pokersim.py, and create new sqlite file
-import sqlite3
-from sqlite3 import Error
-
-def initiate_connection(path):
-  con = None
-  try:
-    con = sqlite3.connect(path)
-    print("connected")
-  except Error as error:
-    print(f"The error '{error}' occurred")
-
-  return con
-'''
-
-#save file if found on first startup message
-# print("Save file found! Restore it?")
-# else reset 
-
-
 # nea
 def NewGame():
   #functions
@@ -172,9 +151,6 @@ def NewGame():
         
     
   ### new game setup
- 
-  db = pokersim.database()
-  db.con_up()
   
   print("Starting with default settings. £50 bot buy in, 3 opponents, medium bot difficulty.")
   #remember to add to Player() call below
@@ -209,8 +185,6 @@ def NewGame():
   
     round = pokersim.new_round(total_players_left, player_dict)
 
-
-
     #deal cards for remaining players
     #hide old cards
     round_players = []
@@ -228,7 +202,6 @@ def NewGame():
     gui.clear_right_sidebar()
     
 
-    
     #iterate stages and return list of finalists
     for stage in range(4):
       finalists = round_stage(stage)  #returns nothing to continue
