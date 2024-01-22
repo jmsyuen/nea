@@ -591,6 +591,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
     #best 10% of hands (21 types)
     converted_hand = self.convert_hand(self.value1, self.value2, self.onsuit)
+    self.istop10 = False
     if converted_hand in self.top10:
       self.istop10 = True
       self.top10index = self.top10.index(converted_hand)
@@ -771,6 +772,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     best_action = False
     #determine a course of action
     if self.stage == 0:
+      self.StartingHandRankings()
       if self.istop10 and self.top10index < 3:
         best_action = 4
       elif self.istop10 and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
