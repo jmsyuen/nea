@@ -471,7 +471,9 @@ class Bot(new_round, Player): #inherits functions of new_round
                 8:0.000240,
                 9:0.000014,
                 10:0.000002}
-    if self.difficulty == "medium": #risk does not affect easy
+    if self.difficulty == "easy": #risk does not affect easy but added anyway
+      self.risk_threshold = 1
+    elif self.difficulty == "medium": 
       self.risk_threshold = 0.01  #0-1 the probability threshold for a card to appear which would be accepted 
     elif self.difficulty == "hard":
       self.risk_threshold = 0.005
@@ -545,7 +547,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   #strategy logic functions
-  def RollRisk(self):
+  def RollRisk(self):   #maximium allowed difference in probabilities
     risk = random.randrange(0, self.risk_threshold * 10000) / 10000   #rounded to 4dp
     return risk
 
@@ -601,17 +603,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     if self.hand_attributes[2] == True or self.hand_attributes[3] > 0:
       self.good_traits += 1
       
-    
-
-       
-      
-
-
-    
-
 
   #stage 1 three cards shown and stage 2 fourth card is shown
-  def calculate_combinations_probability(self, num_cards): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
+  def calculate_combinations_probability(self, num_cards, forOpponent): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
     if num_cards < 1 or num_cards > 3:
       raise ValueError("Computation will run too long. (Max 3)")
     
@@ -627,6 +621,10 @@ class Bot(new_round, Player): #inherits functions of new_round
     all_test_tuples = list( MATHSFindCombination(remaining_cards, num_cards))  #contains lists of combinations 
     all_test_combinations = []
       
+    if forOpponent == True:
+      self.known_cards.remove(self.__hand[0])
+      self.known_cards.remove(self.__hand[1])
+
     for j in range(len(all_test_tuples)): #every possible combination of remaining hands
       all_test_combinations.append( [j] + [int(x) for x in new_round.FindCombination(self, self.known_cards + list(all_test_tuples[j]))] )
     
@@ -652,16 +650,28 @@ class Bot(new_round, Player): #inherits functions of new_round
     current_combination = self.current_combination_list[0]
     print(rank_appearances)
     print(self.current_combination_list, most_likely_combination, best_possible_combination)
-    return self.current_combination_list, most_likely_combination, best_possible_combination
+    return [current_combination, rank_appearances[current_combination]], [most_likely_combination, rank_appearances[most_likely_combination]], [best_possible_combination, rank_appearances[best_possible_combination]]
+    #return current combination, most likely and best each with corresponding probabilities
     #if probability is higher than global statistics then bet #implement with risk
     
     
 
   #stage 3 all cards revealed
-  def chance_of_win(self):  #calculate probabilities of combinations using only public cards to predict what others have
-    
+  def chance_of_win(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
+    opponent_current, opponent_most_likely, opponent_best = self.calculate_combinations_probability(2, True)
+    if opponent_current[0] > current_combination[0]:
+      best_action = 0
+    elif opponent_most_likely[0] > most_likely_combination[0]:
+      best_action = 1
+    elif opponent_best[0] > best_possible_combination[0] and opponent_best[1] > best_possible_combination[1]:
+      best_action = 2
+    elif abs(opponent_current[0] - current_combination[0]) < 2:
+      best_action = 3
+    else:
+      best_action = 4
+    return best_action
     #find probability of higher one being found in last stage
-    pass
+    
 
 
   def bet_amount(self, best_action): #determined by strategy and size of chips
@@ -669,9 +679,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     if best_action == 2: #bet low
       return random.randrange(50, self.chips_left // 3, 50) #0 - lower third
     elif best_action == 3: #bet medium
-      return random.randrange(self.chips_left // 4, self.chips_left // (4/3), 50) #quarter to 3/4
+      return random.randrange(self.chips_left // 5, self.chips_left // (4/3), 50) #fifth to 3/4
     elif best_action == 4: #bet high
-      return random.randrange(self.chips_left // 2, self.chips_left, 50) #half to allin
+      return random.randrange(self.chips_left // (5/3), self.chips_left, 50) #3/5 to allin
 
   def EasyStrategy(self): #equal uniform distribution of choices in each choice
     #pickrandom choice, pickrandom bet 
@@ -689,81 +699,135 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   def MediumStrategy(self):
-        ###REPLACE RETURNS WITH CORRECT RETURN VALUES
+    rolled_risk = self.RollRisk() #how risky bot is willing to be
     best_action = False
-    rolled_risk = self.RollRisk()
-    #action is ranked from 0-4 for comparison    fold, check/call, bet low, bet medium, bet high
+    #action is ranked from 0-4 for comparison    fold, check, bet low, bet medium, bet high
 
-    if self.top10:   #"bet all in"
-      best_action = 4
-    elif self.good_traits == 0: #"fold"
-      best_action = 0
-    elif self.good_traits == 1: #"check/call"
-      best_action = 1
-    elif self.good_traits == 2: #"bet low"
-      best_action = 2
-    elif self.good_traits == 3: #"bet medium"
-      best_action = 3
-
-    #check if above conditions are met for choices else fold
-
+    #determine a course of action
     if self.stage == 0:
-      pass
+      self.StartingHandRankings()
+      if self.top10:   #"bet high"
+        best_action = 4
+      elif self.good_traits == 3: #"bet medium"
+        best_action = 3
+      elif self.good_traits == 2: #"bet low"
+        best_action = 2
+      elif self.good_traits == 1: #"check"
+        best_action = 1
+      elif self.good_traits == 0: #"fold"
+        best_action = 0
+    
+    elif self.stage == 1 or self.stage == 2:
+      current_combination, most_likely_combination, best_possible_combination =  self.calculate_combinations_probability(3 - self.stage, False)
+      
+      if abs(current_combination[1] - best_possible_combination[1]) < rolled_risk:  #within risk tolerance
+        best_action = 4
+      elif abs(most_likely_combination[1] - current_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
+        best_action = 3
+      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:  #greater than global stats
+        best_action = 2
+      elif current_combination[1] > self.odds[current_combination[0]]:
+        best_action = 1
+      else:
+        best_action = 0
+
+    #similar to prev stages but takes into account possible opponent cards
+    elif self.stage == 3:
+      best_action = self.chance_of_win(current_combination, most_likely_combination, best_possible_combination)
 
 
+    #check if conditions are met for choices else fold
     if self.available_choices == ["fold", "check", "bet"]:
       print("fold check bet")
       if best_action >= 2:  # bet
         return self.bet_amount(best_action)
       if best_action == 1:  # check
         return "y"
-      if best_action == 0:  # fold
+      else:  # fold
         return "n"
       
       
     elif self.available_choices == ["fold", "allin"]:
       print("fold allin")
-      if True:  # fold
-        return "n"
-      if True:  # all in
+      if best_action >= 4:  # all in  at least a bet high
         return "y"
+      else:  # fold
+        return "n"
+      
       
     elif self.available_choices == ["fold", "call", "raise"]:
       print("fold call raise")
-      if True:  # fold
-        return "n"   
-      if True:  # call
+      if best_action >= 3:  # raise   at least a bet medium
+        return self.bet_amount(best_action)
+      if best_action >= 2:  # call  at least a bet low
         return "y"
-      if True:  # raise
-        return 10
+      else:  # fold
+        return "n"   
       
-        
 
   def HardStrategy(self):  #hard takes into account card values instead of just combinations
     #ranks every hand from lowest to highest and has cutoff point to fold at start
-    rolled_risk = self.RollRisk()
-
-    if self.istop10 and self.top10index < 3:
-      return "bet high" 
-    elif self.istop10 and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
-      return "bet low"
-    elif self.good_traits >= 2:
-      return "check/call"
-    else:
-      return "fold"
-
-
-
+    rolled_risk = self.RollRisk() #approx half of medium strategy
+    best_action = False
+    #determine a course of action
     if self.stage == 0:
-      pass
+      if self.istop10 and self.top10index < 3:
+        best_action = 4
+      elif self.istop10 and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
+        best_action = 2
+      elif self.good_traits >= 2:
+        best_action = 1
+      else:
+        best_action = 0
     
-    
-    
-    
-    
+    elif self.stage == 1 or self.stage == 2:
+      current_combination, most_likely_combination, best_possible_combination =  self.calculate_combinations_probability(3 - self.stage, False)
+      
+      if abs(current_combination[1] - best_possible_combination[1]) < rolled_risk:  #within risk tolerance
+        best_action = 4
+      elif abs(most_likely_combination[1] - current_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
+        best_action = 3
+      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:  #greater than global stats
+        best_action = 2
+      elif current_combination[1] > self.odds[current_combination[0]]:
+        best_action = 1
+      else:
+        best_action = 0
 
-  
-  #float(highest_bet)/float(self.chips_left)  #fraction of your money is the bet, use for later logic
+    #similar to prev stages but takes into account possible opponent cards
+    elif self.stage == 3:
+      best_action = self.chance_of_win(current_combination, most_likely_combination, best_possible_combination)
+
+    ##import choices from med strategy
+    #return a choice      
+    if self.available_choices == ["fold", "check", "bet"]:
+      print("fold check bet")
+      if best_action >= 2:  # bet
+        return self.bet_amount(best_action)
+      if best_action == 1:  # check
+        return "y"
+      else:  # fold
+        return "n"
+      
+      
+    elif self.available_choices == ["fold", "allin"]:
+      print("fold allin")
+      if best_action >= 4:  # all in  at least a bet high
+        return "y"
+      else:  # fold
+        return "n"
+      
+      
+    elif self.available_choices == ["fold", "call", "raise"]:
+      print("fold call raise")
+      if best_action >= 4:  # raise   at least a bet high
+        return self.bet_amount(best_action)
+      if best_action >= 3:  # call  at least a bet medium
+        return "y"
+      else:  # fold
+        return "n"   
+    
+    
 
 if __name__ == "__main__":
   
@@ -775,11 +839,12 @@ if __name__ == "__main__":
   bot1.ResetStageBet()
   bot1.BotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"])
 
-  print(bot1.StartingHand())
+  print(bot1.difficulty)
+  print(bot1.DecodeStartingHand())
   print(bot1.EasyStrategy())
-  bot1.calculate_combinations_probability(2)
+  print(bot1.calculate_combinations_probability(2, False))
   print(bot1.StartingHandRankings())
-
+  print(bot1.RollRisk())
 
 
 
