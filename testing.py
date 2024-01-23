@@ -528,3 +528,5 @@ print(list1)
 
 dict1 = {1:2, 2:3}
 print(dict1.copy())
+print(list1 *2)
+print(list(list1))
