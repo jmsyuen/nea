@@ -19,22 +19,15 @@ from itertools import combinations as MATHSFindCombination
 # * to unpack lists
 
 
-class new_round(): # money system, carry over chips,  beginning of round, sub class
-  def __init__(self, players, player_dict): # players, starting_chips
+class new_round(): 
+  def __init__(self, players, player_dict): 
     self.suits = ("hearts", "diamonds", "spades", "clubs")
     self.players = players
     self.player_dict = player_dict
-      
-  #def ResetDeck(self):
     self.__deck = dict()
     self.__hands = dict()
     for suit in self.suits:
-      self.__deck[suit] = [value for value in range(2,15)]
-      # 2 - 14
-    self.__pickHistory = []
-    self.totalcards = 5 + (self.players * 2)
-
-  #def DrawCards(self): # draws cards for all players, including public 5 and adds to dictionary
+      self.__deck[suit] = [value for value in range(2,15)]  # 2 - 14, 11 is Jack, 13 is King and 14 is Ace
     self.__hands["public"] = self.PickCard(5)
     for player_id in player_dict: #adjusted
       self.__hands[player_id] = self.PickCard(2)
@@ -51,9 +44,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       randsuit = self.suits[random.randint(0,3)]
       randvalue = random.choice(self.__deck[randsuit])   #finds random value out of remaining cards
       card = randsuit + "." + str(randvalue)
-      self.__pickHistory.append(card) 
-      self.__deck[randsuit].pop(self.__deck[randsuit].index(randvalue)) ##used to be -1
-      #removes card from deck
+      self.__deck[randsuit].pop(self.__deck[randsuit].index(randvalue)) #removes card from deck
       if repeats == 1:
         return card
       cards.append(card)
@@ -63,15 +54,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
   def Deck(self): #returns dictionary
     return self.__deck #testing function
 
-
-  def PickHistory(self): # returns in list
-    #test function to be used later
-    #when returning, use split(".") to separate
-    # lastcard = self.__pickHistory[-1] 
-    return self.__pickHistory
-
   #action methods to be moved into subclass later
-  
   def GetHand(self, player_id): #returns hand of player in list form (public is the first, player keys start at 1)
     return self.__hands[player_id]
 
@@ -91,11 +74,11 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
   
 
   def FindCombination(self, cards): # return list [rank, ch, ch, h] for value comparison
-    combined = cards
+    combined_cards = cards
     suits, values = [], []
     allsuits = ("hearts", "diamonds", "spades", "clubs") # repeated as inherited in bot()
 
-    for card in combined:
+    for card in combined_cards:
       split = card.split(".")
       suits.append(split[0])
       values.append(split[-1]) 
@@ -105,7 +88,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       for suit in allsuits:
         if suits.count(suit) >= 5: # suit type doesn't matter
           flush_values = []
-          for card in combined:
+          for card in combined_cards:
             if suit[0] == card[0]: # match first letter
               flush_values.append(card.split(".")[-1]) # append value of card
           return [sorted(flush_values, key=int)[-1]]
@@ -119,7 +102,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
           combination_highs.append(value)
           
       if len(combination_highs) != 0:
-        return sorted(set(combination_highs), key=int, reverse=True)
+        return sorted(set(combination_highs), key=int, reverse=True)  #set removes duplicate values and sorts ascending
       else:
         return False
 
@@ -128,13 +111,13 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
       count = 0
       unique_values = sorted(set(values), key=int)
       loopedlist = unique_values + unique_values
-      CH = []
+      CH = []   #combination high (ranking of the combination name - see chart)
 
       for i in range(len(unique_values) * 2 - 4):
-        current = int(loopedlist[i]) + 1
+        current = int(loopedlist[i])
         next = int(loopedlist[i + 1])
         
-        if current == next or (current == 15 and next == 2): # ace is 14, so + 1 would be 15 to account for loopback A-2 14-2
+        if current + 1 == next or (current + 1 == 15 and next == 2): # ace is 14, so + 1 would be 15 to account for loopback A->2 14->2
           count += 1
         else:
           count = 0
@@ -148,11 +131,11 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
     def full_house():
       try:
-        # should be sorted already low-high
+        # already sorted low-high
         same_num3 = same_num(3)
         same_num2 = same_num(2)
 
-        if len(same_num3) == 2:  # 2 3 of a kinds is automatically a full house
+        if len(same_num3) == 2:  # Two 3 of a kinds is automatically a full house
           return same_num3.reverse()
         
         if len(same_num3) == 1 and len(same_num2) > 0:
@@ -164,21 +147,22 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
     def high_card(quantity, CH): # takes how many high cards, existing CH in list form
       remaining = []
-      for card in combined:
-        if card.split(".")[-1] not in CH:
-          remaining.append(card.split(".")[-1])
+      card_value = card.split(".")[-1]
+      for card in combined_cards:
+        if card_value not in CH:
+          remaining.append(card_value)
       result = sorted(set(remaining), key=int)[::-1] # sorted from high-low for later comparison
       return result[:quantity]
 
     
-    def output(): 
+    def output(): # in a function to collapse easily
       CH = straight()
       isflush = flush()  
       #ensure every returned value is a list
       #CH straight flush
       if CH != False and isflush != False:
-        if CH[0] == 1: # royal flush
-          return [10, 14]
+        if CH[0] == 1: 
+          return [10, 14] # royal flush
         else:
           return [9] + CH   # return combination high
 
@@ -231,7 +215,7 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
 
   def FindWinner(self, playerCombinations): # iterate through lists, comparing largest value
-    remainingPlayers = playerCombinations
+    remainingPlayers = list(playerCombinations)
     for i in range(1,len(max(playerCombinations))): #length of longest list
       values = []
       for player in remainingPlayers:
@@ -253,19 +237,21 @@ class new_round(): # money system, carry over chips,  beginning of round, sub cl
 
 
 class Player(): 
-  def __init__(self, chips_left): # takes hands, player_id/arguments including player_id
+  def __init__(self, chips_left): 
     self.chips_left = chips_left
     self.bot = False
     self.AllIn = False
-    ##extra stats - resets on object instantiation
+    # extra stats - resets on object instantiation
     self.lifetime_chips_wagered = 0
     self.lifetime_winnings = 0
     self.allin_count = 0
     self.rounds_played = 0
 
+
   def NewCards(self, new_hand):
     self.__hand = new_hand
     self.rounds_played += 1
+
 
   def GetHand(self):
     return self.__hand
@@ -282,7 +268,7 @@ class Player():
     return amount
     
 
-  def Collect(self, amount):
+  def CollectWinnings(self, amount):
     self.chips_left += amount
     self.lifetime_winnings += amount
     return amount
@@ -293,7 +279,6 @@ class Player():
       self.allin_count += 1
     self.AllIn = False
     
-
 
   def ResetStageBet(self):
     self.total_stage_bet = 0
@@ -309,7 +294,7 @@ class Player():
     return self.chips_left
 
   
-  def GetChoice(self, highest_bet, revealed_cards): #current bet to call #check if returned amount matches bet to determine a reraise
+  def GetChoice(self, highest_bet, revealed_cards): #highest_bet to match
     #returns True to continue, False if folded, "AllIn" if has less than bet, total bet value if raise
     if self.AllIn: #persistent
       return "AllIn"
@@ -373,14 +358,14 @@ class Player():
         elif choice == "n":
           return False
         else:
-          extra_raise = int(choice)
-          if extra_raise  == self.chips_left:
+          extra_raise = int(choice) 
+          if extra_raise  == self.chips_left:  #check if returned amount matches bet to determine a reraise
             self.AllIn = True
             result = self.Charge(extra_raise)  #new extra bet
             return "AllIn", result
-          else:
-            result = self.Charge(highest_bet + extra_raise)  #new extra bet
-            return result
+          else: 
+            result = self.Charge(highest_bet + extra_raise)  
+            return result   #new highest_bet
 
   
 
@@ -388,10 +373,11 @@ class Player():
 class Bot(new_round, Player): #inherits functions of new_round 
   def __init__(self, chips_left, max_difficulty):
     Player.__init__(self, chips_left)
+    self.bot = True
     self.difficulties = ["easy", "medium", "hard"] #how smart the bot is
-    self.difficulty = self.difficulties[random.randint(0, self.difficulties.index(max_difficulty))]  #it can only be dumber than the max_difficulty set
+    self.difficulty = self.difficulties[random.randint(0, self.difficulties.index(max_difficulty))]  #chooses randomly from max_difficulty and below
     self.suits = ("hearts", "diamonds", "spades", "clubs")
-    self.odds= {1:0.501177, #6 dp probabilities of every combination
+    self.odds= {1:0.501177, #6 dp probabilities of every combination, pulled from ggpoker.co.uk
                 2:0.422569,
                 3:0.047539,
                 4:0.021128,
@@ -401,26 +387,19 @@ class Bot(new_round, Player): #inherits functions of new_round
                 8:0.000240,
                 9:0.000014,
                 10:0.000002}
-    if self.difficulty == "easy": #risk does not affect easy but added anyway
-      self.risk_threshold = 1
-    elif self.difficulty == "medium": 
+    
+    #risk does not affect easy as it chooses a random choice regardless
+    if self.difficulty == "medium": 
       self.risk_threshold = 0.01  #0-1 the probability threshold for a card to appear which would be accepted 
     elif self.difficulty == "hard":
       self.risk_threshold = 0.005
-    
-    #most to least riskiest in each difficulty
-    ##self.strategy = random.randint(1,3)
 
-
-    #a strategy lasts for the whole round
+    #scrapped system of 10 strategies
+    #a new strategy chosen each new round
     #strategy may take into account card hand, public cards, chips left, a bet to match, self risk, self difficulty, and any strategic plans. 
     #each difficulty has its own set of strategies
+    
 
-    #chance of fold/check/bet in ranges of probabilities
-    #use same GetAction() functions as player() class in order to implement later
-    self.bot = True
-
-  #carried over from player() class
   def NewCards(self, new_hand):
     self.__hand = new_hand
 
@@ -442,8 +421,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif len(public_cards) == 5:
       self.stage = 3
     
-    #strategies are smarter and win more starting from 1
-    #if difficulty, risk
+    
     if self.difficulty == "easy":
       choice = self.EasyStrategy()
     elif self.difficulty == "medium":
@@ -482,7 +460,6 @@ class Bot(new_round, Player): #inherits functions of new_round
     return risk
 
   #stage 0 two starting cards
-  
   def DecodeStartingHand(self): #outputs rankings of 1-53 with 1 highest #also take difficulty  
     #split suit and values, sort value1 > value2
     self.suit1, self.value1 = self.__hand[0].split(".")
@@ -515,7 +492,6 @@ class Bot(new_round, Player): #inherits functions of new_round
     return self.hand_attributes
 
   
-  #see prev function
   def StartingHandRankings(self): #complete 169 possible combinations - by default hands are suited unless specified with "o"
     self.DecodeStartingHand()
     self.top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
@@ -559,7 +535,6 @@ class Bot(new_round, Player): #inherits functions of new_round
     for j in range(len(all_test_tuples)): #every possible combination of remaining hands
       all_test_combinations.append( [j] + [int(x) for x in new_round.FindCombination(self, self.known_cards + list(all_test_tuples[j]))] )
     
-    
     combination_ranks = []  
     for list1 in all_test_combinations:  #take the second value out of each list (combination rank eg. value of high card, flush, etc - #highest out of 1-10)
       combination_ranks.append(list1[1])
@@ -575,16 +550,11 @@ class Bot(new_round, Player): #inherits functions of new_round
       if rank_appearances[key] == 0.0:
         del temp_rank_appearances[key]
     best_possible_combination = max(temp_rank_appearances)
-    
-    
-    
+        
     current_combination = self.current_combination_list[0]
-    print(rank_appearances)
-    print(self.current_combination_list, most_likely_combination, best_possible_combination)
     return [current_combination, rank_appearances[current_combination]], [most_likely_combination, rank_appearances[most_likely_combination]], [best_possible_combination, rank_appearances[best_possible_combination]]
     #return current combination, most likely and best each with corresponding probabilities
     #if probability is higher than global statistics then bet #implement with risk
-    
     
 
   #stage 3 all cards revealed
@@ -604,7 +574,6 @@ class Bot(new_round, Player): #inherits functions of new_round
     #find probability of higher one being found in last stage
     
 
-
   def bet_amount(self, best_action): #determined by strategy and size of chips
     #(still randrange and high includes allin) ranges overlap to make it harder to pick up patterns
     if best_action == 2: #bet low
@@ -614,6 +583,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif best_action == 4: #bet high
       return random.randrange(self.chips_left // (5/3), self.chips_left, 50) #3/5 to allin
 
+
+  #strategies for each difficulty
   def EasyStrategy(self): #equal uniform distribution of choices in each choice
     #pickrandom choice, pickrandom bet 
     choice = random.choice(self.available_choices)

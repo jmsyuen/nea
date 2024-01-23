@@ -266,7 +266,7 @@ def NewGame():
     #split pot  
     winnings = pot // len(winners)
     for winner in winners:
-      print(player_dict[winner].Collect(winnings))
+      print(player_dict[winner].CollectWinnings(winnings))
 
     
     #remove bust players
