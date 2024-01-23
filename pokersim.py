@@ -444,6 +444,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     
     #strategies are smarter and win more starting from 1
     #if difficulty, risk
+    return self.HardStrategy()
+
     if self.difficulty == "easy":
       choice = self.EasyStrategy()
     elif self.difficulty == "medium":
@@ -588,7 +590,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     
 
   #stage 3 all cards revealed
-  def chance_of_win(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
+  def compare_to_oppononent_probabilities(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
     opponent_current, opponent_most_likely, opponent_best = self.calculate_combinations_probability(2, True)
     if opponent_current[0] > current_combination[0]:
       best_action = 0
@@ -664,7 +666,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
-      best_action = self.chance_of_win(current_combination, most_likely_combination, best_possible_combination)
+      best_action = self.compare_to_oppononent_probabilities(current_combination, most_likely_combination, best_possible_combination)
 
 
     #check if conditions are met for choices else fold
@@ -728,7 +730,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
-      best_action = self.chance_of_win(current_combination, most_likely_combination, best_possible_combination)
+      best_action = self.compare_to_oppononent_probabilities(current_combination, most_likely_combination, best_possible_combination)
 
     ##import choices from med strategy
     #return a choice      
@@ -769,11 +771,12 @@ if __name__ == "__main__":
   bot1.NewCards(hand)
   bot1.ResetAllIn()
   bot1.ResetStageBet()
-  bot1.BotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"])
+  for i in range(10):
+    print(bot1.BotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"]))
 
+  print()
   print(bot1.difficulty)
   print(bot1.DecodeStartingHand())
-  print(bot1.EasyStrategy())
   print(bot1.calculate_combinations_probability(2, False))
   print(bot1.StartingHandRankings())
   print(bot1.RollRisk())
