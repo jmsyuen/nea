@@ -50,7 +50,7 @@ def NewGame():
 
     if stage > 0: #show stage cards
       print(round.GetPublicStage(stage))
-      gui.show_hand("public", round.GetPublicStage(stage), stage)
+      gui.ShowHand("public", round.GetPublicStage(stage), stage)
       
       revealed_cards = []
       for i in range(1, stage + 1):
@@ -74,7 +74,7 @@ def NewGame():
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].GetPreviousCharge()
       print(f"{current_player_id} move")
-      gui.turn_indicator(current_player_id)
+      gui.UpdateTurnIndicator(current_player_id)
       
       
 
@@ -196,10 +196,10 @@ def NewGame():
       gui.UpdatePlayerChips(player_id, player_dict[player_id].GetChipsLeft())
       gui.UpdatePlayerInfo(player_id, "")
   
-    gui.draw_card_backs(round_players)
+    gui.DrawCardBacks(round_players)
     if "player_1" in player_dict:
-      gui.show_hand("player_1", round.GetHand("player_1"))
-    gui.clear_right_sidebar()
+      gui.ShowHand("player_1", round.GetHand("player_1"))
+    gui.ClearRightSidebar()
     
 
     #iterate stages and return list of finalists
@@ -216,12 +216,12 @@ def NewGame():
       winners = finalists
       
     
-    gui.show_hand("public", round.GetHand("public"), 0)
+    gui.ShowHand("public", round.GetHand("public"), 0)
     playerCombinations = []
     for finalist in finalists:    #draw winners from database
       #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
-      gui.show_hand(finalist, round.GetHand(finalist))
+      gui.ShowHand(finalist, round.GetHand(finalist))
       pygame.display.flip()
       time.sleep(0.5)
 
@@ -260,7 +260,7 @@ def NewGame():
             combination = "Royal Flush"
           
     print(f"winner: {winners} with a {combination_high} {combination}")
-    gui.announce_winners(winners, combination, combination_high)
+    gui.AnnounceWinners(winners, combination, combination_high)
       
 
     #split pot  
@@ -272,9 +272,9 @@ def NewGame():
     #remove bust players
     for player in list(player_dict):
       if player_dict[player].GetChipsLeft() == 0:
-        gui.remove_bust_player(player)
+        gui.RemoveBustPlayer(player)
         if player == "player_1":
-          gui.human_bust(player_dict[player])
+          gui.HumanBust(player_dict[player])
         total_players_left -= 1
         round_players.remove(player)
         player_dict.pop(player)
@@ -296,19 +296,19 @@ def NewGame():
     if len(player_dict) < 2: ###or "player_1" not in round.players
       play_game = False
       print(f"{round_players[0]} remains.")
-      gui.announce_remaining_player(finalists[0])
+      gui.AnnounceRemainingPlayer(finalists[0])
       gui.MainMenu()
 
     #save = input("Save? y/N:")
     pygame.display.flip()
-    continue_round = gui.ask_continue_round()
+    continue_round = gui.AskContinueRound()
     while continue_round == False:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           gui.Quit()
 
-      gui.menu_confirm()
-      continue_round = gui.ask_continue_round()
+      gui.AskMainMenu()
+      continue_round = gui.AskContinueRound()
       pygame.display.flip()
     
     
@@ -341,11 +341,11 @@ if __name__ == "__main__":
       NewGame()
     else:  
       if menu == "main menu":
-        gui.main_menu()
+        gui.ShowMainMenu()
       elif menu == "settings":
-        gui.settings()
+        gui.ShowSettings()
       elif menu == "help":
-        gui.help()
+        gui.ShowHelp()
       elif menu == "game":
         gui.ChangeMenu("game_lock")
         gui.ClearScreen() 

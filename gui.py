@@ -73,7 +73,7 @@ for i in range(6):
 
 
 #core ui drawing functions
-def draw_button(text, box_colour, x, y, width, height, action): #draw buttons and execute function when pressed
+def DrawButton(text, box_colour, x, y, width, height, action): #draw buttons and execute function when pressed
   mouse = pygame.mouse.get_pos()
   click = pygame.mouse.get_pressed()
   hover_colour = OLIVE
@@ -98,7 +98,7 @@ def draw_button(text, box_colour, x, y, width, height, action): #draw buttons an
   screen.blit(text_surface, text_rect)
 
 
-def draw_text_box(text, text_colour, box_colour, font_size, x, y, width, height):
+def DrawTextBox(text, text_colour, box_colour, font_size, x, y, width, height):
   font = pygame.font.SysFont("courier", font_size)
   
   pygame.draw.rect(screen, box_colour, (x, y, width, height))
@@ -191,11 +191,11 @@ def Quit():
 #display menu functions
 def ShowMainMenu():
   ClearScreen()
-  draw_text_box("Poker VS Bots", WHITE, DARK_BEIGE, 30, 0, 40, 414, 100)
-  draw_button("Settings", LIGHT_GREY, -5, 250, 420, 50, ShowSettings)
-  draw_button("Help", LIGHT_GREY, -5, 300, 420, 50, ShowHelp)
-  draw_button("Quit", LIGHT_GREY, -5, 350, 420, 50, Quit)
-  draw_button("New Game", LIGHT_GREY, -5, 200, 420, 50, StartGame)
+  DrawTextBox("Poker VS Bots", WHITE, DARK_BEIGE, 30, 0, 40, 414, 100)
+  DrawButton("Settings", LIGHT_GREY, -5, 250, 420, 50, ShowSettings)
+  DrawButton("Help", LIGHT_GREY, -5, 300, 420, 50, ShowHelp)
+  DrawButton("Quit", LIGHT_GREY, -5, 350, 420, 50, Quit)
+  DrawButton("New Game", LIGHT_GREY, -5, 200, 420, 50, StartGame)
   pygame.display.flip()
   
 
@@ -203,10 +203,10 @@ def ShowHelp():
   global menu
   menu = "help"
   ClearScreen()
-  draw_text_box("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
-  draw_text_box("Welcome to Poker VS Bots!", BLACK, DARK_BEIGE, 20, 0, 40, 414, 100)
-  draw_button("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, OpenWikipediaLink)
-  draw_button("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
+  DrawTextBox("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
+  DrawTextBox("Welcome to Poker VS Bots!", BLACK, DARK_BEIGE, 20, 0, 40, 414, 100)
+  DrawButton("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, OpenWikipediaLink)
+  DrawButton("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
   pygame.display.flip()
 
   
@@ -214,29 +214,29 @@ def ShowSettings():
   global menu
   menu = "settings"
   ClearScreen()
-  draw_text_box("Settings", BLACK, IVORY, 15, 0, 0, 414, 40)
-  draw_text_box("You can only change settings before a game", BLACK, IVORY, 13, 0, 40, 414, 30)
-  draw_button("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
+  DrawTextBox("Settings", BLACK, IVORY, 15, 0, 0, 414, 40)
+  DrawTextBox("You can only change settings before a game", BLACK, IVORY, 13, 0, 40, 414, 30)
+  DrawButton("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
 
   #number of opponents
-  draw_text_box(f"Number of opponents: {opponents}", BLACK, IVORY, 15, 0, HEIGHT - 760, 414, 40)
-  draw_button("1", LIGHT_GREY, 67, HEIGHT - 700, 30, 30, set_1_opponents)
-  draw_button("2", LIGHT_GREY, 117, HEIGHT - 700, 30, 30, set_2_opponents)
-  draw_button("3", LIGHT_GREY, 167, HEIGHT - 700, 30, 30, set_3_opponents)
-  draw_button("4", LIGHT_GREY, 217, HEIGHT - 700, 30, 30, set_4_opponents)
-  draw_button("5", LIGHT_GREY, 267, HEIGHT - 700, 30, 30, set_5_opponents)
-  draw_button("6", LIGHT_GREY, 317, HEIGHT - 700, 30, 30, set_6_opponents)
+  DrawTextBox(f"Number of opponents: {opponents}", BLACK, IVORY, 15, 0, HEIGHT - 760, 414, 40)
+  DrawButton("1", LIGHT_GREY, 67, HEIGHT - 700, 30, 30, set_1_opponents)
+  DrawButton("2", LIGHT_GREY, 117, HEIGHT - 700, 30, 30, set_2_opponents)
+  DrawButton("3", LIGHT_GREY, 167, HEIGHT - 700, 30, 30, set_3_opponents)
+  DrawButton("4", LIGHT_GREY, 217, HEIGHT - 700, 30, 30, set_4_opponents)
+  DrawButton("5", LIGHT_GREY, 267, HEIGHT - 700, 30, 30, set_5_opponents)
+  DrawButton("6", LIGHT_GREY, 317, HEIGHT - 700, 30, 30, set_6_opponents)
   #bot difficulty
-  draw_text_box(f"Maximum opponent difficulty: {max_difficulty}", BLACK, IVORY, 15, 0, HEIGHT - 650, 414, 40)
-  draw_button("Easy", LIGHT_GREY, 20, HEIGHT - 590, 100, 30, set_easy_difficulty)
-  draw_button("Medium", LIGHT_GREY, 160, HEIGHT - 590, 100, 30, set_medium_difficulty)
-  draw_button("Hard", LIGHT_GREY, 300, HEIGHT - 590, 100, 30, set_hard_difficulty)
+  DrawTextBox(f"Maximum opponent difficulty: {max_difficulty}", BLACK, IVORY, 15, 0, HEIGHT - 650, 414, 40)
+  DrawButton("Easy", LIGHT_GREY, 20, HEIGHT - 590, 100, 30, set_easy_difficulty)
+  DrawButton("Medium", LIGHT_GREY, 160, HEIGHT - 590, 100, 30, set_medium_difficulty)
+  DrawButton("Hard", LIGHT_GREY, 300, HEIGHT - 590, 100, 30, set_hard_difficulty)
   #buy in value
-  draw_text_box(f"Opponent starting chips: {bot_starting_chips}", BLACK, IVORY, 15, 0, HEIGHT - 540, 414, 40)
-  draw_text_box("(you always start with 5000)", BLACK, IVORY, 15, 0, HEIGHT - 510, 414, 30)
-  draw_button("5k", LIGHT_GREY, 20, HEIGHT - 460, 100, 30, set_5000_chips)
-  draw_button("10k", LIGHT_GREY, 160, HEIGHT - 460, 100, 30, set_10000_chips)
-  draw_button("20k", LIGHT_GREY, 300, HEIGHT - 460, 100, 30, set_20000_chips)
+  DrawTextBox(f"Opponent starting chips: {bot_starting_chips}", BLACK, IVORY, 15, 0, HEIGHT - 540, 414, 40)
+  DrawTextBox("(you always start with 5000)", BLACK, IVORY, 15, 0, HEIGHT - 510, 414, 30)
+  DrawButton("5k", LIGHT_GREY, 20, HEIGHT - 460, 100, 30, set_5000_chips)
+  DrawButton("10k", LIGHT_GREY, 160, HEIGHT - 460, 100, 30, set_10000_chips)
+  DrawButton("20k", LIGHT_GREY, 300, HEIGHT - 460, 100, 30, set_20000_chips)
 
 
   pygame.display.flip()
@@ -244,20 +244,20 @@ def ShowSettings():
 
 #integration functions
 def UpdatePot(pot):
-  draw_text_box(f"Pot {pot}", BLACK, IVORY, 15, WIDTH - 160, 122, 140, 30)
+  DrawTextBox(f"Pot {pot}", BLACK, IVORY, 15, WIDTH - 160, 122, 140, 30)
 
 
 def UpdateBlinds(big_blind):
-  draw_text_box(f"Blinds {big_blind // 2}/{big_blind}", BLACK, IVORY, 14, WIDTH - 160, 152, 140, 30)
+  DrawTextBox(f"Blinds {big_blind // 2}/{big_blind}", BLACK, IVORY, 14, WIDTH - 160, 152, 140, 30)
 
 
 def UpdatePlayerChips(player_id, chips_left):
   if player_id == "player_1":
-    draw_text_box(f"Chips: {chips_left}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
+    DrawTextBox(f"Chips: {chips_left}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
   else:
     top_left_x = bot_info_locations[player_id][0]
     top_left_y = bot_info_locations[player_id][1]
-    draw_text_box(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
+    DrawTextBox(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
 
 
 def draw_card(size, card, position): #takes card like spades.3, and xy position as tuple
@@ -307,10 +307,10 @@ def UpdatePlayerInfo(*args):   #player_id_value, prev_action, chips_left
   
     if len(args) > 2:
       chips_left = args[2]
-      draw_text_box(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
+      DrawTextBox(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
 
-    draw_text_box(f"Player {player_id_value}", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###
-    draw_text_box(prev_action, BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
+    DrawTextBox(f"Player {player_id_value}", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###
+    DrawTextBox(prev_action, BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
   
 
 #add revealing animation using time.sleep and solid colour text box of white then 2 shades of grey  
@@ -344,9 +344,9 @@ def ShowHand(*args):  #player_id in full string, cards as a list, if public choo
   #locations as an xy tuple
     
 
-def turn_indicator(player_id):
-  draw_text_box("", BLACK, DARK_BEIGE, 20, 0, 120, 20, HEIGHT)  #clear bar on the side
-  draw_text_box(">", BLACK, DARK_BEIGE, 20, locations[player_id][0][0] - 20, locations[player_id][0][1], 20, 20)
+def UpdateTurnIndicator(player_id):
+  DrawTextBox("", BLACK, DARK_BEIGE, 20, 0, 120, 20, HEIGHT)  #clear bar on the side
+  DrawTextBox(">", BLACK, DARK_BEIGE, 20, locations[player_id][0][0] - 20, locations[player_id][0][1], 20, 20)
 
 
 
@@ -399,7 +399,7 @@ def confirm_bet():
 
 
 #get a choice out of the function names
-def fold_check_bet(highest_bet, chips_left):
+def ShowCheckButtons(highest_bet, chips_left):
 
   global choice, temp_chips_left, temp_highest_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
@@ -410,22 +410,22 @@ def fold_check_bet(highest_bet, chips_left):
       if event.type == pygame.QUIT:
         Quit()
         
-    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-    draw_button("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
+    DrawTextBox(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    DrawButton("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
     
-    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
-    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+    DrawButton("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    DrawButton("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
 
-    draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
-    draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
-    draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
-    draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
+    DrawButton("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
+    DrawButton("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
+    DrawButton("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
+    DrawButton("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
 
     pygame.display.flip()
   return GetChoice()
 
 
-def fold_call_bet(highest_bet, chips_left):
+def ShowCallButtons(highest_bet, chips_left):
 
   global choice, temp_chips_left, temp_highest_bet, temporary_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
@@ -436,23 +436,23 @@ def fold_call_bet(highest_bet, chips_left):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         Quit()
-    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-    draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
+    DrawTextBox(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    DrawButton("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
 
-    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
-    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+    DrawButton("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    DrawButton("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
 
-    draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
-    draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
-    draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
-    draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
+    DrawButton("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
+    DrawButton("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
+    DrawButton("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
+    DrawButton("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
 
     pygame.display.flip()
 
   return GetChoice()
 
 
-def fold_all_in(highest_bet, chips_left):
+def ShowAllInButtons(highest_bet, chips_left):
 
   global choice, temp_chips_left, temp_highest_bet, temporary_bet
   temp_chips_left, temp_highest_bet = chips_left, highest_bet
@@ -463,48 +463,48 @@ def fold_all_in(highest_bet, chips_left):
       if event.type == pygame.QUIT:
         Quit()
     #working buttons
-    draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-    draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
-    draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+    DrawTextBox(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+    DrawButton("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+    DrawButton("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
     #draw over in black to eliminate WHITE
-    draw_text_box("", WHITE, BLACK, 15, 20 + 80, HEIGHT - 205, 60, 30)
-    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30)
-    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30)
-    draw_text_box("", WHITE, BLACK, 15, WIDTH - 80, HEIGHT - 105, 60, 30)
-    draw_text_box("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30)
+    DrawTextBox("", WHITE, BLACK, 15, 20 + 80, HEIGHT - 205, 60, 30)
+    DrawTextBox("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30)
+    DrawTextBox("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30)
+    DrawTextBox("", WHITE, BLACK, 15, WIDTH - 80, HEIGHT - 105, 60, 30)
+    DrawTextBox("", WHITE, BLACK, 15, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30)
     #grey out with buttons that do nothing
-    draw_button("Call", OLIVE, 20 + 80, HEIGHT - 205, 60, 30, blank)
-    draw_button("Clear Bet", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
-    draw_button("- 50", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
-    draw_button("+ 50", OLIVE, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
-    draw_button("Confirm Raise", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
+    DrawButton("Call", OLIVE, 20 + 80, HEIGHT - 205, 60, 30, blank)
+    DrawButton("Clear Bet", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, blank)
+    DrawButton("- 50", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, blank)
+    DrawButton("+ 50", OLIVE, WIDTH - 80, HEIGHT - 105, 60, 30, blank)
+    DrawButton("Confirm Raise", OLIVE, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, blank)
 
     pygame.display.flip()
 
   return GetChoice()
 
 
-def announce_winners(winners, combination, combination_high):
-  draw_text_box("Winning combination", BLACK, IVORY, 11, WIDTH - 160, 214, 140, 24)
-  draw_text_box(f"{combination}", BLACK, IVORY, 15, WIDTH - 160, 238, 140, 24)#
-  draw_text_box(f"{combination_high} high", BLACK, IVORY, 15, WIDTH - 160, 262, 140, 24)# 
+def AnnounceWinners(winners, combination, combination_high):
+  DrawTextBox("Winning combination", BLACK, IVORY, 11, WIDTH - 160, 214, 140, 24)
+  DrawTextBox(f"{combination}", BLACK, IVORY, 15, WIDTH - 160, 238, 140, 24)#
+  DrawTextBox(f"{combination_high} high", BLACK, IVORY, 15, WIDTH - 160, 262, 140, 24)# 
 
-  draw_text_box("Winner(s)", BLACK, IVORY, 15, WIDTH - 160, 306, 140, 24)
+  DrawTextBox("Winner(s)", BLACK, IVORY, 15, WIDTH - 160, 306, 140, 24)
   for i in range(len(winners)):  #winner in winners
     winner_value = winners[i][-1]
-    draw_text_box(f"Player {winner_value}", BLACK, IVORY, 15, WIDTH - 160, 330 + i * 24, 140, 24)#+24
+    DrawTextBox(f"Player {winner_value}", BLACK, IVORY, 15, WIDTH - 160, 330 + i * 24, 140, 24)#+24
 
-def announce_remaining_player(player_id):
-  draw_text_box(f"Player {player_id[-1]} remains.", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 375, 140, 24)
-
-
-def clear_right_sidebar():
-  draw_text_box("", BLACK, DARK_BEIGE, 15, WIDTH - 160, 214, 140, 420)
+def AnnounceRemainingPlayer(player_id):
+  DrawTextBox(f"Player {player_id[-1]} remains.", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 375, 140, 24)
 
 
+def ClearRightSidebar():
+  DrawTextBox("", BLACK, DARK_BEIGE, 15, WIDTH - 160, 214, 140, 420)
 
 
-def ask_continue_round():
+
+
+def AskContinueRound():
   global continue_choice
   actual_continue_choice = continue_choice
   continue_choice = False
@@ -517,18 +517,18 @@ def exit_to_menu():
   MainMenu()
   continue_choice = "n"
 
-def menu_confirm(): #continue to next round or save
-  draw_button("Exit to menu", LIGHT_GREY, WIDTH - 160, HEIGHT - 340, 140, 30, exit_to_menu)
-  draw_button("Continue", LIGHT_GREY, WIDTH - 160, HEIGHT - 300, 140, 30, continue_round) 
+def AskMainMenu(): #continue to next round or save
+  DrawButton("Exit to menu", LIGHT_GREY, WIDTH - 160, HEIGHT - 340, 140, 30, exit_to_menu)
+  DrawButton("Continue", LIGHT_GREY, WIDTH - 160, HEIGHT - 300, 140, 30, continue_round) 
 
 
 
 
 def menu_button(): #maybe unused
-  draw_button("Menu", LIGHT_GREY, WIDTH - 79, HEIGHT - 305, 60, 30, MainMenu)
+  DrawButton("Menu", LIGHT_GREY, WIDTH - 79, HEIGHT - 305, 60, 30, MainMenu)
 
 
-def draw_card_backs(remaining_players_list):   #hide cards from previous round
+def DrawCardBacks(remaining_players_list):   #hide cards from previous round
   if "player_1" in remaining_players_list:  
     #big cards for human player
     draw_card("big", "back", locations["player_1"][0])
@@ -550,26 +550,26 @@ def draw_card_backs(remaining_players_list):   #hide cards from previous round
   pygame.display.flip()
 
 
-def remove_bust_player(player_id): 
+def RemoveBustPlayer(player_id): 
   first_card_x, first_card_y = locations[player_id][0][0], locations[player_id][0][1]
   if player_id == "player_1":
-    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH*2 - 20, BIG_CARD_HEIGHT)
+    DrawTextBox("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, BIG_CARD_WIDTH*2 - 20, BIG_CARD_HEIGHT)
   else:
-    draw_text_box("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH*2 + 80, SMALL_CARD_HEIGHT)
+    DrawTextBox("", BLACK, DARK_BEIGE, 11, first_card_x, first_card_y, SMALL_CARD_WIDTH*2 + 80, SMALL_CARD_HEIGHT)
     #and remove info boxes
 
 
-def human_bust(player_object):
+def HumanBust(player_object):
   top_left_x, top_left_y = locations["player_1"][0][0], locations["player_1"][0][1]
   #position relative to top left card
   player_object.ResetAllIn()
 
-  draw_text_box(f"Bust", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y, 220, 20)
-  draw_text_box(f"", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 20, 220, 20)
-  draw_text_box(f"{player_object.rounds_played} rounds played", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 40, 220, 20)
-  draw_text_box(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 60, 220, 20)
-  draw_text_box(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 80, 220, 20)
-  draw_text_box(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 100, 220, 20)
+  DrawTextBox(f"Bust", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y, 220, 20)
+  DrawTextBox(f"", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 20, 220, 20)
+  DrawTextBox(f"{player_object.rounds_played} rounds played", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 40, 220, 20)
+  DrawTextBox(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 60, 220, 20)
+  DrawTextBox(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 80, 220, 20)
+  DrawTextBox(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 100, 220, 20)
 
   #remove buttons
 
@@ -581,27 +581,27 @@ def New_Game():  #testing displays
   UpdatePlayerChips("player_1", 5000)
   #fetch settings when new game is started
   
-  #fold_all_in(500, 5000)
-  draw_text_box(f"Bet: 50", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
-  draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
+  #ShowAllInButtons(500, 5000)
+  DrawTextBox(f"Bet: 50", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
+  DrawButton("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
 
-  draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
-  draw_button("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
+  DrawButton("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
+  DrawButton("Fold", LIGHT_GREY, 20 + 80 + 80, HEIGHT - 205, 60, 30, fold)
 
-  draw_button("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
-  draw_button("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
-  draw_button("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
-  draw_button("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
-  menu_confirm()
+  DrawButton("Clear Bet", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 55, 140, 30, reset_temporary_bet)
+  DrawButton("- 50", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 105, 60, 30, decrease_50)
+  DrawButton("+ 50", LIGHT_GREY, WIDTH - 80, HEIGHT - 105, 60, 30, increase_50)
+  DrawButton("Confirm Raise", LIGHT_GREY, 15 + BIG_CARD_WIDTH*2 , HEIGHT - 155, 140, 30, confirm_bet)
+  AskMainMenu()
 
 
-  announce_winners(["player_1", "player_2", "player_3", "player_4", "player_5", "player_6", "player_7"], "Three of a kind", 6)
-  announce_remaining_player("player_2")
+  AnnounceWinners(["player_1", "player_2", "player_3", "player_4", "player_5", "player_6", "player_7"], "Three of a kind", 6)
+  AnnounceRemainingPlayer("player_2")
   ShowHand("player_2", ["spades.3", "diamonds.9"])
   ShowHand("player_1", ["spades.14", "diamonds.14"])
   ShowHand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
   ShowHand("public", ["hearts.13"], 2)
-  turn_indicator("player_1")
+  UpdateTurnIndicator("player_1")
 
 
   pygame.display.flip()
@@ -630,7 +630,7 @@ if __name__ == "__main__":
       elif menu == "game":
         ChangeMenu("game_lock")
         ClearScreen() 
-        draw_card_backs(6)
+        DrawCardBacks(6)
   
     clock.tick(30)  #frame limit
 
