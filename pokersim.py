@@ -1,9 +1,6 @@
 import gui
 
 import random
-import os
-import sqlite3
-from sqlite3 import Error #
 from itertools import combinations as MATHSFindCombination
 
 # one tag is useful comments
@@ -17,6 +14,7 @@ from itertools import combinations as MATHSFindCombination
 # to unpack a list use asterisk before variable print(*list)
 # changed to 2-14 for ace high
 # * to unpack lists
+# All methods start with uppercase
 
 
 class new_round(): 
@@ -28,12 +26,12 @@ class new_round():
     self.__hands = dict()
     for suit in self.suits:
       self.__deck[suit] = [value for value in range(2,15)]  # 2 - 14, 11 is Jack, 13 is King and 14 is Ace
-    self.__hands["public"] = self.PickCard(5)
+    self.__hands["public"] = self.Pick_Card(5)
     for player_id in player_dict: #adjusted
-      self.__hands[player_id] = self.PickCard(2)
+      self.__hands[player_id] = self.Pick_Card(2)
 
 
-  def PickCard(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
+  def Pick_Card(self, *quantity): #returns the suit.value of card as a string - if given a number, returns a list of cards
     if len(quantity) == 0:
       repeats = 1
     else:
@@ -51,8 +49,8 @@ class new_round():
     return cards
     
 
-  def Deck(self): #returns dictionary
-    return self.__deck #testing function
+  def GetDeck(self): #returns dictionary
+    return self.__deck ### testing function
 
   #action methods to be moved into subclass later
   def GetHand(self, player_id): #returns hand of player in list form (public is the first, player keys start at 1)
@@ -155,7 +153,7 @@ class new_round():
       return result[:quantity]
 
     
-    def output(): # in a function to collapse easily
+    def GetOutput(): # in a function to collapse easily
       CH = straight()
       isflush = flush()  
       #ensure every returned value is a list
@@ -211,7 +209,7 @@ class new_round():
       else:
         return False
     
-    return output()
+    return GetOutput()
 
 
   def FindWinner(self, playerCombinations): # iterate through lists, comparing largest value
@@ -248,7 +246,7 @@ class Player():
     self.rounds_played = 0
 
 
-  def NewCards(self, new_hand):
+  def SetNewHand(self, new_hand):
     self.__hand = new_hand
     self.rounds_played += 1
 
@@ -284,13 +282,13 @@ class Player():
     self.total_stage_bet = 0
 
 
-  def PreviousCharge(self):
+  def GetPreviousCharge(self):
     if self.total_stage_bet > 0:
       return self.total_stage_bet
     return 0
 
 
-  def ChipsLeft(self):
+  def GetChipsLeft(self):
     return self.chips_left
 
   
@@ -301,7 +299,7 @@ class Player():
     
     if highest_bet == 0:
       if self.bot == True:
-        choice = self.BotChoice(highest_bet, "fold check bet", revealed_cards) ### bot
+        choice = self.GetBotChoice(highest_bet, "fold check bet", revealed_cards) ### bot
       else:
         #choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") 
         choice = gui.fold_check_bet(highest_bet, self.chips_left)
@@ -329,7 +327,7 @@ class Player():
     else: #bet has been made
       if highest_bet >= self.chips_left:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold allin", revealed_cards) ### bot
+          choice = self.GetBotChoice(highest_bet, "fold allin", revealed_cards) ### bot
         else:
           #choice = input("All in (y) or fold(n)?:")
           choice = gui.fold_all_in(highest_bet, self.chips_left)
@@ -343,12 +341,12 @@ class Player():
       
       elif highest_bet > 0:
         if self.bot == True:
-          choice = self.BotChoice(highest_bet, "fold call raise", revealed_cards) ### bot
+          choice = self.GetBotChoice(highest_bet, "fold call raise", revealed_cards) ### bot
         else:
           #choice = input("Fold(n), Call(y) or raise extra:")
           choice = gui.fold_call_bet(highest_bet, self.chips_left)
 
-        previouscharge = self.PreviousCharge()
+        previouscharge = self.GetPreviousCharge()
         if previouscharge != False:
           highest_bet -= previouscharge #deduct already input chips
         
@@ -400,11 +398,11 @@ class Bot(new_round, Player): #inherits functions of new_round
     #each difficulty has its own set of strategies
     
 
-  def NewCards(self, new_hand):
+  def SetNewHand(self, new_hand):
     self.__hand = new_hand
 
 
-  def BotChoice(self, highest_bet, available_choices, public_cards):  # strategy for each of the 4 stages
+  def GetBotChoice(self, highest_bet, available_choices, public_cards):  # strategy for each of the 4 stages
     #choose from strategies based on difficulty and risk
     self.highest_bet = highest_bet
     self.available_choices = available_choices.split(" ")
@@ -423,16 +421,16 @@ class Bot(new_round, Player): #inherits functions of new_round
     
     
     if self.difficulty == "easy":
-      choice = self.EasyStrategy()
+      choice = self.GetEasyStrategyChoice()
     elif self.difficulty == "medium":
-      choice = self.MediumStrategy()
+      choice = self.GetMediumStrategyChoice()
     elif self.difficulty == "hard":
-      choice = self.HardStrategy()
+      choice = self.GetHardStrategyChoice()
     
     return choice
 
   #conversion functions
-  def convert_value_to_letter(self, value):  #make values understandable in terms of this program
+  def Convert_Value_To_Letter(self, value):  #convert to compare against pre-defined list in SetStartingHandRankings()
     if value < 10:
       return str(value)
     elif value == 10:
@@ -446,8 +444,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif value == 14:
       return "A"
 
-  def convert_hand(self, value1, value2, isonsuit):  #takes AKo as a string and returns 14, 13, offsuit
-    string = self.convert_value_to_letter(value1) + self.convert_value_to_letter(value2)
+  def Convert_Hand(self, value1, value2, isonsuit):  #takes AKo as a string and returns 14, 13, offsuit
+    string = self.Convert_Value_To_Letter(value1) + self.Convert_Value_To_Letter(value2)
     if isonsuit == False:
       string += "o"
     return string
@@ -455,7 +453,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   #strategy logic functions
-  def RollRisk(self):   #maximium allowed difference in probabilities
+  def Roll_Risk(self):   #maximium allowed difference in probabilities
     risk = random.randrange(0, self.risk_threshold * 10000) / 10000   #rounded to 4dp
     return risk
 
@@ -492,11 +490,11 @@ class Bot(new_round, Player): #inherits functions of new_round
     return self.hand_attributes
 
   
-  def StartingHandRankings(self): #complete 169 possible combinations - by default hands are suited unless specified with "o"
+  def SetStartingHandRankings(self): #complete 169 possible combinations - by default hands are suited unless specified with "o"
     self.DecodeStartingHand()
     self.top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
     #best 10% of hands (21 types)
-    converted_hand = self.convert_hand(self.value1, self.value2, self.onsuit)
+    converted_hand = self.Convert_Hand(self.value1, self.value2, self.onsuit)
     self.istop10 = False
     if converted_hand in self.top10:
       self.istop10 = True
@@ -512,7 +510,7 @@ class Bot(new_round, Player): #inherits functions of new_round
       
 
   #stage 1 three cards shown and stage 2 fourth card is shown
-  def calculate_combinations_probability(self, num_cards, forOpponent): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
+  def Calculate_Combinations_Probability(self, num_cards, forOpponent): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
     if num_cards < 1 or num_cards > 3:
       raise ValueError("Computation will run too long. (Max 3)")
     
@@ -558,8 +556,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     
 
   #stage 3 all cards revealed
-  def compare_to_oppononent_probabilities(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
-    opponent_current, opponent_most_likely, opponent_best = self.calculate_combinations_probability(2, True)
+  def Compare_To_Opponent_Probabilities(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
+    opponent_current, opponent_most_likely, opponent_best = self.Calculate_Combinations_Probability(2, True)
     if opponent_current[0] > current_combination[0]:
       best_action = 0
     elif opponent_most_likely[0] > most_likely_combination[0]:
@@ -574,7 +572,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     #find probability of higher one being found in last stage
     
 
-  def bet_amount(self, best_action): #determined by strategy and size of chips
+  def Get_Random_Bet_Amount(self, best_action): #determined by strategy and size of chips
     #(still randrange and high includes allin) ranges overlap to make it harder to pick up patterns
     if best_action == 2: #bet low
       return random.randrange(50, self.chips_left // 3, 50) #0 - lower third
@@ -585,7 +583,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
 
   #strategies for each difficulty
-  def EasyStrategy(self): #equal uniform distribution of choices in each choice
+  def GetEasyStrategyChoice(self): #equal uniform distribution of choices in each choice
     #pickrandom choice, pickrandom bet 
     choice = random.choice(self.available_choices)
     
@@ -600,14 +598,14 @@ class Bot(new_round, Player): #inherits functions of new_round
       return raise_value
 
 
-  def MediumStrategy(self):
-    rolled_risk = self.RollRisk() #how risky bot is willing to be
+  def GetMediumStrategyChoice(self):
+    rolled_risk = self.Roll_Risk() #how risky bot is willing to be
     best_action = False
     #action is ranked from 0-4 for comparison    fold, check, bet low, bet medium, bet high
 
     #determine a course of action
     if self.stage == 0:
-      self.StartingHandRankings()
+      self.SetStartingHandRankings()
       if self.top10:   #"bet high"
         best_action = 4
       elif self.good_traits == 3: #"bet medium"
@@ -620,7 +618,7 @@ class Bot(new_round, Player): #inherits functions of new_round
         best_action = 0
     
     elif self.stage == 1 or self.stage == 2:
-      current_combination, most_likely_combination, best_possible_combination =  self.calculate_combinations_probability(3 - self.stage, False)
+      current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(3 - self.stage, False)
       
       if abs(current_combination[1] - best_possible_combination[1]) < rolled_risk:  #within risk tolerance
         best_action = 4
@@ -635,14 +633,14 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
-      best_action = self.compare_to_oppononent_probabilities(current_combination, most_likely_combination, best_possible_combination)
+      best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
 
 
     #check if conditions are met for choices else fold
     if self.available_choices == ["fold", "check", "bet"]:
       print("fold check bet")
       if best_action >= 2:  # bet
-        return self.bet_amount(best_action)
+        return self.Get_Random_Bet_Amount(best_action)
       if best_action == 1:  # check
         return "y"
       else:  # fold
@@ -660,20 +658,20 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.available_choices == ["fold", "call", "raise"]:
       print("fold call raise")
       if best_action >= 3:  # raise   at least a bet medium
-        return self.bet_amount(best_action)
+        return self.Get_Random_Bet_Amount(best_action)
       if best_action >= 2:  # call  at least a bet low
         return "y"
       else:  # fold
         return "n"   
       
 
-  def HardStrategy(self):  #hard takes into account card values instead of just combinations
+  def GetHardStrategyChoice(self):  #hard takes into account card values instead of just combinations
     #ranks every hand from lowest to highest and has cutoff point to fold at start
-    rolled_risk = self.RollRisk() #approx half of medium strategy
+    rolled_risk = self.Roll_Risk() #approx half of medium strategy
     best_action = False
     #determine a course of action
     if self.stage == 0:
-      self.StartingHandRankings()
+      self.SetStartingHandRankings()
       if self.istop10 and self.top10index < 3:
         best_action = 4
       elif self.istop10 and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
@@ -684,7 +682,7 @@ class Bot(new_round, Player): #inherits functions of new_round
         best_action = 0
     
     elif self.stage == 1 or self.stage == 2:
-      current_combination, most_likely_combination, best_possible_combination =  self.calculate_combinations_probability(3 - self.stage, False)
+      current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(3 - self.stage, False)
       
       if abs(current_combination[1] - best_possible_combination[1]) < rolled_risk:  #within risk tolerance
         best_action = 4
@@ -699,14 +697,14 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
-      best_action = self.compare_to_oppononent_probabilities(current_combination, most_likely_combination, best_possible_combination)
+      best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
 
     ##import choices from med strategy
     #return a choice      
     if self.available_choices == ["fold", "check", "bet"]:
       print("fold check bet")
       if best_action >= 2:  # bet
-        return self.bet_amount(best_action)
+        return self.Get_Random_Bet_Amount(best_action)
       if best_action == 1:  # check
         return "y"
       else:  # fold
@@ -724,7 +722,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.available_choices == ["fold", "call", "raise"]:
       print("fold call raise")
       if best_action >= 4:  # raise   at least a bet high
-        return self.bet_amount(best_action)
+        return self.Get_Random_Bet_Amount(best_action)
       if best_action >= 3:  # call  at least a bet medium
         return "y"
       else:  # fold
@@ -737,17 +735,17 @@ if __name__ == "__main__":
   hand = ["hearts.14", "spades.14"]
   bot1 = Bot(5000, "medium")
   
-  bot1.NewCards(hand)
+  bot1.SetNewHand(hand)
   bot1.ResetAllIn()
   bot1.ResetStageBet()
   for i in range(10):
-    print(bot1.BotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"]))
+    print(bot1.GetBotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"]))
 
   print()
   print(bot1.difficulty)
   print(bot1.DecodeStartingHand())
-  print(bot1.calculate_combinations_probability(2, False))
-  print(bot1.StartingHandRankings())
-  print(bot1.RollRisk())
+  print(bot1.Calculate_Combinations_Probability(2, False))
+  print(bot1.SetStartingHandRankings())
+  print(bot1.Roll_Risk())
 
 

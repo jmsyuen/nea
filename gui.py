@@ -7,10 +7,7 @@ import time
 
 WIDTH, HEIGHT = 414, 896 #logical point resolution of iphone 11
 WHITE = (255, 255, 255)
-GREEN = (0, 128, 0)
-RED = (255, 0, 0)
 BLACK = (0, 0, 0)
-DARK_GREY = (75, 75, 75)
 #main colours
 DARK_BEIGE = (204, 204, 183) #background
 IVORY = (245,245,230)        #text box
@@ -21,19 +18,11 @@ LIGHT_GREY = (184, 184, 165) #button normal
 #includes padding of 20px around right and bottom sides
 SMALL_CARD_WIDTH, SMALL_CARD_HEIGHT = 70, 92  
 BIG_CARD_WIDTH, BIG_CARD_HEIGHT = 120, 164  
-#buttons
-button_width, button_height = 40, 20
-button_padding = 20
-button_font_size = 15
-button_font_colour = WHITE
-button_fill_colour = BLACK
-button_border_colour = WHITE
-button_border_width = 1
 
 #default values
 menu = "main menu"
 opponents = 3
-bot_starting_chips = 5000 #5000 in intervals of 50, 5 chip types 5,2,1,50 blinds left 2 of dealer
+bot_starting_chips = 5000 
 max_difficulty = "medium" 
 
 temporary_bet = 50   #might need to be 50
@@ -144,11 +133,12 @@ def StartGame():
   ChangeMenu("game")
 
 
-def open_wikipedia():
+def OpenWikipediaLink():
   webbrowser.open("https://en.wikipedia.org/wiki/Texas_hold_%27em")
   time.sleep(1) #prevents several instances opened at same time
 
-
+#due to the way functions in buttons are run with no parameters, a lot of these will take up space
+  
 def set_1_opponents():
   global opponents
   opponents = 1
@@ -192,35 +182,35 @@ def GetSettings():
   return [opponents + 1, max_difficulty, bot_starting_chips]
 
 
-def quit():
+def Quit():
   pygame.quit()
   sys.exit()
 
 
 
 #display menu functions
-def main_menu():
+def ShowMainMenu():
   ClearScreen()
   draw_text_box("Poker VS Bots", WHITE, DARK_BEIGE, 30, 0, 40, 414, 100)
-  draw_button("Settings", LIGHT_GREY, -5, 250, 420, 50, settings)
-  draw_button("Help", LIGHT_GREY, -5, 300, 420, 50, help)
-  draw_button("Quit", LIGHT_GREY, -5, 350, 420, 50, quit)
+  draw_button("Settings", LIGHT_GREY, -5, 250, 420, 50, ShowSettings)
+  draw_button("Help", LIGHT_GREY, -5, 300, 420, 50, ShowHelp)
+  draw_button("Quit", LIGHT_GREY, -5, 350, 420, 50, Quit)
   draw_button("New Game", LIGHT_GREY, -5, 200, 420, 50, StartGame)
   pygame.display.flip()
   
 
-def help():
+def ShowHelp():
   global menu
   menu = "help"
   ClearScreen()
   draw_text_box("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
   draw_text_box("Welcome to Poker VS Bots!", BLACK, DARK_BEIGE, 20, 0, 40, 414, 100)
-  draw_button("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, open_wikipedia)
+  draw_button("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, OpenWikipediaLink)
   draw_button("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
   pygame.display.flip()
 
   
-def settings():
+def ShowSettings():
   global menu
   menu = "settings"
   ClearScreen()
@@ -253,15 +243,15 @@ def settings():
 
 
 #integration functions
-def update_pot(pot):
+def UpdatePot(pot):
   draw_text_box(f"Pot {pot}", BLACK, IVORY, 15, WIDTH - 160, 122, 140, 30)
 
 
-def update_blinds(big_blind):
+def UpdateBlinds(big_blind):
   draw_text_box(f"Blinds {big_blind // 2}/{big_blind}", BLACK, IVORY, 14, WIDTH - 160, 152, 140, 30)
 
 
-def update_player_chips(player_id, chips_left):
+def UpdatePlayerChips(player_id, chips_left):
   if player_id == "player_1":
     draw_text_box(f"Chips: {chips_left}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 255, 140, 30)
   else:
@@ -299,7 +289,7 @@ def draw_card(size, card, position): #takes card like spades.3, and xy position 
   return
 
 
-def update_player_info(*args):   #player_id_value, prev_action, chips_left
+def UpdatePlayerInfo(*args):   #player_id_value, prev_action, chips_left
   player_id_value = args[0]
   prev_action = args[1]
   if type(player_id_value) == str:
@@ -308,7 +298,7 @@ def update_player_info(*args):   #player_id_value, prev_action, chips_left
   if str(player_id_value) == "1":  #catch and ignore showing prev_action for human player
     if len(args) > 2:
       chips_left = args[2]
-      update_player_chips("player_1", chips_left)
+      UpdatePlayerChips("player_1", chips_left)
       
     
   else:  
@@ -324,7 +314,7 @@ def update_player_info(*args):   #player_id_value, prev_action, chips_left
   
 
 #add revealing animation using time.sleep and solid colour text box of white then 2 shades of grey  
-def show_hand(*args):  #player_id in full string, cards as a list, if public choose stage
+def ShowHand(*args):  #player_id in full string, cards as a list, if public choose stage
   player_id = args[0] 
   cards = args[1]
   if type(cards) == str:
@@ -418,7 +408,7 @@ def fold_check_bet(highest_bet, chips_left):
   while choice == False:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        quit()
+        Quit()
         
     draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("Check", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
@@ -445,7 +435,7 @@ def fold_call_bet(highest_bet, chips_left):
   while choice == False:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        quit()
+        Quit()
     draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("Call", LIGHT_GREY, 20 + 80, HEIGHT - 205, 60, 30, check)
 
@@ -471,7 +461,7 @@ def fold_all_in(highest_bet, chips_left):
   while choice == False:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        quit()
+        Quit()
     #working buttons
     draw_text_box(f"Bet: {temporary_bet}", BLACK, IVORY, 15, 15 + BIG_CARD_WIDTH*2, HEIGHT - 205, 140, 30)
     draw_button("All In", LIGHT_GREY, 20, HEIGHT - 205, 60, 30, allin)
@@ -555,7 +545,7 @@ def draw_card_backs(remaining_players_list):   #hide cards from previous round
     draw_card("small", "back", locations[player_id][0])
     draw_card("small", "back", locations[player_id][1])
 
-    #update_player_info(player_id_value, "", bot_remaining_chips) ###change to starting chips total_chips_left
+    #UpdatePlayerInfo(player_id_value, "", bot_remaining_chips) ###change to starting chips total_chips_left
     
   pygame.display.flip()
 
@@ -586,9 +576,9 @@ def human_bust(player_object):
 
 def New_Game():  #testing displays
   #dynamic variables to be udpated
-  update_pot(200000)
-  update_blinds(2000)
-  update_player_chips("player_1", 5000)
+  UpdatePot(200000)
+  UpdateBlinds(2000)
+  UpdatePlayerChips("player_1", 5000)
   #fetch settings when new game is started
   
   #fold_all_in(500, 5000)
@@ -607,10 +597,10 @@ def New_Game():  #testing displays
 
   announce_winners(["player_1", "player_2", "player_3", "player_4", "player_5", "player_6", "player_7"], "Three of a kind", 6)
   announce_remaining_player("player_2")
-  show_hand("player_2", ["spades.3", "diamonds.9"])
-  show_hand("player_1", ["spades.14", "diamonds.14"])
-  show_hand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
-  show_hand("public", ["hearts.13"], 2)
+  ShowHand("player_2", ["spades.3", "diamonds.9"])
+  ShowHand("player_1", ["spades.14", "diamonds.14"])
+  ShowHand("public", ["hearts.10", "hearts.11", "hearts.12"], 1)# stage is 1-3 first stage is nothing 
+  ShowHand("public", ["hearts.13"], 2)
   turn_indicator("player_1")
 
 
@@ -624,7 +614,7 @@ if __name__ == "__main__":
   while True:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        quit()
+        Quit()
     
     menu = GetMenu()
 
@@ -632,11 +622,11 @@ if __name__ == "__main__":
       New_Game()
     else:  
       if menu == "main menu":
-        main_menu()
+        ShowMainMenu()
       elif menu == "settings":
-        settings()
+        ShowSettings()
       elif menu == "help":
-        help()
+        ShowHelp()
       elif menu == "game":
         ChangeMenu("game_lock")
         ClearScreen() 

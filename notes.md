@@ -47,6 +47,7 @@ difficulty may be discrete levels in a scale of 1-10, ranges from easiest to har
 starting hands probabilities
 
 implement pygame interface with buttons
+to add chip images #5000 in intervals of 50, 5 chip types 5,2,1,50 blinds left 2 of dealer
 
 # other
 many maths functions like binomial will be used

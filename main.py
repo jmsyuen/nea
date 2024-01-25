@@ -23,7 +23,7 @@ def NewGame():
     return current_index
 
   
-  def value_to_name(value): # convert card values to their name
+  def Convert_Value_To_Name(value): # convert card values to their name
     #convert face values to names
     if value == 14:
       return "Ace"
@@ -37,7 +37,7 @@ def NewGame():
       return value
 
 
-  def round_stage(stage): 
+  def Play_Round(stage): 
     nonlocal pot
     round_player_index = current_round_player_index
     bet_matched = False #changes to true if all checked with no bet
@@ -60,19 +60,19 @@ def NewGame():
       big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
       small_blind_player_id = round_players[loop(player_dict, loop(player_dict, round_player_index, False), False)]
       print(f"big blind: {big_blind_player_id}, small blind: {small_blind_player_id}")
-      gui.update_player_info(big_blind_player_id, "Big Blind")
-      gui.update_player_info(small_blind_player_id, "Small Blind")
+      gui.UpdatePlayerInfo(big_blind_player_id, "Big Blind")
+      gui.UpdatePlayerInfo(small_blind_player_id, "Small Blind")
       # charge blinds, and add to pot and highest_bet
       highest_bet = player_dict[big_blind_player_id].Charge(big_blind)
       player_dict[small_blind_player_id].Charge(small_blind)
       pot += big_blind + small_blind
-      gui.update_pot(pot)
+      gui.UpdatePot(pot)
       revealed_cards = []
 
 
-    while len(round_players) > 1 and bet_matched == False: #iterate players in round_stage
+    while len(round_players) > 1 and bet_matched == False: #iterate players in Play_Round
       current_player_id = round_players[round_player_index]
-      previous_charge = player_dict[current_player_id].PreviousCharge()
+      previous_charge = player_dict[current_player_id].GetPreviousCharge()
       print(f"{current_player_id} move")
       gui.turn_indicator(current_player_id)
       
@@ -91,36 +91,36 @@ def NewGame():
           highest_bet = action
           highest_bettor_index = round_player_index 
           raised = True 
-        gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
+        gui.UpdatePlayerInfo(current_player_id, "All In", player_dict[current_player_id].GetChipsLeft())
         pot += action #add to pot
-        gui.update_pot(pot)
+        gui.UpdatePot(pot)
 
       elif type(action) == int: #value has been returned  
         if action + previous_charge == highest_bet: # called
           first_loop = False
-          gui.update_player_info(current_player_id, "Call", player_dict[current_player_id].ChipsLeft())
+          gui.UpdatePlayerInfo(current_player_id, "Call", player_dict[current_player_id].GetChipsLeft())
           #works as 0 also counted as False
         
         elif action + previous_charge > highest_bet: #raised
           highest_bettor_index = round_player_index # loop back to highest_bettor
           raised = True 
           highest_bet = action + previous_charge
-          gui.update_player_info(current_player_id, f"Raise {action}", player_dict[current_player_id].ChipsLeft())
+          gui.UpdatePlayerInfo(current_player_id, f"Raise {action}", player_dict[current_player_id].GetChipsLeft())
         pot += action #add to pot
-        gui.update_pot(pot)
+        gui.UpdatePot(pot)
 
       elif action == True: #check
         first_loop = False
-        gui.update_player_info(current_player_id, "Check", player_dict[current_player_id].ChipsLeft())
+        gui.UpdatePlayerInfo(current_player_id, "Check", player_dict[current_player_id].GetChipsLeft())
 
       elif action == "AllIn":
         first_loop = False
-        gui.update_player_info(current_player_id, "All In", player_dict[current_player_id].ChipsLeft())
+        gui.UpdatePlayerInfo(current_player_id, "All In", player_dict[current_player_id].GetChipsLeft())
         
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index
         round_player_index -= 1
-        gui.update_player_info(current_player_id, "Fold", player_dict[current_player_id].ChipsLeft())
+        gui.UpdatePlayerInfo(current_player_id, "Fold", player_dict[current_player_id].GetChipsLeft())
         
 
       if all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id):  #all other players are all in
@@ -152,14 +152,14 @@ def NewGame():
     
   ### new game setup
   
-  print("Starting with default settings. £50 bot buy in, 3 opponents, medium bot difficulty.")
+  print("Starting with default settings. 3 opponents, £50 bot buy in, medium bot difficulty.")
   #remember to add to Player() call below
 
   
   total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
   big_blind_cycle = 0   #used to know when to double blinds every two cycles of players
   big_blind = 100
-  gui.update_blinds(100)      #small blind is always half of big
+  gui.UpdateBlinds(100)      #small blind is always half of big
 
   #initiate player and bot objects
   player_dict = dict()
@@ -180,7 +180,7 @@ def NewGame():
     #read to and write out every iteration (database)
     ### new round setup
     pot = 0
-    gui.update_pot(pot)
+    gui.UpdatePot(pot)
     small_blind = big_blind // 2    
   
     round = pokersim.new_round(total_players_left, player_dict)
@@ -190,11 +190,11 @@ def NewGame():
     round_players = []
     for player_id in player_dict:
       round_players.append(player_id)
-      player_dict[player_id].NewCards(round.GetHand(player_id)) ###int(player_id.split("_")[-1]) 
+      player_dict[player_id].SetNewHand(round.GetHand(player_id)) ###int(player_id.split("_")[-1]) 
       player_dict[player_id].ResetAllIn()
       print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
-      gui.update_player_chips(player_id, player_dict[player_id].ChipsLeft())
-      gui.update_player_info(player_id, "")
+      gui.UpdatePlayerChips(player_id, player_dict[player_id].GetChipsLeft())
+      gui.UpdatePlayerInfo(player_id, "")
   
     gui.draw_card_backs(round_players)
     if "player_1" in player_dict:
@@ -204,7 +204,7 @@ def NewGame():
 
     #iterate stages and return list of finalists
     for stage in range(4):
-      finalists = round_stage(stage)  #returns nothing to continue
+      finalists = Play_Round(stage)  #returns nothing to continue
       if type(finalists) == list:
         break
     
@@ -233,7 +233,7 @@ def NewGame():
       for player in playerCombinations:
         if player[0] == winner:
           combination = player[1]
-          combination_high = str(value_to_name(player[2]))
+          combination_high = str(Convert_Value_To_Name(player[2]))
           
           #convert to combination names
           if combination == 1:
@@ -242,7 +242,7 @@ def NewGame():
             combination = "Pair"
           elif combination == 3:
             combination = "Two Pair"
-            combination_high += ", " + str(value_to_name(player[3]))
+            combination_high += ", " + str(Convert_Value_To_Name(player[3]))
           elif combination == 4:
             combination = "Three of a kind"
           elif combination == 5:
@@ -251,7 +251,7 @@ def NewGame():
             combination = "Flush"
           elif combination == 7:
             combination = "Full house"
-            combination_high += ", " + str(value_to_name(player[3]))
+            combination_high += ", " + str(Convert_Value_To_Name(player[3]))
           elif combination == 8:
             combination = "Four of a kind"
           elif combination == 9:
@@ -271,7 +271,7 @@ def NewGame():
     
     #remove bust players
     for player in list(player_dict):
-      if player_dict[player].ChipsLeft() == 0:
+      if player_dict[player].GetChipsLeft() == 0:
         gui.remove_bust_player(player)
         if player == "player_1":
           gui.human_bust(player_dict[player])
@@ -305,7 +305,7 @@ def NewGame():
     while continue_round == False:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
-          gui.quit()
+          gui.Quit()
 
       gui.menu_confirm()
       continue_round = gui.ask_continue_round()
@@ -333,7 +333,7 @@ if __name__ == "__main__":
   while True:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        gui.quit()
+        gui.Quit()
     
     menu = gui.GetMenu()
 
