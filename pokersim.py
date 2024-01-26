@@ -299,7 +299,7 @@ class Player():
     
     if highest_bet == 0:
       if self.bot == True:
-        choice = self.GetBotChoice(highest_bet, "fold check bet", revealed_cards) ### bot
+        choice = self.GetBotChoice(highest_bet, "fold check bet", revealed_cards) 
       else:
         #choice = input("Fold(n), Check(y), 3.Bet(amount in 50p intervals):") 
         choice = gui.ShowCheckButtons(highest_bet, self.chips_left)
@@ -327,7 +327,7 @@ class Player():
     else: #bet has been made
       if highest_bet >= self.chips_left:
         if self.bot == True:
-          choice = self.GetBotChoice(highest_bet, "fold allin", revealed_cards) ### bot
+          choice = self.GetBotChoice(highest_bet, "fold allin", revealed_cards) 
         else:
           #choice = input("All in (y) or fold(n)?:")
           choice = gui.ShowAllInButtons(highest_bet, self.chips_left)
@@ -341,7 +341,7 @@ class Player():
       
       elif highest_bet > 0:
         if self.bot == True:
-          choice = self.GetBotChoice(highest_bet, "fold call raise", revealed_cards) ### bot
+          choice = self.GetBotChoice(highest_bet, "fold call raise", revealed_cards) 
         else:
           #choice = input("Fold(n), Call(y) or raise extra:")
           choice = gui.ShowCallButtons(highest_bet, self.chips_left)

@@ -37,7 +37,7 @@ def NewGame():
       return value
 
 
-  def Play_Round(stage): 
+  def Play_Round_Stage(stage): 
     nonlocal pot
     round_player_index = current_round_player_index
     bet_matched = False #changes to true if all checked with no bet
@@ -70,7 +70,7 @@ def NewGame():
       revealed_cards = []
 
 
-    while len(round_players) > 1 and bet_matched == False: #iterate players in Play_Round
+    while len(round_players) > 1 and bet_matched == False: #iterate players in Play_Round_Stage
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].GetPreviousCharge()
       print(f"{current_player_id} move")
@@ -204,7 +204,7 @@ def NewGame():
 
     #iterate stages and return list of finalists
     for stage in range(4):
-      finalists = Play_Round(stage)  #returns nothing to continue
+      finalists = Play_Round_Stage(stage)  #returns nothing to continue
       if type(finalists) == list:
         break
     
