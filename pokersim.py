@@ -730,8 +730,13 @@ class Bot(new_round, Player): #inherits functions of new_round
     
     
 
-if __name__ == "__main__":
+if __name__ == "__main__":  #for testing
   
+  temp_round = new_round(3, {"player_1: "})
+  temp_round
+
+
+
   hand = ["hearts.14", "spades.14"]
   bot1 = Bot(5000, "medium")
   

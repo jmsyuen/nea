@@ -4,7 +4,7 @@ can remove blind doubling like a cash game as only in tournaments #
 remove database
 add help menu text
 bot strategies, ai
-
+incorporate binomial, rework bot logic
 
 
 

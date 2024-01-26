@@ -320,11 +320,6 @@ def NewGame():
 
     pygame.display.flip()
     
-    
-    
-    
-    
-    
 
 
 if __name__ == "__main__": 
