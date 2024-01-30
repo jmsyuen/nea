@@ -205,6 +205,16 @@ def ShowHelp():
   ClearScreen()
   DrawTextBox("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
   DrawTextBox("Welcome to Poker VS Bots!", BLACK, DARK_BEIGE, 20, 0, 40, 414, 100)
+  #DrawTextBox("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
+  #"This is a mobile game to be play standard Texas Hold'em poker against up to 1-6 other bots."
+  #"In the Settings page you will be able to change how the bots behave."
+  #"You can choose their difficulty and their starting chips."
+  #"However, you will always start with 5000 chips."
+  #"Settings will persist between games once changed."
+  #"You will be able to return to the menu after each round finishes,"
+  #"but doing so will reset the game."
+  
+  
   DrawButton("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, OpenWikipediaLink)
   DrawButton("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
   pygame.display.flip()
