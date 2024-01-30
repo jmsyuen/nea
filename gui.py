@@ -202,20 +202,21 @@ def ShowMainMenu():
 def ShowHelp():
   global menu
   menu = "help"
+  topbox_ypos = 150 #easily change height of boxes while keeping them grouped
   ClearScreen()
   DrawTextBox("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
   DrawTextBox("Welcome to Poker VS Bots!", BLACK, DARK_BEIGE, 20, 0, 40, 414, 100)
-  #DrawTextBox("Help", BLACK, IVORY, 15, 0, 0, 414, 40)
-  #"This is a mobile game to be play standard Texas Hold'em poker against up to 1-6 other bots."
-  #"In the Settings page you will be able to change how the bots behave."
-  #"You can choose their difficulty and their starting chips."
-  #"However, you will always start with 5000 chips."
-  #"Settings will persist between games once changed."
-  #"You will be able to return to the menu after each round finishes,"
-  #"but doing so will reset the game."
+  DrawTextBox("This is a mobile game to play standard", BLACK, DARK_BEIGE, 14, 0, topbox_ypos, 414, 20)
+  DrawTextBox("Texas Hold\'em poker against up to 1-6 other bots.", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 20, 414, 20)
+  DrawTextBox("In Settings you can change how the bots behave,", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 40, 414, 20)
+  DrawTextBox("choosing their difficulty and starting chips.", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 60, 414, 20)
+  DrawTextBox("However, you will always start with 5000 chips.", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 80, 414, 20)
+  DrawTextBox("Settings will persist between games once changed.", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 120, 414, 20)
+  DrawTextBox("You can return to the menu after a round finishes,", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 140, 414, 20)
+  DrawTextBox("but doing so will reset the game.", BLACK, DARK_BEIGE, 14, 0, topbox_ypos + 160, 414, 20)
+  #DrawTextBox("", BLACK, DARK_BEIGE, 14, 0, 170, 414, 20)
   
-  
-  DrawButton("Wikipedia page", LIGHT_GREY, 0, 200, 414, 100, OpenWikipediaLink)
+  DrawButton("Wikipedia page", LIGHT_GREY, 0, 600, 414, 100, OpenWikipediaLink)
   DrawButton("Back", LIGHT_GREY, 0, HEIGHT - 100, 414, 100, MainMenu)
   pygame.display.flip()
 
@@ -506,6 +507,7 @@ def AnnounceWinners(winners, combination, combination_high):
 
 def AnnounceRemainingPlayer(player_id):
   DrawTextBox(f"Player {player_id[-1]} remains.", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 375, 140, 24)
+  DrawTextBox("", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 300, 140, 30)
 
 
 def ClearRightSidebar():

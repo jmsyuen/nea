@@ -13,6 +13,8 @@ blinds double every total_players - 1 rounds
 optional bug found infinite check loop with 0 bet
 small bug when raising everyone after doesn't match
 remove buttons when human bust
+straight flush may incorrectly identify if different flushes and straights exist
+only hide bust players at next round start
 
 
 # common problems with solutions

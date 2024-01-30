@@ -66,6 +66,8 @@ class new_round():
       return public[3]
     elif stage == 3:
       return public[4]
+    elif stage == 4:
+      return public
     else:                   #error checking, remove later ###
       print("stage invalid")
       raise Exception
@@ -145,8 +147,8 @@ class new_round():
 
     def high_card(quantity, CH): # takes how many high cards, existing CH in list form
       remaining = []
-      card_value = card.split(".")[-1]
       for card in combined_cards:
+        card_value = card.split(".")[-1]
         if card_value not in CH:
           remaining.append(card_value)
       result = sorted(set(remaining), key=int)[::-1] # sorted from high-low for later comparison
@@ -158,7 +160,7 @@ class new_round():
       isflush = flush()  
       #ensure every returned value is a list
       #CH straight flush
-      if CH != False and isflush != False:
+      if CH != False and isflush != False and CH == isflush:  #ensure flush and straight are same set of cards
         if CH[0] == 1: 
           return [10, 14] # royal flush
         else:
@@ -408,6 +410,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.available_choices = available_choices.split(" ")
     self.public_cards = public_cards
     self.known_cards = self.public_cards + self.__hand
+    print(self.public_cards)  ###TESTING REMOVE
     self.current_combination_list = [int(x) for x in new_round.FindCombination(self, self.known_cards)]
     #get stage
     if len(public_cards) == 0:
@@ -419,7 +422,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif len(public_cards) == 5:
       self.stage = 3
     
-    
+    print(f"bot {self.difficulty} difficulty")  # terminal debugging
+
     if self.difficulty == "easy":
       choice = self.GetEasyStrategyChoice()
     elif self.difficulty == "medium":
@@ -574,11 +578,19 @@ class Bot(new_round, Player): #inherits functions of new_round
 
   def Get_Random_Bet_Amount(self, best_action): #determined by strategy and size of chips
     #(still randrange and high includes allin) ranges overlap to make it harder to pick up patterns
+    
+
     if best_action == 2: #bet low
+      if self.chips_left < 50:  #go all in if not enough chips for min bet
+        return self.chips_left
       return random.randrange(50, self.chips_left // 3, 50) #0 - lower third
     elif best_action == 3: #bet medium
+      if self.chips_left < self.chips_left // 5:
+        return self.chips_left
       return random.randrange(self.chips_left // 5, self.chips_left // (4/3), 50) #fifth to 3/4
     elif best_action == 4: #bet high
+      if self.chips_left < self.chips_left // (5/3):
+        return self.chips_left
       return random.randrange(self.chips_left // (5/3), self.chips_left, 50) #3/5 to allin
 
 
@@ -633,6 +645,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
+      current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(1, False)
       best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
 
 

@@ -54,7 +54,10 @@ def NewGame():
       
       revealed_cards = []
       for i in range(1, stage + 1):
-        revealed_cards += round.GetPublicStage(i)
+        if type(round.GetPublicStage(i)) != list:
+          revealed_cards.append(round.GetPublicStage(i))
+        else:
+          revealed_cards += list(round.GetPublicStage(i))
 
     elif stage == 0:
       big_blind_player_id = round_players[loop(player_dict, round_player_index, False)]
