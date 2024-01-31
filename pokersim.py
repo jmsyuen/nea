@@ -410,7 +410,6 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.available_choices = available_choices.split(" ")
     self.public_cards = public_cards
     self.known_cards = self.public_cards + self.__hand
-    print(self.public_cards)  ###TESTING REMOVE
     self.current_combination_list = [int(x) for x in new_round.FindCombination(self, self.known_cards)]
     #get stage
     if len(public_cards) == 0:
@@ -507,8 +506,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     self.good_traits = 0   #count how many are true and bet accordingly
     if self.hand_attributes[0] == True:
       self.good_traits += 1
-    if self.hand_attributes[1] >= 1:
-      self.good_traits += 1
+    if self.hand_attributes[1] != 0:
+      self.good_traits += self.hand_attributes[1]
     if self.hand_attributes[2] == True or self.hand_attributes[3] > 0:
       self.good_traits += 1
       
@@ -618,16 +617,16 @@ class Bot(new_round, Player): #inherits functions of new_round
     #determine a course of action
     if self.stage == 0:
       self.SetStartingHandRankings()
-      if self.top10:   #"bet high"
-        best_action = 4
-      elif self.good_traits == 3: #"bet medium"
-        best_action = 3
-      elif self.good_traits == 2: #"bet low"
-        best_action = 2
-      elif self.good_traits == 1: #"check"
-        best_action = 1
-      elif self.good_traits == 0: #"fold"
-        best_action = 0
+      if self.top10 == True:   
+        best_action = 4 #"bet high"
+      elif self.good_traits >= 3: 
+        best_action = 3 #"bet medium"
+      elif self.good_traits == 2: 
+        best_action = 2 #"bet low"
+      elif self.good_traits == 1: 
+        best_action = 1 #"check"
+      elif self.good_traits == 0: 
+        best_action = 0 #"fold"
     
     elif self.stage == 1 or self.stage == 2:
       current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(3 - self.stage, False)
@@ -648,10 +647,9 @@ class Bot(new_round, Player): #inherits functions of new_round
       current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(1, False)
       best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
 
-
+    print(f"best_action  {best_action}")  ###testing
     #check if conditions are met for choices else fold
     if self.available_choices == ["fold", "check", "bet"]:
-      print("fold check bet")
       if best_action >= 2:  # bet
         return self.Get_Random_Bet_Amount(best_action)
       if best_action == 1:  # check
@@ -661,7 +659,6 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       
     elif self.available_choices == ["fold", "allin"]:
-      print("fold allin")
       if best_action >= 4:  # all in  at least a bet high
         return "y"
       else:  # fold
@@ -669,8 +666,7 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       
     elif self.available_choices == ["fold", "call", "raise"]:
-      print("fold call raise")
-      if best_action >= 3:  # raise   at least a bet medium
+      if best_action >= 3:  # raise  at least a bet medium
         return self.Get_Random_Bet_Amount(best_action)
       if best_action >= 2:  # call  at least a bet low
         return "y"
@@ -685,9 +681,11 @@ class Bot(new_round, Player): #inherits functions of new_round
     #determine a course of action
     if self.stage == 0:
       self.SetStartingHandRankings()
-      if self.istop10 and self.top10index < 3:
+      if self.istop10 == True and self.top10index <= 10:
         best_action = 4
-      elif self.istop10 and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
+      elif self.istop10 == True and self.hand_attributes[1] == 2 and self.good_traits >= 2:  #face value and one other good trait
+        best_action = 3
+      elif self.istop10 == True:
         best_action = 2
       elif self.good_traits >= 2:
         best_action = 1
@@ -710,12 +708,14 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #similar to prev stages but takes into account possible opponent cards
     elif self.stage == 3:
+      current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(1, False)
       best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
 
+
+    print(f"best_action  {best_action}")  ###testing
     ##import choices from med strategy
     #return a choice      
     if self.available_choices == ["fold", "check", "bet"]:
-      print("fold check bet")
       if best_action >= 2:  # bet
         return self.Get_Random_Bet_Amount(best_action)
       if best_action == 1:  # check
@@ -725,7 +725,6 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       
     elif self.available_choices == ["fold", "allin"]:
-      print("fold allin")
       if best_action >= 4:  # all in  at least a bet high
         return "y"
       else:  # fold
@@ -733,10 +732,11 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       
     elif self.available_choices == ["fold", "call", "raise"]:
-      print("fold call raise")
       if best_action >= 4:  # raise   at least a bet high
         return self.Get_Random_Bet_Amount(best_action)
       if best_action >= 3:  # call  at least a bet medium
+        return "y"
+      if self.stage == 0 and best_action > 0: # play past first round more
         return "y"
       else:  # fold
         return "n"   
