@@ -1,5 +1,5 @@
 # First setup
-Download nea.exe
+Download nea.exe above (download raw file) and run 
 
 Enter "nea" folder
 
