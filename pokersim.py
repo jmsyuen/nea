@@ -482,7 +482,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.value1 == self.value2:
       pair = True
           
-    if self.value1 - self.value2 <= 4:
+    if self.value1 - self.value2 <= 4 or (13 + self.value2) - self.value1 <= 4:
       consecutive_potential = self.value1 - self.value2
     if self.value1 in face_values:
       face_value_total += 1
@@ -514,6 +514,7 @@ class Bot(new_round, Player): #inherits functions of new_round
 
   #stage 1 three cards shown and stage 2 fourth card is shown
   def Calculate_Combinations_Probability(self, num_cards, forOpponent): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
+    #similar to binomial distribution
     if num_cards < 1 or num_cards > 3:
       raise ValueError("Computation will run too long. (Max 3)")
     
@@ -561,13 +562,15 @@ class Bot(new_round, Player): #inherits functions of new_round
   #stage 3 all cards revealed
   def Compare_To_Opponent_Probabilities(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
     opponent_current, opponent_most_likely, opponent_best = self.Calculate_Combinations_Probability(2, True)
-    if opponent_current[0] > current_combination[0]:
+    #opponent_current is redundant as just uses public cards
+
+    if opponent_most_likely[0] > current_combination[0]:  #if the combination ranking is higher eg. two pair vs one pair
       best_action = 0
-    elif opponent_most_likely[0] > most_likely_combination[0]:
-      best_action = 1
     elif opponent_best[0] > best_possible_combination[0] and opponent_best[1] > best_possible_combination[1]:
+      best_action = 1
+    elif opponent_most_likely[0] > most_likely_combination[0]:
       best_action = 2
-    elif abs(opponent_current[0] - current_combination[0]) < 2:
+    elif abs(opponent_most_likely[0] - current_combination[0]) > 1:
       best_action = 3
     else:
       best_action = 4
@@ -633,7 +636,7 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       if abs(current_combination[1] - best_possible_combination[1]) < rolled_risk:  #within risk tolerance
         best_action = 4
-      elif abs(most_likely_combination[1] - current_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
+      elif abs(current_combination[1] - most_likely_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
         best_action = 3
       elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:  #greater than global stats
         best_action = 2
