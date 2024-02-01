@@ -1,11 +1,10 @@
 # First setup
-Download the folder
-Open the "setup" folder
-Install Python 3.9.1 using the installer provided
-Install Pygame using "Install_Pygame.exe"
+Download nea.exe
+Enter "nea" folder
+Run "Install_Dependencies.bat"
 
 # Run Game
-Run main.py in python shell
+Run "PokerVSBots.exe"
 
 
 Developed in Python 3.9.1 with a dependency on Pygame 2.5.2 

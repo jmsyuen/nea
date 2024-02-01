@@ -1,3 +1,15 @@
+#to recompile
+pyinstaller --onefile main.py
+rename exe to PokerVSBots
+move exe file out of dist folder into main folder
+delete dist and build folder
+
+recompile 7zip archive
+right click folder, add to archive 
+enable create sfx archive option
+compile
+
+
 
 # general td
 can remove blind doubling like a cash game as only in tournaments #
