@@ -1,6 +1,8 @@
 # First setup
 Download nea.exe
+
 Enter "nea" folder
+
 Run "Install_Dependencies.bat"
 
 # Run Game
