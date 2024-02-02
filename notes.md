@@ -1,4 +1,5 @@
-#to recompile
+## recompiling code
+# windows
 pyinstaller --onefile main.py
 rename exe to PokerVSBots
 move exe file out of dist folder into main folder
@@ -8,6 +9,13 @@ recompile 7zip archive
 right click folder, add to archive 
 enable create sfx archive option
 compile
+
+# mac
+setup vm with mac iso
+run pyinstaller in mac environment to create executable file
+test pygame install script macinstalldependencies
+
+
 
 
 
