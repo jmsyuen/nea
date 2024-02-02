@@ -84,7 +84,7 @@ def NewGame():
       action = player_dict[current_player_id].GetChoice(highest_bet, revealed_cards) #returns value if bet
       print(action) # print into player info box
       pygame.display.flip()
-      time.sleep(0.5)
+      time.sleep(random.randint(5,20) / 10)
   
       ##logic to decode action
       if type(action) == tuple: #allin
@@ -153,16 +153,16 @@ def NewGame():
       pygame.display.flip()
         
     
-  ### new game setup
+  # - new game setup - #
   
   print("Starting with default settings. 3 opponents, £50 bot buy in, medium bot difficulty.")
   #remember to add to Player() call below
 
   
   total_players_left, difficulty, bot_starting_chips = gui.GetSettings()
-  big_blind_cycle = 0   #used to know when to double blinds every two cycles of players
+  big_blind_cycle = 0         #used to know when to double blinds every two cycles of players
   big_blind = 100
-  gui.UpdateBlinds(100)      #small blind is always half of big
+  gui.UpdateBlinds(100)       #small blind is always half of big
 
   #initiate player and bot objects
   player_dict = dict()
@@ -171,20 +171,19 @@ def NewGame():
     player_dict["player_" + str(player_id_value)] = pokersim.Bot(bot_starting_chips, difficulty) #add bots
   current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
   current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
-  #human always player_1
-  current_round_player_index = 0 ###for testing ease REMOVE LATER
-  #list(player_dict.keys())
+
+  ##current_round_player_index = 0 ###human starts for testing REMOVE LATER
+  ##list(player_dict.keys()) #show who is left
   
   
   ### game  ###
   
   play_game = True # new round
   while play_game: # iterate rounds
-    #read to and write out every iteration (database)
-    ### new round setup
+    # - new round setup - #
     pot = 0
     gui.UpdatePot(pot)
-    small_blind = big_blind // 2    
+    small_blind = big_blind // 2
   
     round = pokersim.new_round(total_players_left, player_dict)
 
@@ -193,9 +192,9 @@ def NewGame():
     round_players = []
     for player_id in player_dict:
       round_players.append(player_id)
-      player_dict[player_id].SetNewHand(round.GetHand(player_id)) ###int(player_id.split("_")[-1]) 
+      player_dict[player_id].SetNewHand(round.GetHand(player_id)) ##int(player_id.split("_")[-1]) 
       player_dict[player_id].ResetAllIn()
-      print(f"{player_id} cards: {round.GetHand(player_id)}") ####testing function
+      print(f"{player_id} cards: {round.GetHand(player_id)}") ###testing function
       gui.UpdatePlayerChips(player_id, player_dict[player_id].GetChipsLeft())
       gui.UpdatePlayerInfo(player_id, "")
   
@@ -277,7 +276,7 @@ def NewGame():
       if player_dict[player].GetChipsLeft() == 0:
         gui.RemoveBustPlayer(player)
         if player == "player_1":
-          gui.HumanBust(player_dict[player])
+          gui.DisplayHumanStats(player_dict[player])
         total_players_left -= 1
         round_players.remove(player)
         player_dict.pop(player)
@@ -296,7 +295,7 @@ def NewGame():
 
     ####end of round
     #end game if one player left or human out (optional)
-    if len(player_dict) < 2: ###or "player_1" not in round.players
+    if len(player_dict) < 2: 
       play_game = False
       print(f"{round_players[0]} remains.")
       gui.AnnounceRemainingPlayer(finalists[0])
@@ -317,7 +316,7 @@ def NewGame():
     
     if continue_round == "n":
       play_game = False
-      #database write out
+      ###database write out
 
 
 

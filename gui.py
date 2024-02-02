@@ -571,7 +571,7 @@ def RemoveBustPlayer(player_id):
     #and remove info boxes
 
 
-def HumanBust(player_object):
+def DisplayHumanStats(player_object):
   top_left_x, top_left_y = locations["player_1"][0][0], locations["player_1"][0][1]
   #position relative to top left card
   player_object.ResetAllIn()
