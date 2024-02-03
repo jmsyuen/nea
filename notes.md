@@ -35,6 +35,7 @@ small bug when raising everyone after doesn't match
 remove buttons when human bust
 straight flush may incorrectly identify if different flushes and straights exist
 only hide bust players at next round start
+better to clear and redraw whole game after every round 
 
 
 # common problems with solutions

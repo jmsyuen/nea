@@ -583,15 +583,15 @@ class Bot(new_round, Player): #inherits functions of new_round
     
 
     if best_action == 2: #bet low
-      if self.chips_left < 50:  #go all in if not enough chips for min bet
+      if self.chips_left <= 50:  #go all in if not enough chips for min bet
         return self.chips_left
       return random.randrange(50, self.chips_left // 3, 50) #0 - lower third
     elif best_action == 3: #bet medium
-      if self.chips_left < self.chips_left // 5:
+      if self.chips_left <= self.chips_left // 5:
         return self.chips_left
       return random.randrange(self.chips_left // 5, self.chips_left // (4/3), 50) #fifth to 3/4
     elif best_action == 4: #bet high
-      if self.chips_left < self.chips_left // (5/3):
+      if self.chips_left <= self.chips_left // (5/3):
         return self.chips_left
       return random.randrange(self.chips_left // (5/3), self.chips_left, 50) #3/5 to allin
 
@@ -608,7 +608,10 @@ class Bot(new_round, Player): #inherits functions of new_round
 
     #elif choice == "raise" or choice == "bet":
     else:
-      raise_value = random.randrange(50, self.chips_left, 50) 
+      if self.chips_left <= 50:  #go all in if not enough chips for min bet
+        raise_value = self.chips_left
+      else:
+        raise_value = random.randrange(50, self.chips_left, 50) 
       return raise_value
 
 

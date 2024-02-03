@@ -320,8 +320,8 @@ def UpdatePlayerInfo(*args):   #player_id_value, prev_action, chips_left
       chips_left = args[2]
       DrawTextBox(f"Chips:{chips_left}", BLACK, IVORY, 13, top_left_x, top_left_y + 48, 100, 24)
 
-    DrawTextBox(f"Player {player_id_value}", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) #change string with player name  ###
-    DrawTextBox(prev_action, BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  #two to be replaced with actual variables ###
+    DrawTextBox(f"Player {player_id_value}", BLACK, IVORY, 13, top_left_x, top_left_y, 100, 24) 
+    DrawTextBox(prev_action, BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  
   
 
 #add revealing animation using time.sleep and solid colour text box of white then 2 shades of grey  
@@ -358,7 +358,6 @@ def ShowHand(*args):  #player_id in full string, cards as a list, if public choo
 def UpdateTurnIndicator(player_id):
   DrawTextBox("", BLACK, DARK_BEIGE, 20, 0, 120, 20, HEIGHT)  #clear bar on the side
   DrawTextBox(">", BLACK, DARK_BEIGE, 20, locations[player_id][0][0] - 20, locations[player_id][0][1], 20, 20)
-
 
 
 #buttons - these cannot have arguments as they are executed
@@ -509,11 +508,23 @@ def AnnounceRemainingPlayer(player_id):
   DrawTextBox(f"Player {player_id[-1]} remains.", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 375, 140, 24)
   DrawTextBox("", BLACK, IVORY, 13, WIDTH - 160, HEIGHT - 300, 140, 30)
 
+def ShowFinalCombination(player_id, combination_name):
+  if player_id == "player_1":
+    DrawTextBox(f"{combination_name}", BLACK, IVORY, 13, locations["player_1"][0][0], locations["player_1"][0][1] - 74, 220, 24)
+    
+  else:
+    top_left_x = bot_info_locations[player_id][0]
+    top_left_y = bot_info_locations[player_id][1]
+
+    DrawTextBox(f"{combination_name}", BLACK, IVORY, 13, top_left_x, top_left_y + 24, 100, 24)  
+
+
 
 def ClearRightSidebar():
   DrawTextBox("", BLACK, DARK_BEIGE, 15, WIDTH - 160, 214, 140, 420)
 
-
+def ClearHumanCombination():
+  DrawTextBox("", BLACK, DARK_BEIGE, 13, locations["player_1"][0][0], locations["player_1"][0][1] - 74, 220, 24)
 
 
 def AskContinueRound():
@@ -582,7 +593,7 @@ def DisplayHumanStats(player_object):
   DrawTextBox(f"{player_object.lifetime_chips_wagered} chips wagered", BLACK, DARK_BEIGE, 15, top_left_x, top_left_y + 60, 220, 20)
   DrawTextBox(f"{player_object.lifetime_winnings} chips won", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 80, 220, 20)
   DrawTextBox(f"Went all in {player_object.allin_count} times", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 100, 220, 20)
-
+  DrawTextBox(f"", BLACK, DARK_BEIGE, 13, top_left_x, top_left_y + 120, 220, 40)
   #remove buttons
 
 

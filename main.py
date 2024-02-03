@@ -36,6 +36,27 @@ def NewGame():
     else:
       return value
 
+  def Convert_Combination_To_Name(combination):
+    if combination == 1:
+      return "High Card"
+    elif combination == 2:
+      return "Pair"
+    elif combination == 3:
+      return "Two Pair"
+    elif combination == 4:
+      return "3 of a kind"
+    elif combination == 5:
+      return "Straight"
+    elif combination == 6:
+      return "Flush"
+    elif combination == 7:
+      return "Full house"
+    elif combination == 8:
+      return "Four of a kind"
+    elif combination == 9:
+      return "Straight Flush"
+    elif combination == 10:
+      return "Royal Flush"
 
   def Play_Round_Stage(stage): 
     nonlocal pot
@@ -78,13 +99,13 @@ def NewGame():
       previous_charge = player_dict[current_player_id].GetPreviousCharge()
       print(f"{current_player_id} move")
       gui.UpdateTurnIndicator(current_player_id)
-      
+      gui.UpdatePlayerInfo(current_player_id, "Thinking..")
       
 
       action = player_dict[current_player_id].GetChoice(highest_bet, revealed_cards) #returns value if bet
       print(action) # print into player info box
       pygame.display.flip()
-      time.sleep(random.randint(5,20) / 10)
+      pygame.time.wait(random.randint(5,10) * 100) #time in ms
   
       ##logic to decode action
       if type(action) == tuple: #allin
@@ -163,6 +184,7 @@ def NewGame():
   big_blind_cycle = 0         #used to know when to double blinds every two cycles of players
   big_blind = 100
   gui.UpdateBlinds(100)       #small blind is always half of big
+  temp_bust_players = []
 
   #initiate player and bot objects
   player_dict = dict()
@@ -176,7 +198,7 @@ def NewGame():
   ##list(player_dict.keys()) #show who is left
   
   
-  ### game  ###
+  # - game - #
   
   play_game = True # new round
   while play_game: # iterate rounds
@@ -202,7 +224,12 @@ def NewGame():
     if "player_1" in player_dict:
       gui.ShowHand("player_1", round.GetHand("player_1"))
     gui.ClearRightSidebar()
+    gui.ClearHumanCombination()
     
+    for player in temp_bust_players:
+      if player != "player_1":
+        gui.RemoveBustPlayer(player)
+        
 
     #iterate stages and return list of finalists
     for stage in range(4):
@@ -221,49 +248,36 @@ def NewGame():
     gui.ShowHand("public", round.GetHand("public"), 0)
     playerCombinations = []
     for finalist in finalists:    #draw winners from database
-      #finalist_value = int(finalist.split("_")[-1])
       print(f"{finalist}:{round.GetHand(finalist)}")
       gui.ShowHand(finalist, round.GetHand(finalist))
-      pygame.display.flip()
-      time.sleep(0.5)
+      
+      player_combination_list = [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ]
+      playerCombinations.append(player_combination_list) # get combination highs and append to list
+      gui.ShowFinalCombination(finalist, Convert_Combination_To_Name(player_combination_list[1]))
 
-      playerCombinations.append( [finalist] + [ int(x) for x in round.FindCombination(round.GetHand(finalist) + round.GetHand("public")) ] ) # get combination highs and append to list
+      pygame.display.flip()
+      pygame.time.wait(500)
+    
     winners = round.FindWinner(playerCombinations)  #compare values in the list and decide winner or draw
-  
+    pygame.display.flip()
     #output combinations with their values
     for winner in winners:
       for player in playerCombinations:
         if player[0] == winner:
           combination = player[1]
           combination_high = str(Convert_Value_To_Name(player[2]))
-          
-          #convert to combination names
-          if combination == 1:
-            combination = "High Card"
-          elif combination == 2:
-            combination = "Pair"
-          elif combination == 3:
-            combination = "Two Pair"
-            combination_high += ", " + str(Convert_Value_To_Name(player[3]))
-          elif combination == 4:
-            combination = "Three of a kind"
-          elif combination == 5:
-            combination = "Straight"
-          elif combination == 6:
-            combination = "Flush"
+
+          if combination == 3:
+            combination_high += ", " + str(Convert_Value_To_Name(player[3])) 
           elif combination == 7:
-            combination = "Full house"
             combination_high += ", " + str(Convert_Value_To_Name(player[3]))
-          elif combination == 8:
-            combination = "Four of a kind"
-          elif combination == 9:
-            combination = "Straight Flush"
-          elif combination == 10:
-            combination = "Royal Flush"
+
+          combination_name = Convert_Combination_To_Name(combination)
+          #convert to combination names
           
-    print(f"winner: {winners} with a {combination_high} {combination}")
-    gui.AnnounceWinners(winners, combination, combination_high)
-      
+    print(f"winner: {winners} with a {combination_high} {combination_name}")
+    gui.AnnounceWinners(winners, combination_name, combination_high)
+    
 
     #split pot  
     winnings = pot // len(winners)
@@ -271,10 +285,11 @@ def NewGame():
       print(player_dict[winner].CollectWinnings(winnings))
 
     
+    temp_bust_players = []
     #remove bust players
     for player in list(player_dict):
       if player_dict[player].GetChipsLeft() == 0:
-        gui.RemoveBustPlayer(player)
+        temp_bust_players.append(player)
         if player == "player_1":
           gui.DisplayHumanStats(player_dict[player])
         total_players_left -= 1
@@ -317,8 +332,6 @@ def NewGame():
     if continue_round == "n":
       play_game = False
       ###database write out
-
-
 
     pygame.display.flip()
     
