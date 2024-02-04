@@ -16,12 +16,12 @@ Download nea.zip from Releases tab and extract
 
 Enter folders "nea" > "Setup"
 
-Run "python-3.9.1-macos11.0.pkg" and follow instructions on installer
+Run "python-3.9.1-macos11.0.pkg" and follow instructions on installer (also install pip)
 
-Run "Mac_Install_Dependencies.sh" 
+Run commands in "Mac_Install_Dependencies.txt" into terminal
 
 ## Run Game
-Run ""
+Run "PokerVSBots" executable file
 
 
 # About

@@ -768,27 +768,4 @@ class Bot(new_round, Player): #inherits functions of new_round
     
     
 
-if __name__ == "__main__":  #for testing
-  
-  temp_round = new_round(3, {"player_1: "})
-  temp_round
-
-
-
-  hand = ["hearts.14", "spades.14"]
-  bot1 = Bot(5000, "medium")
-  
-  bot1.SetNewHand(hand)
-  bot1.ResetAllIn()
-  bot1.ResetStageBet()
-  for i in range(10):
-    print(bot1.GetBotChoice(0, "fold check bet", ["spades.4", "spades.3", "spades.2"]))
-
-  print()
-  print(bot1.difficulty)
-  print(bot1.DecodeStartingHand())
-  print(bot1.Calculate_Combinations_Probability(2, False))
-  print(bot1.SetStartingHandRankings())
-  print(bot1.Roll_Risk())
-
 
