@@ -59,8 +59,11 @@ def NewGame():
       return "Royal Flush"
 
   def Play_Round_Stage(stage): 
-    nonlocal pot
+    nonlocal pot, current_round_player_index
+    if current_round_player_index > len(round_players) - 1:
+      current_round_player_index = len(round_players) - 1
     round_player_index = current_round_player_index
+  
     bet_matched = False #changes to true if all checked with no bet
     raised = False
     highest_bet = 0
@@ -170,6 +173,7 @@ def NewGame():
             if first_loop == True:
               first_loop = False
             elif first_loop == False:
+              bet_matched = True
               break
       pygame.display.flip()
         
@@ -194,8 +198,8 @@ def NewGame():
   current_round_player_index = random.randrange(0,len(player_dict)) #start on random player every new game
   current_game_player_index = current_round_player_index  #for full rotation of players to increase blinds
 
-  ##current_round_player_index = 0 ###human starts for testing REMOVE LATER
-  ##list(player_dict.keys()) #show who is left
+  #current_round_player_index = 0 ###human starts for testing REMOVE LATER
+  #list(player_dict.keys()) #show who is left
   
   
   # - game - #

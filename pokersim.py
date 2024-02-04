@@ -576,6 +576,18 @@ class Bot(new_round, Player): #inherits functions of new_round
       best_action = 4
     return best_action
     #find probability of higher one being found in last stage
+  
+  def Ranking_Value(self, current_combination_value):
+    if current_combination_value > 7: #4 of a kind or higher
+      return 4
+    elif current_combination_value > 4: #straight or higher
+      return 3
+    elif current_combination_value > 2: #2 pair or higher
+      return 2
+    elif current_combination_value > 1: #pair or higher
+      return 1
+    else:
+      return 0
     
 
   def Get_Random_Bet_Amount(self, best_action): #determined by strategy and size of chips
@@ -652,6 +664,10 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.stage == 3:
       current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(1, False)
       best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
+      ranking_value = self.Ranking_Value(current_combination[0])
+      if best_action < ranking_value:
+        best_action = ranking_value
+        
 
     print(f"best_action  {best_action}")  ###testing
     #check if conditions are met for choices else fold
@@ -716,6 +732,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.stage == 3:
       current_combination, most_likely_combination, best_possible_combination =  self.Calculate_Combinations_Probability(1, False)
       best_action = self.Compare_To_Opponent_Probabilities(current_combination, most_likely_combination, best_possible_combination)
+      ranking_value = self.Ranking_Value(current_combination[0])
+      if best_action < ranking_value:
+        best_action = ranking_value
 
 
     print(f"best_action  {best_action}")  ###testing

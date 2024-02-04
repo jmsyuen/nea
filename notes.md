@@ -12,6 +12,9 @@ compile
 
 # mac
 setup vm with mac iso
+pip install pyinstaller
+pyinstaller --onefile main.py
+rename exe
 run pyinstaller in mac environment to create executable file
 test pygame install script macinstalldependencies
 
@@ -34,8 +37,8 @@ optional bug found infinite check loop with 0 bet
 small bug when raising everyone after doesn't match
 remove buttons when human bust
 straight flush may incorrectly identify if different flushes and straights exist
-only hide bust players at next round start
 better to clear and redraw whole game after every round 
+set opponents to 6 list out of may break
 
 
 # common problems with solutions
