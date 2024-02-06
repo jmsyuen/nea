@@ -1,9 +1,6 @@
-#run these commands into terminal after installing python
-
-pip install pyinstaller
+# run this into terminal after installing python
 pip install -U pygame --user
 
-if pip doesn't work run
+# if pip doesn't work run
 python3 -m ensurepip
-python3 -m pip install pyinstaller
-python3 -m pip install -U pygame --user
+# then run above command again
