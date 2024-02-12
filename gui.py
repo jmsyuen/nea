@@ -391,6 +391,10 @@ def reset_temporary_bet():
   temporary_bet = 50
   #min 50 (smallest bet possible)
 
+def confirm_bet():
+  global choice, temporary_bet
+  choice = temporary_bet
+
 def fold():
   global choice
   choice = "n"
@@ -401,9 +405,7 @@ def check():
   global choice
   choice = "y"
 
-def confirm_bet():
-  global choice, temporary_bet
-  choice = temporary_bet
+
   
 
 

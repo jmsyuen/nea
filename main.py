@@ -288,9 +288,8 @@ def NewGame():
     for winner in winners:
       print(player_dict[winner].CollectWinnings(winnings))
 
-    
-    temp_bust_players = []
     #remove bust players
+    temp_bust_players = []
     for player in list(player_dict):
       if player_dict[player].GetChipsLeft() == 0:
         temp_bust_players.append(player)
@@ -305,7 +304,8 @@ def NewGame():
     current_round_player_index += 1 #iterate blinds
     if current_round_player_index > len(player_dict) - 1: 
       current_round_player_index = 0
-    if current_round_player_index == current_game_player_index and big_blind < 1600 and big_blind_cycle != 0: #double blinds up to a maximum of 1600 every two cycles
+    if current_round_player_index == current_game_player_index and big_blind < 1600 and big_blind_cycle != 0: 
+      #double blinds up to a maximum of 1600 every two cycles
       big_blind *= 2
       big_blind_cycle += 1
       print("Blinds doubled")

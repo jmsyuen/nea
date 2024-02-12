@@ -174,7 +174,7 @@ class new_round():
 
       # CH CH full house
       CH = full_house() 
-      if CH != False:
+      if CH != False and CH != None:
         return [7] + CH
 
       # CH flush
@@ -513,7 +513,8 @@ class Bot(new_round, Player): #inherits functions of new_round
       
 
   #stage 1 three cards shown and stage 2 fourth card is shown
-  def Calculate_Combinations_Probability(self, num_cards, forOpponent): # predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
+  def Calculate_Combinations_Probability(self, num_cards, forOpponent): 
+    #predict combination for next card shown - add probabilities for every card unknown - ONLY AFTER FLOP
     #similar to binomial distribution
     if num_cards < 1 or num_cards > 3:
       raise ValueError("Computation will run too long. (Max 3)")
@@ -560,7 +561,8 @@ class Bot(new_round, Player): #inherits functions of new_round
     
 
   #stage 3 all cards revealed
-  def Compare_To_Opponent_Probabilities(self, current_combination, most_likely_combination, best_possible_combination):  #calculate probabilities of combinations using only public cards to predict what others have
+  def Compare_To_Opponent_Probabilities(self, current_combination, most_likely_combination, best_possible_combination):  
+    #calculate probabilities of combinations using only public cards to predict what others have
     opponent_current, opponent_most_likely, opponent_best = self.Calculate_Combinations_Probability(2, True)
     #opponent_current is redundant as just uses public cards
 
@@ -592,7 +594,6 @@ class Bot(new_round, Player): #inherits functions of new_round
 
   def Get_Random_Bet_Amount(self, best_action): #determined by strategy and size of chips
     #(still randrange and high includes allin) ranges overlap to make it harder to pick up patterns
-    
 
     if best_action == 2: #bet low
       if self.chips_left <= 50:  #go all in if not enough chips for min bet
