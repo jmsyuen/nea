@@ -1,8 +1,8 @@
 # Windows
 ## Setup
-Download nea.zip from Releases tab and extract 
+Download Source code zip file from Releases tab and extract 
 
-Enter folders "nea" > "Setup"
+Enter folders into "Setup"
 
 Run "Windows_Install_Dependencies.bat"
 
@@ -12,9 +12,9 @@ Run "PokerVSBots_Windows.exe"
 
 # MacOS
 ## Setup
-Download nea.zip from Releases tab and extract 
+Download Source code zip file from Releases tab and extract 
 
-Enter folders "nea" > "Setup"
+Enter folders into "Setup"
 
 Run "python-3.9.1-macos11.0.pkg" and follow instructions on installer
 
