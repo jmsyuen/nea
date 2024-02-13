@@ -423,6 +423,9 @@ class Bot(new_round, Player): #inherits functions of new_round
     
     print(f"bot {self.difficulty} difficulty")  # terminal debugging
 
+    if random.randint(1,100) == 1:  #1/100 chance to fold anyway
+      return "n"
+
     if self.difficulty == "easy":
       choice = self.GetEasyStrategyChoice()
     elif self.difficulty == "medium":
@@ -682,7 +685,7 @@ class Bot(new_round, Player): #inherits functions of new_round
       
       
     elif self.available_choices == ["fold", "allin"]:
-      if best_action >= 4:  # all in  at least a bet high
+      if best_action >= 3:  # all in  at least a bet medium
         return "y"
       else:  # fold
         return "n"
@@ -691,7 +694,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.available_choices == ["fold", "call", "raise"]:
       if best_action >= 3:  # raise  at least a bet medium
         return self.Get_Random_Bet_Amount(best_action)
-      if best_action >= 2:  # call  at least a bet low
+      if best_action >= 1:  # call  at least a check
         return "y"
       else:  # fold
         return "n"   
@@ -760,7 +763,7 @@ class Bot(new_round, Player): #inherits functions of new_round
     elif self.available_choices == ["fold", "call", "raise"]:
       if best_action >= 4:  # raise   at least a bet high
         return self.Get_Random_Bet_Amount(best_action)
-      if best_action >= 3:  # call  at least a bet medium
+      if best_action >= 2:  # call  at least a bet low
         return "y"
       if self.stage == 0 and best_action > 0: # play past first round more
         return "y"

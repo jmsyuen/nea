@@ -68,6 +68,7 @@ def NewGame():
     raised = False
     highest_bet = 0
     first_loop = True
+    player_iterations = 0
     for player_id in player_dict:
       player_dict[player_id].ResetStageBet()
     
@@ -97,7 +98,8 @@ def NewGame():
       revealed_cards = []
 
 
-    while len(round_players) > 1 and bet_matched == False: #iterate players in Play_Round_Stage
+    while len(round_players) > 1 and bet_matched == False and player_iterations < 25: #iterate players in Play_Round_Stage
+      player_iterations += 1
       current_player_id = round_players[round_player_index]
       previous_charge = player_dict[current_player_id].GetPreviousCharge()
       print(f"{current_player_id} move")
@@ -113,9 +115,9 @@ def NewGame():
       ##logic to decode action
       if type(action) == tuple: #allin
         first_loop = False
-        action = action[1]
-        if action > highest_bet:
-          highest_bet = action
+        action = action[1]  # action here is extra raise
+        if action > 0:
+          highest_bet += action
           highest_bettor_index = round_player_index 
           raised = True 
         gui.UpdatePlayerInfo(current_player_id, "All In", player_dict[current_player_id].GetChipsLeft())
@@ -147,6 +149,8 @@ def NewGame():
       elif action == False: #fold
         round_players.remove(current_player_id) #removes based on value not index
         round_player_index -= 1
+        if current_round_player_index > len(round_players) - 1:
+          current_round_player_index = len(round_players) - 1
         gui.UpdatePlayerInfo(current_player_id, "Fold", player_dict[current_player_id].GetChipsLeft())
         
 
