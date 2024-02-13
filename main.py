@@ -161,6 +161,7 @@ def NewGame():
 
       #iterate players
       if len(round_players) == 1: #one player left
+        print("WIN BY FOLD")
         return round_players
       elif round_player_index > len(round_players): #loop back in a circle
         round_player_index = 0  
