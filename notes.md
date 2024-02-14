@@ -37,7 +37,9 @@ small bug when raising everyone after doesn't match
 remove buttons when human bust
 straight flush may incorrectly identify if different flushes and straights exist
 better to clear and redraw whole game after every round 
-set opponents to 6 list out of may break
+Bot will always fold when chips are below minimum of 50
+
+
 
 
 # common problems with solutions

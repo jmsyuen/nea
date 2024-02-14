@@ -221,7 +221,8 @@ class new_round():
       for player in remainingPlayers:
         values.append(player[i])
 
-      locations = [index for index, value in enumerate(values) if value == max(values)] #finds highest value in all lists and returns all occurences
+      locations = [index for index, value in enumerate(values) if value == max(values)] 
+      #finds highest value in all lists and returns all occurences
       if len(locations) == 1 or i == len(remainingPlayers[0]) - 1: # second term of the winning list
         break
 
@@ -498,7 +499,8 @@ class Bot(new_round, Player): #inherits functions of new_round
   
   def SetStartingHandRankings(self): #complete 169 possible combinations - by default hands are suited unless specified with "o"
     self.DecodeStartingHand()
-    self.top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
+    self.top10 = ["AA", "KK", "QQ", "AK", "AQ", "JJ", "KQ", "AJ", "AKo", "TT", "99", 
+                  "88", "77", "AQo", "AT", "AJo", "KJ", "KQo", "KT", "QJ", "QT"]
     #best 10% of hands (21 types)
     converted_hand = self.Convert_Hand(self.value1, self.value2, self.onsuit)
     self.istop10 = False
@@ -542,7 +544,7 @@ class Bot(new_round, Player): #inherits functions of new_round
       all_test_combinations.append( [j] + [int(x) for x in new_round.FindCombination(self, self.known_cards + list(all_test_tuples[j]))] )
     
     combination_ranks = []  
-    for list1 in all_test_combinations:  #take the second value out of each list (combination rank eg. value of high card, flush, etc - #highest out of 1-10)
+    for list1 in all_test_combinations:  #take the combination rank to compare eg. value of high card, flush, etc - #highest out of 1-10)
       combination_ranks.append(list1[1])
     
     #calculated values to compare
@@ -657,7 +659,8 @@ class Bot(new_round, Player): #inherits functions of new_round
         best_action = 4
       elif abs(current_combination[1] - most_likely_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
         best_action = 3
-      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:  #greater than global stats
+      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:
+        #greater than global stats  
         best_action = 2
       elif current_combination[1] > self.odds[current_combination[0]]:
         best_action = 1
@@ -725,7 +728,8 @@ class Bot(new_round, Player): #inherits functions of new_round
         best_action = 4
       elif abs(most_likely_combination[1] - current_combination[1]) < rolled_risk or current_combination[0] == best_possible_combination[0]:
         best_action = 3
-      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:  #greater than global stats
+      elif most_likely_combination[1] > self.odds[current_combination[0]] or most_likely_combination[1] > self.odds[most_likely_combination[0]]:
+        #greater than global stats
         best_action = 2
       elif current_combination[1] > self.odds[current_combination[0]]:
         best_action = 1

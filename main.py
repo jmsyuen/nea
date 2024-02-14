@@ -154,7 +154,8 @@ def NewGame():
         gui.UpdatePlayerInfo(current_player_id, "Fold", player_dict[current_player_id].GetChipsLeft())
         
 
-      if all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id):  #all other players are all in
+      if all(player_dict[player_id].AllIn for player_id in round_players if player_id != current_player_id):  
+        #if all other players are all in
         return round_players
 
 
